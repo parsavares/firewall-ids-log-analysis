@@ -6,8 +6,8 @@
 
 Team Members: 
 
-- Marion Smith, University of Luxembourg, [Parsa Vares](mailto:parsa.vares.001@student.uni.lu)
-- Paul White, University of Luxembourg, [white@uni.lu](mailto:white@uni.lu)
+- Parsa Vares, University of Luxembourg, [Parsa Vares](mailto:parsa.vares.001@student.uni.lu)
+- Daniele Ferrario, University of Luxembourg, [daniele.ferrario.001@student.uni.lu](mailto:daniele.ferrario.001@student.uni.lu)
 - Tom Jones, University of Luxembourg, [jones@uni.lu](mailto:jones@uni.lu)
 
 ## Project Overview
