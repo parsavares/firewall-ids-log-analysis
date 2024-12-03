@@ -1,0 +1,30 @@
+Firewall data:
+
+Syslog priority: 5
+Operation: 6
+Message code: 21
+Protocol: 3
+Source IP: 3346
+Destination IP: 80
+Source hostname: 1
+Destination hostname: 1
+Source port: 126028
+Destination port: 30515
+Direction: 3
+Connections built: 2
+Connections torn down: 2
+
+Syslog priority: ['Info' 'Notice' 'Critical' 'Warning' 'Error']
+Operation: ['Teardown' 'Built' '(empty)' 'Command executed' 'Deny' 'Deny by ACL']
+Message code: ['ASA-6-302016' 'ASA-6-302015' 'ASA-6-302010' 'ASA-6-725001'
+ 'ASA-6-725002' 'ASA-6-605005' 'ASA-6-725007' 'ASA-6-725003'
+ 'ASA-5-111008' 'ASA-6-302013' 'ASA-6-302014' 'ASA-6-110003'
+ 'ASA-6-106015' 'ASA-2-106001' 'ASA-4-106023' 'ASA-3-710003'
+ 'ASA-5-111007' 'ASA-6-305010' 'ASA-6-305009' 'ASA-3-305006'
+ 'ASA-4-405001']
+Protocol: ['UDP' '(empty)' 'TCP']
+Source hostname: ['(empty)']
+Destination hostname: ['(empty)']
+Direction: ['(empty)' 'outbound' 'inbound']
+Connections built: [0 1]
+Connections torn down: [1 0]
