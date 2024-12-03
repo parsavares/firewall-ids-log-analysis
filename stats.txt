@@ -28,3 +28,72 @@ Destination hostname: ['(empty)']
 Direction: ['(empty)' 'outbound' 'inbound']
 Connections built: [0 1]
 Connections torn down: [1 0]
+
+
+IDS data
+
+time: 1664
+sourceIP: 103
+sourcePort: 3181
+destIP: 443
+destPort: 5463
+classification: 5
+priority: 3
+label: 22
+packet info: 15157
+packet info cont'd: 34970
+xref: 19
+label: 7
+packet info: 15989
+
+ classification: [' Generic Protocol Command Decode'
+ ' Potential Corporate Privacy Violation' ' Misc activity'
+ ' Attempted Information Leak' ' Potentially Bad Traffic']
+ priority: [3 1 2]
+ label: [' [1:2100538:17] GPL NETBIOS SMB IPC$ unicode share access '
+ ' [1:2103000:7] GPL NETBIOS SMB Session Setup NTMLSSP unicode asn1 overflow attempt '
+ ' [1:2103003:7] GPL NETBIOS SMB-DS Session Setup NTMLSSP unicode asn1 overflow attempt '
+ ' [1:2102466:9] GPL NETBIOS SMB-DS IPC$ unicode share access '
+ ' [1:2009702:4] ET POLICY DNS Update From External net '
+ ' [1:2000355:5] ET POLICY IRC authorization message '
+ ' [1:1418:11] GPL SNMP request tcp '
+ ' [1:2010935:2] ET POLICY Suspicious inbound to MSSQL port 1433 '
+ ' [1:2010936:2] ET POLICY Suspicious inbound to Oracle SQL port 1521 '
+ ' [1:2010937:2] ET POLICY Suspicious inbound to mySQL port 3306 '
+ ' [1:2010939:2] ET POLICY Suspicious inbound to PostgreSQL port 5432 '
+ ' [1:2002910:4] ET SCAN Potential VNC Scan 5800-5820 '
+ ' [1:2002911:4] ET SCAN Potential VNC Scan 5900-5920 '
+ ' [1:2003068:6] ET SCAN Potential SSH Scan OUTBOUND '
+ ' [1:2001219:18] ET SCAN Potential SSH Scan '
+ ' [1:2002992:6] ET SCAN Rapid POP3 Connections - Possible Brute Force Attack '
+ ' [1:2002994:6] ET SCAN Rapid IMAP Connections - Possible Brute Force Attack '
+ ' [1:2002995:9] ET SCAN Rapid IMAPS Connections - Possible Brute Force Attack '
+ ' [1:2002993:6] ET SCAN Rapid POP3S Connections - Possible Brute Force Attack '
+ ' [1:2013479:2] ET SCAN Behavioral Unusually fast Terminal Server Traffic, Potential Scan or Infection '
+ ' [1:2001972:16] ET SCAN Behavioral Unusually fast Terminal Server Traffic, Potential Scan or Infection '
+ nan]
+ xref: [nan
+ '[Xref => http://www.microsoft.com/technet/security/bulletin/MS04-007.mspx][Xref => http://cgi.nessus.org/plugins/dump.php3?id=12065][Xref => http://cgi.nessus.org/plugins/dump.php3?id=12052][Xref => http://cve.mitre.org/cgi-bin/cvename.cgi?name=2003-0818][Xref => http://www.securityfocus.com/bid/9635][Xref => http://www.securityfocus.com/bid/9633]'
+ '[Xref => http://doc.emergingthreats.net/2009702]'
+ '[Xref => http://doc.emergingthreats.net/2000355]'
+ '[Xref => http://cve.mitre.org/cgi-bin/cvename.cgi?name=2002-0013][Xref => http://cve.mitre.org/cgi-bin/cvename.cgi?name=2002-0012][Xref => http://www.securityfocus.com/bid/4132][Xref => http://www.securityfocus.com/bid/4089][Xref => http://www.securityfocus.com/bid/4088]'
+ '[Xref => http://doc.emergingthreats.net/2010935]'
+ '[Xref => http://doc.emergingthreats.net/2010936]'
+ '[Xref => http://doc.emergingthreats.net/2010937]'
+ '[Xref => http://doc.emergingthreats.net/2010939]'
+ '[Xref => http://doc.emergingthreats.net/2002910]'
+ '[Xref => http://doc.emergingthreats.net/2002911]'
+ '[Xref => http://doc.emergingthreats.net/2003068][Xref => http://en.wikipedia.org/wiki/Brute_force_attack]'
+ '[Xref => http://doc.emergingthreats.net/2001219][Xref => http://en.wikipedia.org/wiki/Brute_force_attack]'
+ '[Xref => http://doc.emergingthreats.net/2002992]'
+ '[Xref => http://doc.emergingthreats.net/2002994]'
+ '[Xref => http://doc.emergingthreats.net/2002995]'
+ '[Xref => http://doc.emergingthreats.net/2002993]'
+ '[Xref => http://threatpost.com/en_us/blogs/new-worm-morto-using-rdp-infect-windows-pcs-082811]'
+ '[Xref => http://doc.emergingthreats.net/2001972]']
+label: [nan ' [1:2000355:5] ET POLICY IRC authorization message '
+ ' [1:2103003:7] GPL NETBIOS SMB-DS Session Setup NTMLSSP unicode asn1 overflow attempt '
+ ' [1:2102466:9] GPL NETBIOS SMB-DS IPC$ unicode share access '
+ ' [1:2103000:7] GPL NETBIOS SMB Session Setup NTMLSSP unicode asn1 overflow attempt '
+ ' [1:2100538:17] GPL NETBIOS SMB IPC$ unicode share access '
+ ' [1:2009702:4] ET POLICY DNS Update From External net ']
