@@ -8,7 +8,8 @@ Team Members:
 
 - Parsa Vares, University of Luxembourg, [Parsa Vares](mailto:parsa.vares.001@student.uni.lu)
 - Daniele Ferrario, University of Luxembourg, [daniele.ferrario.001@student.uni.lu](mailto:daniele.ferrario.001@student.uni.lu)
-- Tom Jones, University of Luxembourg, [jones@uni.lu](mailto:jones@uni.lu)
+- xxx
+- xxx
 
 ## Project Overview
 This project addresses Mini-Challenge 2 from the VAST 2012 competition by developing a visual analytics tool for analyzing firewall and IDS logs. The dataset consists of raw logs collected from a corporate network to investigate security concerns, identify trends, and uncover anomalous behavior. We utilized a combination of **React**, **D3.js**, **JavaScript**, and **Python** to create an interactive visual tool that assists with the security analysis process.
