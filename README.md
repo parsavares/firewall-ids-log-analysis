@@ -6,7 +6,7 @@
 
 Team Members: 
 
-- Parsa Vares, University of Luxembourg, [Parsa Vares](mailto:parsa.vares.001@student.uni.lu)
+- Parsa Vares, University of Luxembourg, [parsa.vares.001@student.uni.lu](mailto:parsa.vares.001@student.uni.lu)
 - Daniele Ferrario, University of Luxembourg, [daniele.ferrario.001@student.uni.lu](mailto:daniele.ferrario.001@student.uni.lu)
 - xxx
 - xxx
