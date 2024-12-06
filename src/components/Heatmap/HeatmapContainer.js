@@ -1,6 +1,7 @@
 import {useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 
+import HeatmapD3 from './HeatmapD3';
 
 export default function HeatmapContainer(){
 
@@ -20,9 +21,28 @@ export default function HeatmapContainer(){
         return {width:width, height:height};
     }
 
+    useEffect(()=>{
+        const heatmapD3 = new HeatmapD3(divContainerRef.current);
+        heatmapD3.create({size:getCharSize()});
+        heatmapD3Ref.current = heatmapD3;
+        return () => {
+            const heatmapD3 = heatmapD3Ref.current;
+            heatmapD3.clear();
+        }
+    }, []);
+
+    useEffect(()=>{
+        const heatmapD3 = heatmapD3Ref.current;
+
+        console.log(state)
+        heatmapD3.render(state.data, state.xAttribute, state.yAttribute);
+
+    }, [state, dispatch]);
+
     return (
         <div ref={divContainerRef} className="heatmap-container h-100">
             <h1>Heatmap</h1>
+
         </div>
     )
 

@@ -5,7 +5,10 @@ import App from './App';
 import store from './store';
 import { Provider } from 'react-redux';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const rootElement = document.getElementById('root');
+rootElement.style.height = '100vh';
+const root = ReactDOM.createRoot(rootElement);
+
 root.render(
   <>
     {/*<React.StrictMode>   In development mode, components are rendered 2 times.*/}
