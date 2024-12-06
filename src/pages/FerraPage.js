@@ -1,12 +1,10 @@
-
+import HeatmapContainer from '../components/Heatmap/HeatmapContainer';
 
 export default function FerraPage() {
     return (
-        <div>
+        <div className='h-100'>
         <h1>Ferra</h1>
-        <p>
-            Ferra page
-        </p>
+            <HeatmapContainer />
         </div>
     );
     }
