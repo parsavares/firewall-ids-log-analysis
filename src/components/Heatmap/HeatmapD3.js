@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import mock_data from './heatmap_data.csv';
+import generateMockData from './generate_data';
 
 
 export default class HeatmapD3 {
@@ -22,8 +23,8 @@ export default class HeatmapD3 {
     updateAxis = function(visData,xAttribute,yAttribute){
 
     
-        var myGroups = Array.from(new Set(visData.map(d => d.group)));
-        var myVars = Array.from(new Set(visData.map(d => d.variable)));
+        var myGroups = Array.from(new Set(visData.map(d => d.sourceIp)));
+        var myVars = Array.from(new Set(visData.map(d => d.destinationIp)));
 
 
         this.xScale = d3.scaleBand()
@@ -41,9 +42,10 @@ export default class HeatmapD3 {
 
         this.heatmapSvg.select(".xAxisG")
             .transition().duration(this.transitionDuration)
-            .call(bottomAxis)
-        ;
-
+            .call(bottomAxis)            
+            .selectAll("text")  
+            .attr("transform", "rotate(-65)");
+        
         this.heatmapSvg.select(".yAxisG")
             .transition().duration(this.transitionDuration)
             .call(leftAxis)
@@ -78,7 +80,9 @@ export default class HeatmapD3 {
 
    render = function(data, xAttribute, yAttribute){ 
 
-        d3.csv(mock_data).then((fetched_data) => {
+        //d3.csv(mock_data).then((fetched_data) => {
+
+            var fetched_data = generateMockData();
             this.xAttribute = xAttribute;
             this.yAttribute = yAttribute;
             this.visData = fetched_data;
@@ -91,21 +95,21 @@ export default class HeatmapD3 {
             .domain([1,100])
 
             this.heatmapSvg.selectAll(".squareG")
-            .data(fetched_data, function(d) {return d.group+':'+d.variable;})
+            .data(fetched_data, function(d) {return d.sourceIp+':'+d.destinationIp;})
             .enter()
             .append("rect")
-              .attr("x", (d) => { return this.xScale(d.group) })
-              .attr("y", (d) => { return this.yScale(d.variable) })
+              .attr("x", (d) => { return this.xScale(d.sourceIp) })
+              .attr("y", (d) => { return this.yScale(d.destinationIp) })
               .attr("rx", 4)
               .attr("ry", 4)
               .attr("width", this.xScale.bandwidth() )
               .attr("height", this.yScale.bandwidth() )
-              .style("fill", function(d) { return myColor(d.value)} )
+              .style("fill", function(d) { return myColor(d.frequency)} )
               .style("stroke-width", 4)
               .style("stroke", "none")
               .style("opacity", 0.8)
         
-        })
+        //})
 
         
    }
