@@ -48,10 +48,9 @@ firewall-ids-log-analysis/
 │   ├── store.js
 │   ├── pages
 │   ├── redux
-│   ├── components/Heatmap
-│       ├── Dashboard.js
-│       ├── Heatmap.js
-│       ├── NetworkGraph.js
+│   ├── components
+│       ├── Heatmap
+│           ├── HeatmapContainer.js
 |
 ├── analysis/                   # Python scripts for data analysis
 │   ├── data_cleaning.py
