@@ -68,7 +68,6 @@ firewall-ids-log-analysis/
 │       ├── notable_events_1.png
 │       ├── notable_events_2.png
 |
-├── index.html                  # Main submission file
 ├── README.md                   # Description and setup instructions
 ├── package-lock.json
 ├── package.json
