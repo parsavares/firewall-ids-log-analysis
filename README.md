@@ -62,7 +62,7 @@ firewall-ids-log-analysis/
 │       ├── Heatmap
 │           ├── HeatmapContainer.js
 |
-├── scripts/                   # Python scripts for data analysis
+├── scripts/                    # Python scripts for data analysis
 │   ├── firewall_stats.py
 │   ├── ids_stats.py
 │   ├── query.py
