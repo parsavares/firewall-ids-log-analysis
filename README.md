@@ -70,7 +70,9 @@ firewall-ids-log-analysis/
 |
 ├── index.html                  # Main submission file
 ├── README.md                   # Description and setup instructions
-└── requirements.txt            # Python package requirements
+├── package-lock.json
+├── package.json
+└── stats.txt   
 ```
 
 ## Datasets
