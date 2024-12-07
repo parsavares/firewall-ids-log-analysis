@@ -32,9 +32,13 @@ The main goal of this project is to enable visual exploration of security events
 ```
 firewall-ids-log-analysis/
 |
-├── data/                       # Raw and cleaned dataset files (CSV, XLSX)
-│   ├── firewall-04062012.csv
-│   ├── ids-04062012.csv
+├── public/                       
+│   ├── favicon.ico
+│   ├── index.html              # Start page
+│   ├── logo192.png
+│   ├── logo512.png
+│   ├── manifest.json
+│   ├── robots.txt
 |
 ├── src/                        # Frontend code for visualization
 │   ├── App.js
@@ -58,17 +62,11 @@ firewall-ids-log-analysis/
 │       ├── Heatmap
 │           ├── HeatmapContainer.js
 |
-├── analysis/                   # Python scripts for data analysis
-│   ├── data_cleaning.py
-│   ├── event_detection.py
-│   ├── trends_analysis.py
+├── scripts/                   # Python scripts for data analysis
+│   ├── firewall_stats.py
+│   ├── ids_stats.py
+│   ├── query.py
 |
-├── static/                     # Static files for visualizations
-│   ├── images/
-│       ├── notable_events_1.png
-│       ├── notable_events_2.png
-|
-├── index.html                  # Start page
 ├── README.md                   # Description and setup instructions
 ├── package-lock.json
 ├── package.json
