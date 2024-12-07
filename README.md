@@ -80,7 +80,7 @@ firewall-ids-log-analysis/
 The data covers a specific timeframe and is instrumental in identifying suspicious activities, intrusion attempts, and general traffic behavior.
 
 ## Features
-1. **Data Cleaning and Transformation**: Python scripts in the `analysis` folder clean and preprocess the logs to make them suitable for visualization.
+1. **Data Cleaning and Transformation**: The logs were cleaned and preprocessed to make them suitable for visualization.
 2. **Interactive Dashboard**: A React-based dashboard providing:
    - **Heatmaps** to analyze the frequency of connections and events.
    - **Network Graphs** to visualize communication patterns between different IP addresses.
