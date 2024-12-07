@@ -38,7 +38,17 @@ firewall-ids-log-analysis/
 |
 ├── src/                        # Frontend code for visualization
 │   ├── App.js
-│   ├── components/
+│   ├── App.css
+│   ├── App.test.js
+│   ├── index.css
+│   ├── index.js
+│   ├── logo.svg
+│   ├── reportWebVitals.js
+│   ├── setupTests.js
+│   ├── store.js
+│   ├── pages
+│   ├── redux
+│   ├── components/Heatmap
 │       ├── Dashboard.js
 │       ├── Heatmap.js
 │       ├── NetworkGraph.js
