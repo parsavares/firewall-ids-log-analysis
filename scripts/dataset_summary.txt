@@ -1,0 +1,31 @@
+Dataset Analysis Summary
+==================================================
+
+Dataset: Firewall-04062012.csv
+Path: ..\data\MC2-CSVFirewallandIDSlogs\Firewall-04062012.csv
+Number of Rows: 13208233
+Number of Columns: 15
+Columns: Date/time, Syslog priority, Operation, Message code, Protocol, Source IP, Destination IP, Source hostname, Destination hostname, Source port, Destination port, Destination service, Direction, Connections built, Connections torn down
+Data Types: Date/time: string, Syslog priority: string, Operation: string, Message code: string, Protocol: string, Source IP: string, Destination IP: string, Source hostname: string, Destination hostname: string, Source port: string, Destination port: string, Destination service: string, Direction: string, Connections built: string, Connections torn down: string
+--------------------------------------------------
+Dataset: Firewall-04072012.csv
+Path: ..\data\MC2-CSVFirewallandIDSlogs\Firewall-04072012.csv
+Number of Rows: 10503108
+Number of Columns: 15
+Columns: Date/time, Syslog priority, Operation, Message code, Protocol, Source IP, Destination IP, Source hostname, Destination hostname, Source port, Destination port, Destination service, Direction, Connections built, Connections torn down
+Data Types: Date/time: string, Syslog priority: string, Operation: string, Message code: string, Protocol: string, Source IP: string, Destination IP: string, Source hostname: string, Destination hostname: string, Source port: string, Destination port: string, Destination service: string, Direction: string, Connections built: string, Connections torn down: string
+--------------------------------------------------
+Dataset: IDS-0406.csv
+Path: ..\data\MC2-CSVFirewallandIDSlogs\IDS-0406.csv
+Number of Rows: 32643
+Number of Columns: 11
+Columns: time,  sourceIP,  sourcePort,  destIP,  destPort,  classification,  priority,  label,  packet info,  packet info cont'd,  xref
+Data Types: time: string,  sourceIP: string,  sourcePort: string,  destIP: string,  destPort: string,  classification: string,  priority: string,  label: string,  packet info: string,  packet info cont'd: string,  xref: string
+--------------------------------------------------
+Dataset: IDS-0407.csv
+Path: ..\data\MC2-CSVFirewallandIDSlogs\IDS-0407.csv
+Number of Rows: 18430
+Number of Columns: 11
+Columns: time,  sourceIP,  sourcePort,  destIP,  destPort,  classification,  priority, label, packet info, packet info cont'd,  xref
+Data Types: time: string,  sourceIP: string,  sourcePort: string,  destIP: string,  destPort: string,  classification: string,  priority: string, label: string, packet info: string, packet info cont'd: string,  xref: string
+--------------------------------------------------
