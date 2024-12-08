@@ -1,31 +1,121 @@
-Dataset Analysis Summary
+Dataset Analysis, Cleaning, and Inspection Summary
 ==================================================
 
 Dataset: Firewall-04062012.csv
 Path: ..\data\MC2-CSVFirewallandIDSlogs\Firewall-04062012.csv
-Number of Rows: 13208233
-Number of Columns: 15
+Number of Rows (after handling missing values): 13208233
+Missing Values Summary:
+                       Missing Count  Missing Percentage
+Date/time                          0                 0.0
+Syslog priority                    0                 0.0
+Operation                          0                 0.0
+Message code                       0                 0.0
+Protocol                           0                 0.0
+Source IP                          0                 0.0
+Destination IP                     0                 0.0
+Source hostname                    0                 0.0
+Destination hostname               0                 0.0
+Source port                        0                 0.0
+Destination port                   0                 0.0
+Destination service                0                 0.0
+Direction                          0                 0.0
+Connections built                  0                 0.0
+Connections torn down              0                 0.0
+Missing values imputed using simple strategies.
+Number of Rows (after removing duplicates): 13117419
 Columns: Date/time, Syslog priority, Operation, Message code, Protocol, Source IP, Destination IP, Source hostname, Destination hostname, Source port, Destination port, Destination service, Direction, Connections built, Connections torn down
 Data Types: Date/time: string, Syslog priority: string, Operation: string, Message code: string, Protocol: string, Source IP: string, Destination IP: string, Source hostname: string, Destination hostname: string, Source port: string, Destination port: string, Destination service: string, Direction: string, Connections built: string, Connections torn down: string
+Cleaned dataset saved as: cleaned_Firewall-04062012.csv
 --------------------------------------------------
 Dataset: Firewall-04072012.csv
 Path: ..\data\MC2-CSVFirewallandIDSlogs\Firewall-04072012.csv
-Number of Rows: 10503108
-Number of Columns: 15
+Number of Rows (after handling missing values): 10503108
+Missing Values Summary:
+                       Missing Count  Missing Percentage
+Date/time                          0                 0.0
+Syslog priority                    0                 0.0
+Operation                          0                 0.0
+Message code                       0                 0.0
+Protocol                           0                 0.0
+Source IP                          0                 0.0
+Destination IP                     0                 0.0
+Source hostname                    0                 0.0
+Destination hostname               0                 0.0
+Source port                        0                 0.0
+Destination port                   0                 0.0
+Destination service                0                 0.0
+Direction                          0                 0.0
+Connections built                  0                 0.0
+Connections torn down              0                 0.0
+Missing values imputed using simple strategies.
+Number of Rows (after removing duplicates): 10358710
 Columns: Date/time, Syslog priority, Operation, Message code, Protocol, Source IP, Destination IP, Source hostname, Destination hostname, Source port, Destination port, Destination service, Direction, Connections built, Connections torn down
 Data Types: Date/time: string, Syslog priority: string, Operation: string, Message code: string, Protocol: string, Source IP: string, Destination IP: string, Source hostname: string, Destination hostname: string, Source port: string, Destination port: string, Destination service: string, Direction: string, Connections built: string, Connections torn down: string
+Cleaned dataset saved as: cleaned_Firewall-04072012.csv
 --------------------------------------------------
 Dataset: IDS-0406.csv
 Path: ..\data\MC2-CSVFirewallandIDSlogs\IDS-0406.csv
-Number of Rows: 32643
-Number of Columns: 11
-Columns: time,  sourceIP,  sourcePort,  destIP,  destPort,  classification,  priority,  label,  packet info,  packet info cont'd,  xref
-Data Types: time: string,  sourceIP: string,  sourcePort: string,  destIP: string,  destPort: string,  classification: string,  priority: string,  label: string,  packet info: string,  packet info cont'd: string,  xref: string
+Number of Rows (after handling missing values): 32643
+Missing Values Summary:
+                    Missing Count  Missing Percentage
+time                            0            0.000000
+sourceIP                        0            0.000000
+sourcePort                      0            0.000000
+destIP                          0            0.000000
+destPort                        0            0.000000
+classification                  0            0.000000
+priority                        0            0.000000
+label                           0            0.000000
+packet info                   604            1.850320
+packet info cont'd            604            1.850320
+xref                         9893           30.306651
+Missing values imputed using simple strategies.
+Number of Rows (after removing duplicates): 32491
+Columns: Date/time, Source IP, Source Port, Destination IP, Destination Port, classification, priority, label, packet info, packet info cont'd, xref
+Data Types: Date/time: string, Source IP: string, Source Port: string, Destination IP: string, Destination Port: string, classification: string, priority: string, label: string, packet info: string, packet info cont'd: string, xref: string
+Cleaned dataset saved as: cleaned_IDS-0406.csv
 --------------------------------------------------
 Dataset: IDS-0407.csv
 Path: ..\data\MC2-CSVFirewallandIDSlogs\IDS-0407.csv
-Number of Rows: 18430
-Number of Columns: 11
-Columns: time,  sourceIP,  sourcePort,  destIP,  destPort,  classification,  priority, label, packet info, packet info cont'd,  xref
-Data Types: time: string,  sourceIP: string,  sourcePort: string,  destIP: string,  destPort: string,  classification: string,  priority: string, label: string, packet info: string, packet info cont'd: string,  xref: string
+Number of Rows (after handling missing values): 18430
+Missing Values Summary:
+                    Missing Count  Missing Percentage
+time                            0            0.000000
+sourceIP                        0            0.000000
+sourcePort                      0            0.000000
+destIP                          0            0.000000
+destPort                        0            0.000000
+classification                  0            0.000000
+priority                        0            0.000000
+label                           0            0.000000
+packet info                   374            2.029300
+packet info cont'd            374            2.029300
+xref                         6633           35.990233
+Missing values imputed using simple strategies.
+Number of Rows (after removing duplicates): 18243
+Columns: Date/time, Source IP, Source Port, Destination IP, Destination Port, classification, priority, label, packet info, packet info cont'd, xref
+Data Types: Date/time: string, Source IP: string, Source Port: string, Destination IP: string, Destination Port: string, classification: string, priority: string, label: string, packet info: string, packet info cont'd: string, xref: string
+Cleaned dataset saved as: cleaned_IDS-0407.csv
 --------------------------------------------------
+Extra Spaces Inspection Summary
+==================================================
+
+Dataset: ..\data\MC2-CSVFirewallandIDSlogs\cleaned_Firewall-04062012.csv
+No extra spaces detected in string columns.
+--------------------------------------------------
+Dataset: ..\data\MC2-CSVFirewallandIDSlogs\cleaned_Firewall-04072012.csv
+No extra spaces detected in string columns.
+--------------------------------------------------
+Dataset: ..\data\MC2-CSVFirewallandIDSlogs\cleaned_IDS-0406.csv
+No extra spaces detected in string columns.
+--------------------------------------------------
+Dataset: ..\data\MC2-CSVFirewallandIDSlogs\cleaned_IDS-0407.csv
+No extra spaces detected in string columns.
+--------------------------------------------------
+Extra Spaces Handling Summary
+==================================================
+
+Extra spaces removed from '..\data\MC2-CSVFirewallandIDSlogs\cleaned_Firewall-04062012.csv'.
+Extra spaces removed from '..\data\MC2-CSVFirewallandIDSlogs\cleaned_Firewall-04072012.csv'.
+Extra spaces removed from '..\data\MC2-CSVFirewallandIDSlogs\cleaned_IDS-0406.csv'.
+Extra spaces removed from '..\data\MC2-CSVFirewallandIDSlogs\cleaned_IDS-0407.csv'.
