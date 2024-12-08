@@ -1,26 +1,54 @@
-import utils
 import json
-
+import pandas as pd
+from data_handler import DataHandler
+import ipaddress
 class Heatmap:
 
-    def get_heatmap_data():
-        
-        df = utils.load_csv("/home/df/Documenti/Universita/HPDA/firewall-ids-log-analysis/data/Firewall-04062012.csv")
-        heatmap_data = df.groupby('Source IP')['Destination IP'].value_counts().unstack(fill_value=0)
+    def handle_subnets(self, df: pd.DataFrame, xAttribute: str, yAttribute: str, subnet_bits: int):
 
-        df['Source Subnet'] = df['Source IP'].apply(lambda x: '.'.join(x.split('.')[:3]) + '.0/24')
-        df['Destination Subnet'] = df['Destination IP'].apply(lambda x: '.'.join(x.split('.')[:3]) + '.0/24')
-        heatmap_data = df.groupby('Source Subnet')['Destination Subnet'].value_counts().unstack(fill_value=0)
+        # TO HANDLE!!
+        df = df[(df[xAttribute] != "(empty)") & (df[yAttribute] != "(empty)")]
 
-        melted_data = []
-        for i in range(len(heatmap_data)):
-            for j in range(len(heatmap_data.columns)):
-                melted_data.append({
-                    'xAttribute': heatmap_data.index[i],
-                    'yAttribute': heatmap_data.columns[j],
-                    'frequency': int(heatmap_data.iat[i, j])
-                })
+        xAttributeModified = xAttribute
+        yAttributeModified = yAttribute
+        if xAttribute in ['Source IP', 'Destination IP']:
+            #df[f'{xAttribute} Subnet'] = df[xAttribute].apply(lambda x: '.'.join(x.split('.')[:3]) + '.0/' + str(subnet_bits))
+            df[f'{xAttribute} Subnet'] = df[xAttribute].apply(lambda x: str(ipaddress.ip_network(f"{x}/{subnet_bits}", strict=False)))
+            xAttributeModified = f'{xAttribute} Subnet'
+        if yAttribute in ['Source IP', 'Destination IP']:
+            df[f'{yAttribute} Subnet'] = df[yAttribute].apply(lambda x: str(ipaddress.ip_network(f"{x}/{subnet_bits}", strict=False)))
+            yAttributeModified = f'{yAttribute} Subnet'
 
-        #print(melted_data) 
+        return df, xAttributeModified, yAttributeModified
 
+
+    def get_heatmap_data(self, df: pd.DataFrame, xAttribute: str, yAttribute: str, subnet_bits=None):
+
+        assert(df is not None)
+
+        print("Lenght of dataframe: ", len(df)) 
+        print("Preparing heatmap data...")
+
+        xAttributeModified = xAttribute
+        yAttributeModified = yAttribute 
+
+        # If the rwequested attributes are IP addresses, we need to group them by subnet
+        if(xAttribute == 'Source IP' or xAttribute == 'Destination IP' or yAttribute == 'Source IP' or yAttribute == 'Destination IP'):
+            assert subnet_bits is not None
+            df, xAttributeModified, yAttributeModified = self.handle_subnets(df, xAttribute, yAttribute, subnet_bits)
+
+        heatmap_data = df.groupby(xAttributeModified)[yAttributeModified].value_counts().unstack(fill_value=0)
+
+        melted_data = [
+            {
+            'xAttribute': x,
+            'yAttribute': y,
+            'frequency': int(heatmap_data.at[x, y])
+            }
+            for x in heatmap_data.index
+            for y in heatmap_data.columns
+        ]
+
+        print("Length of heatmap data: ", len(melted_data)) 
+        print("Heatmap data prepared.")
         return json.dumps(melted_data)

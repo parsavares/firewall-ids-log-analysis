@@ -1,10 +1,8 @@
 import * as d3 from 'd3';
-import mock_data from './heatmap_data.csv';
-import generateMockData from './generate_data';
 
 
 export default class HeatmapD3 {
-    margin = { top: 100, right: 50, bottom: 100, left: 50 };
+    margin = { top: 100, right: 100, bottom: 100, left: 100 };
     size;
     height;
     width;
@@ -44,7 +42,9 @@ export default class HeatmapD3 {
             .transition().duration(this.transitionDuration)
             .call(bottomAxis)            
             .selectAll("text")  
-            .attr("transform", "rotate(-65)");
+            .attr("transform", "rotate(-90)")
+            //.attr("dy", "-0em")
+            .attr("dx", "-5em")
         
         this.heatmapSvg.select(".yAxisG")
             .transition().duration(this.transitionDuration)
