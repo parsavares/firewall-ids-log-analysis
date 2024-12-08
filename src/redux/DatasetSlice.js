@@ -19,13 +19,21 @@ export const fetchFileData = createAsyncThunk('seoulBikeData/fetchData', async (
 
 const prepareInitialState = (data) => {
 
-    return {
-    }
+
+  return {
+    xAttribute: "FirstValue",
+    yAttribute: "SecondValue",
+    data: [] 
+  }
 }
 
 export const stateSlice = createSlice({
   name: 'state',
-  initialState: {},
+  initialState: {
+    xAttribute: "FirstValue",
+    yAttribute: "SecondValue",
+    data: [] 
+  },
   reducers: {},
   extraReducers: builder => {
     builder.addCase(fetchFileData.fulfilled, (state, action) => {

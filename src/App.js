@@ -16,9 +16,8 @@ import ParsaPage from './pages/ParsaPage';
 
 function App() {
   return (
-    <div className="App">
+    <div className="App h-100">
       <Router>
-        <div>
         <nav>
           <ul>
             <li style={{ display: 'inline', marginRight: '10px' }}>
@@ -47,7 +46,6 @@ function App() {
           <Route path="/" element={<DashboardPage/>}/>
         </Routes>
 
-        </div>
       </Router>
     </div>
   );
