@@ -31,11 +31,21 @@ export default function HeatmapContainer(){
         }
     }, []);
 
+    async function fetchData(){
+        const response = await fetch('http://localhost:5000/getHeatmap');
+        const data = await response.json();
+
+        return data;
+    }
+
     useEffect(()=>{
         const heatmapD3 = heatmapD3Ref.current;
 
-        console.log(state)
-        heatmapD3.render(state.data, state.xAttribute, state.yAttribute);
+
+        fetchData().then(data => {
+            const keys = Object.keys(data[0]);
+            heatmapD3.render(data, keys[0], keys[1]);
+        });
 
     }, [state, dispatch]);
 

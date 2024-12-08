@@ -23,8 +23,8 @@ export default class HeatmapD3 {
     updateAxis = function(visData,xAttribute,yAttribute){
 
     
-        var myGroups = Array.from(new Set(visData.map(d => d.sourceIp)));
-        var myVars = Array.from(new Set(visData.map(d => d.destinationIp)));
+        var myGroups = Array.from(new Set(visData.map(d => d.xAttribute)));
+        var myVars = Array.from(new Set(visData.map(d => d.yAttribute)));
 
 
         this.xScale = d3.scaleBand()
@@ -80,39 +80,38 @@ export default class HeatmapD3 {
 
    render = function(data, xAttribute, yAttribute){ 
 
-        //d3.csv(mock_data).then((fetched_data) => {
 
-            var fetched_data = generateMockData();
-            this.xAttribute = xAttribute;
-            this.yAttribute = yAttribute;
-            this.visData = fetched_data;
-            console.log(fetched_data);
+        console.log(data);  
+        console.log(xAttribute);
+        console.log(yAttribute);
 
-            this.updateAxis(fetched_data, xAttribute, yAttribute);
+        this.visData = data;
+        this.xAttribute = xAttribute;
+        this.yAttribute = yAttribute;
 
-            var myColor = d3.scaleSequential()
-            .interpolator(d3.interpolateInferno)
-            .domain([1,100])
+        this.updateAxis(data, xAttribute, yAttribute);
 
-            this.heatmapSvg.selectAll(".squareG")
-            .data(fetched_data, function(d) {return d.sourceIp+':'+d.destinationIp;})
-            .enter()
-            .append("rect")
-              .attr("x", (d) => { return this.xScale(d.sourceIp) })
-              .attr("y", (d) => { return this.yScale(d.destinationIp) })
-              .attr("rx", 4)
-              .attr("ry", 4)
-              .attr("width", this.xScale.bandwidth() )
-              .attr("height", this.yScale.bandwidth() )
-              .style("fill", function(d) { return myColor(d.frequency)} )
-              .style("stroke-width", 4)
-              .style("stroke", "none")
-              .style("opacity", 0.8)
-        
-        //})
+        var maxFrequency = d3.max(data, d => d.frequency);
+        var myColor = d3.scaleSequential()
+        .interpolator(d3.interpolateViridis)
+        .domain([1, maxFrequency])
 
-        
-   }
+        this.heatmapSvg.selectAll(".squareG")
+        .data(data, function(d) {return d.xAttribute+':'+d.yAttribute;})
+        .enter()
+        .append("rect")
+            .attr("x", (d) => { return this.xScale(d.xAttribute) })
+            .attr("y", (d) => { return this.yScale(d.yAttribute) })
+            .attr("rx", 4)
+            .attr("ry", 4)
+            .attr("width", this.xScale.bandwidth() )
+            .attr("height", this.yScale.bandwidth() )
+            .style("fill", function(d) { return myColor(d.frequency)} )
+            .style("stroke-width", 4)
+            .style("stroke", "none")
+            .style("opacity", 0.8)  
+
+    }
 
     clear = function(){
         d3.select(this.el).selectAll("*").remove();
