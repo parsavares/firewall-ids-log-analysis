@@ -1,15 +1,15 @@
 import {useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 
-import HeatmapD3 from './HeatmapD3';
+import StackedbarchartD3 from './StackedBarchartD3';
 
-export default function HeatmapContainer(){
+export default function StackedbarchartContainer(){
 
     const state = useSelector(state => state.state);
     const dispatch = useDispatch();
 
     const divContainerRef = useRef(null);
-    const heatmapD3Ref = useRef(null);
+    const StackedbarchartD3Ref = useRef(null);
 
     const getCharSize = function(){
         let width;
@@ -22,16 +22,16 @@ export default function HeatmapContainer(){
     }
 
     useEffect(()=>{
-        const heatmapD3 = new HeatmapD3(divContainerRef.current);
-        heatmapD3.create({size:getCharSize()});
-        heatmapD3Ref.current = heatmapD3;
+        const stackedbarchartD3Instance = new StackedbarchartD3(divContainerRef.current);
+        stackedbarchartD3Instance.create({size:getCharSize()});
+        StackedbarchartD3Ref.current = stackedbarchartD3Instance;
         return () => {
-            const heatmapD3 = heatmapD3Ref.current;
-            heatmapD3.clear();
+            const stackedbarchartD3Instance = StackedbarchartD3Ref.current;
+            stackedbarchartD3Instance.clear();
         }
     }, []);
 
-    async function fetchData(api_endpoint, xAttribute, yAttribute, start_date_str, end_date_str, subnet_bits){
+    async function fetchData(api_endpoint, xAttribute, yAttribute, start_date_str, end_date_str){
 
         const baseUrl = `http://localhost:5000/${api_endpoint}`;
         const params = 
@@ -39,8 +39,7 @@ export default function HeatmapContainer(){
                 xAttribute: xAttribute,
                 yAttribute: yAttribute,
                 start_datetime: start_date_str,
-                end_datetime: end_date_str,
-                subnet_bits: subnet_bits
+                end_datetime: end_date_str
             }
         
         const queryString = new URLSearchParams(params).toString();
@@ -52,25 +51,26 @@ export default function HeatmapContainer(){
     }
 
     useEffect(()=>{
-        const heatmapD3 = heatmapD3Ref.current;
+        const StackedbarchartD3 = StackedbarchartD3Ref.current;
 
-        const api_endpoint = "getHeatmap"
-        const xAttribute = "Source IP";
-        const yAttribute = "Destination IP";
+        const api_endpoint = "getStackedBarchart";
+        const xAttribute = "Date/time";
+        const yAttribute = "Syslog priority";
 
         const start_date_str = "2011/04/06 17:40:00";
         const end_date_str = "2020/04/06 20:40:00";
 
-        fetchData(api_endpoint, xAttribute, yAttribute, start_date_str, end_date_str, 24).then(data => {
+        fetchData(api_endpoint, xAttribute, yAttribute, start_date_str, end_date_str).then(data => {
             const keys = Object.keys(data[0]);
-            heatmapD3.render(data, keys[0], keys[1]);
+            StackedbarchartD3.render(data, keys[0], keys[1]);
+            
         });
 
     }, [state, dispatch]);
 
     return (
-        <div ref={divContainerRef} className="heatmap-container h-100">
-            <h1>Heatmap</h1>
+        <div ref={divContainerRef} className="Stackedbarchart-container h-100">
+            <h1>Stackedbarchart</h1>
 
         </div>
     )
