@@ -3,8 +3,6 @@ import dask.dataframe as dd
 import pandas as pd
 import numpy as np
 import re
-from ipwhois import IPWhois
-from ipaddress import ip_address, ip_network
 
 # --------------------------- Configuration ---------------------------
 
@@ -156,9 +154,9 @@ def inspect_extra_spaces(df):
 
 def impute_missing_values(df):
     """
-    Imputes missing values in the dataset using simple strategies:
-    - For numerical columns, fill with median.
-    - For categorical columns, fill with mode.
+    Imputes missing values in the dataset using the behavior of Source IP / Destination IP for previous entries.
+    For numerical columns, fill with previous values from the same Source IP or Destination IP.
+    For categorical columns, fill with most frequent value from the same Source IP or Destination IP.
     
     Parameters:
     - df: Dask DataFrame
@@ -170,18 +168,21 @@ def impute_missing_values(df):
     numerical_cols = df.select_dtypes(include=['float64', 'int64']).columns
     categorical_cols = df.select_dtypes(include=['object']).columns
 
-    # Impute numerical columns with median
+    # Impute numerical columns using previous behavior (Source IP or Destination IP)
     for col in numerical_cols:
-        median = df[col].median().compute()
-        df[col] = df[col].fillna(median)
+        # Group by Source IP and forward fill missing values
+        df[col] = df.groupby('Source IP')[col].fillna(method='ffill')
+        df[col] = df.groupby('Destination IP')[col].fillna(method='ffill')
     
-    # Impute categorical columns with mode
+    # Impute categorical columns using most frequent value (Source IP or Destination IP)
     for col in categorical_cols:
-        mode = df[col].mode().compute()
-        if not mode.empty:
-            df[col] = df[col].fillna(mode[0])
-        else:
-            df[col] = df[col].fillna('Unknown')
+        # Forward-fill missing categorical values based on Source IP or Destination IP
+        df[col] = df.groupby('Source IP')[col].fillna(method='ffill')
+        df[col] = df.groupby('Destination IP')[col].fillna(method='ffill')
+
+        # If still missing, fill with the mode value within each group
+        mode_value = df.groupby('Source IP')[col].agg(lambda x: x.mode()[0] if not x.mode().empty else 'Unknown')
+        df[col] = df[col].fillna(mode_value)
     
     return df
 
@@ -203,9 +204,16 @@ def analyze_and_clean_dataset(name, path, strategy='inspect', impute=False):
     summary += f"Path: {path}\n"
 
     try:
-        # Read the dataset using Dask
-        # Removed 'error_bad_lines' and 'warn_bad_lines' as they are unsupported in Dask
-        df = dd.read_csv(path, assume_missing=True, dtype=str, on_bad_lines='skip')  # Using 'on_bad_lines' if supported
+        # Read the dataset using Dask with na_values
+        na_values_list = ["(empty)", "N/A", "NULL", "?", "Unknown"]  # Add more representations as needed
+        df = dd.read_csv(
+            path,
+            assume_missing=True,
+            dtype=str,
+            na_values=na_values_list,
+            keep_default_na=True,  # Retain default NaN values
+            on_bad_lines='skip'    # Handle bad lines gracefully
+        )
         print(f"Loaded dataset: {name}")
 
         # Trim whitespace from column names
@@ -222,11 +230,13 @@ def analyze_and_clean_dataset(name, path, strategy='inspect', impute=False):
         # Optionally perform imputation
         if impute:
             df = impute_missing_values(df)
-            summary += "Missing values imputed using simple strategies.\n"
+            summary += "Missing values imputed based on previous behavior of Source IP / Destination IP.\n"
 
-        # Remove duplicate rows
-        df = remove_duplicates(df)
-        summary += f"Number of Rows (after removing duplicates): {df.shape[0].compute()}\n"
+        # -----------------------------------------
+        # Removed duplication removal to preserve counts
+        # df = remove_duplicates(df)
+        # summary += f"Number of Rows (after removing duplicates): {df.shape[0].compute()}\n"
+        # -----------------------------------------
 
         # Standardize column names
         df = standardize_column_names(name, df)
@@ -253,246 +263,107 @@ def analyze_and_clean_dataset(name, path, strategy='inspect', impute=False):
     summary += "-" * 50 + "\n"
     return summary, cleaned_path
 
-#this function classify the ip
-def classify_ip(ip):
-    ip_obj = ip_address(ip)
-    
-    # Check if the IP is in the specific '172.23.X.X' range (private network of the bank)
-    if ip_obj in ip_network('172.23.0.0/16'):
-        if ip == '172.23.0.2':
-            return "int_log_server"
-        if ip == '172.23.0.10':
-            return "int_dns_server"
-        if ip_obj in ip_network('172.23.214.0/24'):
-            return "int_financial_servers"
-        if ip_obj in ip_network('172.23.229.0/24'):
-            return "int_financial_servers"
-        
-    if ip_obj in ip_network('10.0.0.0/8'): #external websites
-        return "ext_website"
-    
-    return "ext_dns"
-
 # --------------------------- Main Execution ---------------------------
 
 def main():
-    
-    cleaned = 1
-    if not os.path.exists('../data/MC2-CSVFirewallandIDSlogs/cleaned_Firewall-04062012.csv'):
-        cleaned = 0
-    if not os.path.exists('../data/MC2-CSVFirewallandIDSlogs/cleaned_Firewall-04072012.csv'):
-        cleaned = 0
-    if not os.path.exists('../data/MC2-CSVFirewallandIDSlogs/cleaned_IDS-0406.csv'):
-        cleaned = 0
-    if not os.path.exists('../data/MC2-CSVFirewallandIDSlogs/cleaned_IDS-0407.csv'):
-        cleaned = 0
-    
-    
-    #if data are not cleaned
-    if cleaned == 0:
-        """
-        Main function to analyze, clean, and prepare datasets for further analysis.
-        """
-        # Initialize an empty string to hold all summaries
-        all_summaries = "Dataset Analysis, Cleaning, and Inspection Summary\n"
-        all_summaries += "=" * 50 + "\n\n"
+    """
+    Main function to analyze, clean, and prepare datasets for further analysis.
+    """
+    # Initialize an empty string to hold all summaries
+    all_summaries = "Dataset Analysis, Cleaning, and Inspection Summary\n"
+    all_summaries += "=" * 50 + "\n\n"
 
-        # Dictionary to hold cleaned datasets for integration
-        cleaned_datasets = {}
+    # Dictionary to hold cleaned datasets for integration
+    cleaned_datasets = {}
 
-        # Iterate over each dataset and analyze & clean
-        for name, path in DATASETS.items():
-            # Check if the file exists
-            if not os.path.exists(path):
-                all_summaries += f"Dataset: {name}\nPath: {path}\nError: File does not exist.\n"
-                all_summaries += "-" * 50 + "\n"
-                continue
+    # Iterate over each dataset and analyze & clean
+    for name, path in DATASETS.items():
+        # Check if the file exists
+        if not os.path.exists(path):
+            all_summaries += f"Dataset: {name}\nPath: {path}\nError: File does not exist.\n"
+            all_summaries += "-" * 50 + "\n"
+            continue
 
-            # Analyze and clean the dataset with imputation
-            summary, cleaned_path = analyze_and_clean_dataset(name, path, strategy='inspect', impute=True)  # Set impute=True to perform imputation
-            all_summaries += summary
+        # Analyze and clean the dataset with imputation
+        summary, cleaned_path = analyze_and_clean_dataset(name, path, strategy='inspect', impute=True)  # Set impute=True to perform imputation
+        all_summaries += summary
 
-            # Store the path of the cleaned dataset for integration
-            if cleaned_path:
-                cleaned_datasets[name] = cleaned_path
+        # Store the path of the cleaned dataset for integration
+        if cleaned_path:
+            cleaned_datasets[name] = cleaned_path
 
-        # Save all summaries to the output file
-        output_path = os.path.join(os.path.dirname(__file__), OUTPUT_FILE)
+    # Save all summaries to the output file
+    output_path = os.path.join(os.path.dirname(__file__), OUTPUT_FILE)
+    try:
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(all_summaries)
+        print(f"Dataset analysis and cleaning complete. Summary saved to '{OUTPUT_FILE}'.")
+    except Exception as e:
+        print(f"Failed to write summary to '{OUTPUT_FILE}': {e}")
+
+    # ----------------------- Inspect Extra Spaces -----------------------
+    # Identify and summarize extra spaces in cleaned datasets
+
+    extra_space_summary_total = "Extra Spaces Inspection Summary\n"
+    extra_space_summary_total += "=" * 50 + "\n\n"
+
+    for name, cleaned_path in cleaned_datasets.items():
         try:
-            with open(output_path, 'w', encoding='utf-8') as f:
-                f.write(all_summaries)
-            print(f"Dataset analysis and cleaning complete. Summary saved to '{OUTPUT_FILE}'.")
-        except Exception as e:
-            print(f"Failed to write summary to '{OUTPUT_FILE}': {e}")
-
-        # ----------------------- Inspect Extra Spaces -----------------------
-        # Identify and summarize extra spaces in cleaned datasets
-
-        extra_space_summary_total = "Extra Spaces Inspection Summary\n"
-        extra_space_summary_total += "=" * 50 + "\n\n"
-
-        for name, cleaned_path in cleaned_datasets.items():
-            try:
-                df = dd.read_csv(cleaned_path, assume_missing=True, dtype=str, on_bad_lines='skip')
-                extra_spaces = inspect_extra_spaces(df)
-                if not extra_spaces.empty:
-                    extra_space_summary_total += f"Dataset: {cleaned_path}\n"
-                    extra_space_summary_total += f"Columns with Extra Spaces:\n{extra_spaces}\n"
-                    extra_space_summary_total += "-" * 50 + "\n"
-                else:
-                    extra_space_summary_total += f"Dataset: {cleaned_path}\nNo extra spaces detected in string columns.\n"
-                    extra_space_summary_total += "-" * 50 + "\n"
-            except Exception as e:
-                extra_space_summary_total += f"Dataset: {cleaned_path}\nError inspecting extra spaces: {e}\n"
+            df = dd.read_csv(cleaned_path, assume_missing=True, dtype=str, on_bad_lines='skip')
+            extra_spaces = inspect_extra_spaces(df)
+            if not extra_spaces.empty:
+                extra_space_summary_total += f"Dataset: {cleaned_path}\n"
+                extra_space_summary_total += f"Columns with Extra Spaces:\n{extra_spaces}\n"
                 extra_space_summary_total += "-" * 50 + "\n"
-
-        # Append extra spaces summary to the output file
-        try:
-            with open(output_path, 'a', encoding='utf-8') as f:
-                f.write(extra_space_summary_total)
-            print("Extra spaces inspection complete. Summary appended to the summary file.")
+            else:
+                extra_space_summary_total += f"Dataset: {cleaned_path}\nNo extra spaces detected in string columns.\n"
+                extra_space_summary_total += "-" * 50 + "\n"
         except Exception as e:
-            print(f"Failed to append extra spaces summary to '{OUTPUT_FILE}': {e}")
+            extra_space_summary_total += f"Dataset: {cleaned_path}\nError inspecting extra spaces: {e}\n"
+            extra_space_summary_total += "-" * 50 + "\n"
 
-        # ----------------------- Handling Extra Spaces -----------------------
-        # After inspection, decide how to handle extra spaces
-        # For demonstration, we'll remove extra spaces from string columns
+    # Append extra spaces summary to the output file
+    try:
+        with open(output_path, 'a', encoding='utf-8') as f:
+            f.write(extra_space_summary_total)
+        print("Extra spaces inspection complete. Summary appended to the summary file.")
+    except Exception as e:
+        print(f"Failed to append extra spaces summary to '{OUTPUT_FILE}': {e}")
 
-        all_summaries_spaces_handled = "Extra Spaces Handling Summary\n"
-        all_summaries_spaces_handled += "=" * 50 + "\n\n"
+    # ----------------------- Handling Extra Spaces -----------------------
+    # After inspection, decide how to handle extra spaces
+    # For demonstration, we'll remove extra spaces from string columns
 
-        for name, cleaned_path in cleaned_datasets.items():
-            try:
-                df = dd.read_csv(cleaned_path, assume_missing=True, dtype=str, on_bad_lines='skip')
-                obj_columns = df.select_dtypes(['object']).columns
-                for col in obj_columns:
-                    # Remove leading and trailing spaces
-                    df[col] = df[col].str.strip()
-                # Save the cleaned dataset again
-                cleaned_path_no_spaces = cleaned_path  # Already trimmed, no need to change path
-                df.to_csv(cleaned_path_no_spaces, single_file=True, index=False)
-                all_summaries_spaces_handled += f"Extra spaces removed from '{cleaned_path}'.\n"
-            except Exception as e:
-                all_summaries_spaces_handled += f"Error handling extra spaces in '{cleaned_path}': {e}\n"
+    all_summaries_spaces_handled = "Extra Spaces Handling Summary\n"
+    all_summaries_spaces_handled += "=" * 50 + "\n\n"
 
-        # Append spaces handling summary to the output file
+    for name, cleaned_path in cleaned_datasets.items():
         try:
-            with open(output_path, 'a', encoding='utf-8') as f:
-                f.write(all_summaries_spaces_handled)
-            print("Extra spaces handling complete. Summary appended to the summary file.")
+            df = dd.read_csv(cleaned_path, assume_missing=True, dtype=str, on_bad_lines='skip')
+            obj_columns = df.select_dtypes(['object']).columns
+            for col in obj_columns:
+                # Remove leading and trailing spaces
+                df[col] = df[col].str.strip()
+            # Save the cleaned dataset again
+            cleaned_path_no_spaces = cleaned_path  # Already trimmed, no need to change path
+            df.to_csv(cleaned_path_no_spaces, single_file=True, index=False)
+            all_summaries_spaces_handled += f"Extra spaces removed from '{cleaned_path}'.\n"
         except Exception as e:
-            print(f"Failed to append extra spaces handling summary to '{OUTPUT_FILE}': {e}")
+            all_summaries_spaces_handled += f"Error handling extra spaces in '{cleaned_path}': {e}\n"
 
-        # ----------------------- Future Steps -----------------------
-        # After trimming extra spaces, you can proceed to handle missing values
-        # For example, you can choose to fill missing values based on previous behaviors
+    # Append spaces handling summary to the output file
+    try:
+        with open(output_path, 'a', encoding='utf-8') as f:
+            f.write(all_summaries_spaces_handled)
+        print("Extra spaces handling complete. Summary appended to the summary file.")
+    except Exception as e:
+        print(f"Failed to append extra spaces handling summary to '{OUTPUT_FILE}': {e}")
 
-        # This part can be implemented as needed based on the inspection results
-        
-    #if data are cleaned we proceed
-    else:
-        # Load the data (Firewall)
-        
-        if not os.path.exists('../data/MC2-CSVFirewallandIDSlogs/filtered_Firewall.csv'):
-            Firewall_data1 = pd.read_csv('../data/MC2-CSVFirewallandIDSlogs/cleaned_Firewall-04062012.csv')
-            Firewall_data2 = pd.read_csv('../data/MC2-CSVFirewallandIDSlogs/cleaned_Firewall-04072012.csv')
-            Firewall_filtered_data = pd.concat([Firewall_data1, Firewall_data2])
-                
-                
-            # count no. of lines 
-            print("(Firewall) Number of lines present in cleaned dataset:-", len(Firewall_filtered_data)) 
-                
-                
-            #we keep only entries of dataframe which are recognized as problmatic
-            Firewall_filtered_data = Firewall_filtered_data[Firewall_filtered_data['Syslog priority'] != 'Info']
-            print("Firewall) Number of lines present without Syslog priority equal to Info:-", len(Firewall_filtered_data))
-            Firewall_filtered_data = Firewall_filtered_data[Firewall_filtered_data['Syslog priority'] != 'Notice']
-            print("Firewall) Number of lines present without Syslog priority equal to Notice:-", len(Firewall_filtered_data)) 
-                
-            #and now remove 'empty' fields
-            Firewall_filtered_data = Firewall_filtered_data[Firewall_filtered_data['Operation'] != '(empty)']
-            print("Firewall) Number of lines present without Operation equal to 'empty':-", len(Firewall_filtered_data)) 
-            
-            Firewall_filtered_data = Firewall_filtered_data[Firewall_filtered_data['Protocol'] != '(empty)']
-            print("Firewall) Number of lines present without Protocol equal to 'empty':-", len(Firewall_filtered_data)) 
-            
-            Firewall_filtered_data = Firewall_filtered_data[Firewall_filtered_data['Direction'] != '(empty)']
-            print("Firewall) Number of lines present without Direction equal to 'empty':-", len(Firewall_filtered_data)) 
-                
-                
-                
-            # split the Date/time column into two columns
-            Firewall_filtered_data[['Date', 'Time']] = Firewall_filtered_data['Date/time'].str.split(' ', expand=True)
-                
-                
-            #drop the columnb Date/time
-            Firewall_filtered_data = Firewall_filtered_data.drop('Date/time', axis=1)
-                
-            #change the Date format in the dataset
-            Firewall_filtered_data['Date'] = pd.to_datetime(Firewall_filtered_data['Date'])
+    # ----------------------- Future Steps -----------------------
+    # After trimming extra spaces, you can proceed to handle missing values
+    # For example, you can choose to fill missing values based on previous behaviors
 
-            print(Firewall_filtered_data.head())
-            Firewall_filtered_data.to_csv('../data/MC2-CSVFirewallandIDSlogs/filtered_Firewall.csv')
-        
-            
-        if not os.path.exists('../data/MC2-CSVFirewallandIDSlogs/filtered_IDS.csv'):   
-            #load data (IDS)
-            IDS_data1 = pd.read_csv('../data/MC2-CSVFirewallandIDSlogs/cleaned_IDS-0406.csv')
-            IDS_data2 = pd.read_csv('../data/MC2-CSVFirewallandIDSlogs/cleaned_IDS-0407.csv')
-
-            IDS_filtered_data = pd.concat([IDS_data1, IDS_data2])
-
-            print(IDS_filtered_data.head())
-            
-                
-            # count no. of lines 
-            print("(IDS) Number of lines present in cleaned dataset:-", len(IDS_filtered_data)) 
-        
-            IDS_filtered_data = IDS_filtered_data[IDS_filtered_data['classification'] != ' Generic Protocol Command Decode']
-            print("IDS) Number of lines present without classification equal to 'Generic Protocol Command Decode':-", len(IDS_filtered_data)) 
-
-            # split the Date/time column into two columns
-            IDS_filtered_data[['Date', 'Time']] = IDS_filtered_data['Date/time'].str.split(' ', expand=True)
-                
-                
-            #drop the columnb Date/time
-            IDS_filtered_data = IDS_filtered_data.drop('Date/time', axis=1)
-                
-            #change the Date format in the dataset
-            IDS_filtered_data['Date'] = pd.to_datetime(IDS_filtered_data['Date'])
-            
-            # Append ':00' to each value in the Time column
-            IDS_filtered_data['Time'] = IDS_filtered_data['Time'].apply(lambda x: f"{x}:00")
-
-            print(IDS_filtered_data.head())
-            IDS_filtered_data.to_csv('../data/MC2-CSVFirewallandIDSlogs/filtered_IDS.csv')
-        
-        #now we add two additional colums which specify the category of source and destination IPs
-        
-        #(Firewall)
-        if not os.path.exists('../data/MC2-CSVFirewallandIDSlogs/final_Firewall.csv'): 
-            
-            filtered_Firewall = pd.read_csv('../data/MC2-CSVFirewallandIDSlogs/filtered_Firewall.csv')
-            
-            filtered_Firewall['cat_src'] = filtered_Firewall['Source IP'].apply(classify_ip)
-            filtered_Firewall['cat_dst'] = filtered_Firewall['Destination IP'].apply(classify_ip)
-            print(filtered_Firewall.head())
-            filtered_Firewall.to_csv('../data/MC2-CSVFirewallandIDSlogs/final_Firewall.csv')
-        
-        #(IDS)
-        if not os.path.exists('../data/MC2-CSVFirewallandIDSlogs/final_IDS.csv'): 
-            filtered_IDS = pd.read_csv('../data/MC2-CSVFirewallandIDSlogs/filtered_IDS.csv')
-        
-            filtered_IDS['cat_src'] = filtered_IDS['Source IP'].apply(classify_ip)
-            filtered_IDS['cat_dst'] = filtered_IDS['Destination IP'].apply(classify_ip)
-            print(filtered_IDS.head())
-            filtered_IDS.to_csv('../data/MC2-CSVFirewallandIDSlogs/final_IDS.csv')
-        
-        #print final number of lines
-        FIREWALL = pd.read_csv('../data/MC2-CSVFirewallandIDSlogs/final_Firewall.csv')
-        print("Firewall_final) Number of lines present ", len(FIREWALL)) 
-        IDS = pd.read_csv('../data/MC2-CSVFirewallandIDSlogs/final_IDS.csv')
-        print("IDS_final) Number of lines present ", len(IDS)) 
+    # This part can be implemented as needed based on the inspection results
 
 if __name__ == "__main__":
     main()
