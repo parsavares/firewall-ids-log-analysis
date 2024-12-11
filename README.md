@@ -63,14 +63,14 @@ firewall-ids-log-analysis/
 │           ├── HeatmapContainer.js
 |
 ├── scripts/                    # Python scripts for data analysis
-│   ├──dataset_analysis.py
-│   ├──dataset_summary.txt
+│   ├── dataset_analysis.py
+│   ├── dataset_summary.txt
 |   ├── firewall_stats.py
 │   ├── ids_stats.py
-│   ├──new_analysis.py
+│   ├── new_analysis.py
 │   ├── query.py
-│   ├──refine_data.py
-│   ├──test-post-cleaning.py
+│   ├── refine_data.py
+│   ├── test-post-cleaning.py
 |
 ├── README.md                   # Description and setup instructions
 ├── package-lock.json
