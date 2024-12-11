@@ -67,8 +67,6 @@ firewall-ids-log-analysis/
 │       ├── StackedBarchart
 │           ├── StackedBarchartContainer.js
 │           ├── StackedBarchartD3.js
-
-
 |
 ├── scripts/                    # Python scripts for data analysis
 │   ├── dataset_analysis.py
