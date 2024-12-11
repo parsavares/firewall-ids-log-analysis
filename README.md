@@ -64,6 +64,11 @@ firewall-ids-log-analysis/
 │           ├── HeatmapD3.js
 │           ├── generate_data.js
 │           ├── heatmap_data.csv
+│       ├── StackedBarchart
+│           ├── StackedBarchartContainer.js
+│           ├── StackedBarchartD3.js
+
+
 |
 ├── scripts/                    # Python scripts for data analysis
 │   ├── dataset_analysis.py
