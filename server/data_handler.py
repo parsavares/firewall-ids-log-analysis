@@ -7,15 +7,13 @@ class DataHandler:
 
     def get_dataframe(self, start_datetime_str=None, end_datetime_str=None):
 
-
-
         assert(self.df is not None)
 
-        print(self.df["Date/time"][0])
+        print(self.df["date_time"][0])
         if start_datetime_str and end_datetime_str:
 
             # !! @TODO: This is a temporary fix, we need to handle different date formats
-            date_column = 'Date/time'  # Change this to match the actual column name in your CSV
+            date_column = 'date_time'  # Change this to match the actual column name in your CSV
             mask = (pd.to_datetime(self.df[date_column]) >= pd.to_datetime(start_datetime_str)) & (pd.to_datetime(self.df[date_column]) <= pd.to_datetime(end_datetime_str))
             return self.df.loc[mask]
 

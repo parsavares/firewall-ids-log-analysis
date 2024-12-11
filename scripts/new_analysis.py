@@ -104,11 +104,12 @@ def main():
     #change the Date format in the dataset
     FIREWALL['Date'] = pd.to_datetime(FIREWALL['Date'])
     
-    
-    
     #assign a category to the IPs
     FIREWALL['cat_src'] = FIREWALL['Source IP'].apply(classify_ip)
     FIREWALL['cat_dst'] = FIREWALL['Destination IP'].apply(classify_ip)
+
+    # Clean the 'Destination Service' column
+    FIREWALL['Destination service'] = FIREWALL['Destination service'].apply(lambda x: x.split('_')[-1] if pd.notnull(x) else x)
 
     print("Lines in FIREWALL  ", len(FIREWALL))
     

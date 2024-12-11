@@ -73,6 +73,6 @@ def get_parallel_sets():
 
 if __name__ == "__main__":
     print("Loading data...")
-    data_handler.load_csv("/home/df/Documenti/Universita/HPDA/firewall-ids-log-analysis/data/Firewall-04062012.csv", 100000)
+    data_handler.load_csv("../data/MC2-CSVFirewallandIDSlogs/FIREWALL.csv")
     print("Data loaded.")
     app.run()

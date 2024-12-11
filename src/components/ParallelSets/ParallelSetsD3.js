@@ -88,6 +88,7 @@ export default class ParallelSetsD3 {
         console.log(this.yScales)
 
 
+
         this.parallelSetsSvg
         .selectAll("myPath")
         .data(data)

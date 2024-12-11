@@ -55,8 +55,8 @@ export default function HeatmapContainer(){
         const heatmapD3 = heatmapD3Ref.current;
 
         const api_endpoint = "getHeatmap"
-        const xAttribute = "Source IP";
-        const yAttribute = "Destination IP";
+        const xAttribute = "source_ip";
+        const yAttribute = "destination_ip";
 
         const start_date_str = "2011/04/06 17:40:00";
         const end_date_str = "2020/04/06 20:40:00";
