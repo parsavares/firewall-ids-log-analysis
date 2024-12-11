@@ -1,6 +1,5 @@
 import {useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-
 import StackedbarchartD3 from './StackedBarchartD3';
 
 export default function StackedbarchartContainer(){
