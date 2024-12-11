@@ -7,8 +7,12 @@ from ipaddress import ip_address, ip_network
 
 #this function classify the ip
 def classify_ip(ip):
+    try:
+        ip_obj = ip_address(ip)
+    except ValueError:
+        # If the IP address is invalid, return NaN
+        return "NaN"
     
-    ip_obj = ip_address(ip)
     
     # Check if the IP is in the specific '172.23.X.X' range (private network of the bank)
     if ip_obj in ip_network('172.23.0.0/16'):
@@ -86,9 +90,9 @@ def main():
     
     
     #and now remove 'empty' fields
-    FIREWALL = FIREWALL[FIREWALL['Operation'] != '(empty)']
-    FIREWALL = FIREWALL[FIREWALL['Protocol'] != '(empty)']
-    FIREWALL = FIREWALL[FIREWALL['Direction'] != '(empty)']
+    #FIREWALL = FIREWALL[FIREWALL['Operation'] != '(empty)']
+    #FIREWALL = FIREWALL[FIREWALL['Protocol'] != '(empty)']
+    #FIREWALL = FIREWALL[FIREWALL['Direction'] != '(empty)']
 
     
     #change the name of column Date/time and Date_time
@@ -107,6 +111,13 @@ def main():
     FIREWALL['cat_dst'] = FIREWALL['Destination IP'].apply(classify_ip)
     
     print("Lines in FIREWALL  ", len(FIREWALL))
+    
+    print("LINES Syslog priority 'Info' and with Operation 'Built':  ", ((FIREWALL['Syslog priority'] == 'Info') & (FIREWALL['Operation'] == 'Built')).sum())
+    print("LINES Syslog priority 'Info' and with Operation 'Teardown':  ", ((FIREWALL['Syslog priority'] == 'Info') & (FIREWALL['Operation'] == 'Teardown')).sum())
+    print("LINES Syslog priority 'Info' and with Operation '(empty)':  ", ((FIREWALL['Syslog priority'] == 'Info') & (FIREWALL['Operation'] == '(empty)')).sum())
+    print("LINES Syslog priority 'Info' and with Operation 'Command executed':  ", ((FIREWALL['Syslog priority'] == 'Info') & (FIREWALL['Operation'] == 'Command executed')).sum())
+    print("LINES Syslog priority 'Info' and with Operation 'Deny':  ", ((FIREWALL['Syslog priority'] == 'Info') & (FIREWALL['Operation'] == 'Deny')).sum())
+    print("LINES Syslog priority 'Info' and with Operation 'Deny by ACL':  ", ((FIREWALL['Syslog priority'] == 'Info') & (FIREWALL['Operation'] == 'Deny by ACL')).sum())
     
     FIREWALL.to_csv('../data/MC2-CSVFirewallandIDSlogs/FIREWALL.csv')
     
