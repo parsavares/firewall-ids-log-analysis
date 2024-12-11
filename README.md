@@ -72,6 +72,17 @@ firewall-ids-log-analysis/
 │   ├── refine_data.py
 │   ├── test-post-cleaning.py
 |
+├── server/                    
+│   ├── __pycache__
+│       ├── data_handler.cpython-39.pyc
+│       ├── heatmap.cpython-39.pyc
+│       ├── stacked_barchart.cpython-39.pyc
+│       ├── utils.cpython-39.pyc
+│   ├── data_handler.py
+│   ├── heatmap.py
+│   ├── server.py
+│   ├── stacked_barchart.py
+|
 ├── README.md                   # Description and setup instructions
 ├── package-lock.json
 ├── package.json
