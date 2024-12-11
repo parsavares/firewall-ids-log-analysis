@@ -54,8 +54,8 @@ export default function StackedbarchartContainer(){
         const StackedbarchartD3 = StackedbarchartD3Ref.current;
 
         const api_endpoint = "getStackedBarchart";
-        const xAttribute = "Date/time";
-        const yAttribute = "Syslog priority";
+        const xAttribute = "date_time";
+        const yAttribute = "syslog_priority";
 
         const start_date_str = "2011/04/06 17:40:00";
         const end_date_str = "2020/04/06 20:40:00";
