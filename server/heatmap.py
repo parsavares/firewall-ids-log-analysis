@@ -2,25 +2,9 @@ import json
 import pandas as pd
 from data_handler import DataHandler
 import ipaddress
+from utils import handle_subnets
+
 class Heatmap:
-
-    def handle_subnets(self, df: pd.DataFrame, xAttribute: str, yAttribute: str, subnet_bits: int):
-
-        # TO HANDLE!!
-        df = df[(df[xAttribute] != "(empty)") & (df[yAttribute] != "(empty)")]
-
-        xAttributeModified = xAttribute
-        yAttributeModified = yAttribute
-        if xAttribute in ['Source IP', 'Destination IP']:
-            #df[f'{xAttribute} Subnet'] = df[xAttribute].apply(lambda x: '.'.join(x.split('.')[:3]) + '.0/' + str(subnet_bits))
-            df[f'{xAttribute} Subnet'] = df[xAttribute].apply(lambda x: str(ipaddress.ip_network(f"{x}/{subnet_bits}", strict=False)))
-            xAttributeModified = f'{xAttribute} Subnet'
-        if yAttribute in ['Source IP', 'Destination IP']:
-            df[f'{yAttribute} Subnet'] = df[yAttribute].apply(lambda x: str(ipaddress.ip_network(f"{x}/{subnet_bits}", strict=False)))
-            yAttributeModified = f'{yAttribute} Subnet'
-
-        return df, xAttributeModified, yAttributeModified
-
 
     def get_heatmap_data(self, df: pd.DataFrame, xAttribute: str, yAttribute: str, subnet_bits=None):
 

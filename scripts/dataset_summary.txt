@@ -4,7 +4,7 @@ Dataset Analysis, Cleaning, and Inspection Summary
 Dataset: Firewall-04062012.csv
 Path: ..\data\MC2-CSVFirewallandIDSlogs\Firewall-04062012.csv
 Number of Rows (after handling missing values): 13208233
-Missing Values Summary:
+Missing Values Summary (Before Imputation):
                        Missing Count  Missing Percentage
 Date/time                          0            0.000000
 Syslog priority                    0            0.000000
@@ -22,6 +22,25 @@ Direction                     748064            5.663619
 Connections built                  0            0.000000
 Connections torn down              0            0.000000
 Missing values imputed based on previous behavior of Source IP / Destination IP.
+Comparison of Missing Values Before and After Imputation:
+                       Missing Count (Before)  Missing % (Before)  ...  Count Difference  % Difference
+Connections built                           0            0.000000  ...                 0           0.0
+Connections torn down                       0            0.000000  ...                 0           0.0
+Date/time                                   0            0.000000  ...                 0           0.0
+Destination IP                           1526            0.011553  ...                 0           0.0
+Destination hostname                 13208233          100.000000  ...                 0           0.0
+Destination port                         1526            0.011553  ...                 0           0.0
+Destination service                      1526            0.011553  ...                 0           0.0
+Direction                              748064            5.663619  ...                 0           0.0
+Message code                                0            0.000000  ...                 0           0.0
+Operation                                1525            0.011546  ...                 0           0.0
+Protocol                                 1526            0.011553  ...                 0           0.0
+Source IP                                1526            0.011553  ...                 0           0.0
+Source hostname                      13208233          100.000000  ...                 0           0.0
+Source port                              1526            0.011553  ...                 0           0.0
+Syslog priority                             0            0.000000  ...                 0           0.0
+
+[15 rows x 6 columns]
 Columns: Date/time, Syslog priority, Operation, Message code, Protocol, Source IP, Destination IP, Source hostname, Destination hostname, Source port, Destination port, Destination service, Direction, Connections built, Connections torn down
 Data Types: Date/time: string, Syslog priority: string, Operation: string, Message code: string, Protocol: string, Source IP: string, Destination IP: string, Source hostname: string, Destination hostname: string, Source port: string, Destination port: string, Destination service: string, Direction: string, Connections built: string, Connections torn down: string
 Cleaned dataset saved as: cleaned_Firewall-04062012.csv
@@ -29,7 +48,7 @@ Cleaned dataset saved as: cleaned_Firewall-04062012.csv
 Dataset: Firewall-04072012.csv
 Path: ..\data\MC2-CSVFirewallandIDSlogs\Firewall-04072012.csv
 Number of Rows (after handling missing values): 10503108
-Missing Values Summary:
+Missing Values Summary (Before Imputation):
                        Missing Count  Missing Percentage
 Date/time                          0            0.000000
 Syslog priority                    0            0.000000
@@ -47,6 +66,25 @@ Direction                     795582            7.574729
 Connections built                  0            0.000000
 Connections torn down              0            0.000000
 Missing values imputed based on previous behavior of Source IP / Destination IP.
+Comparison of Missing Values Before and After Imputation:
+                       Missing Count (Before)  Missing % (Before)  ...  Count Difference  % Difference
+Connections built                           0            0.000000  ...                 0           0.0
+Connections torn down                       0            0.000000  ...                 0           0.0
+Date/time                                   0            0.000000  ...                 0           0.0
+Destination IP                           1678            0.015976  ...                 0           0.0
+Destination hostname                 10503108          100.000000  ...                 0           0.0
+Destination port                         1678            0.015976  ...                 0           0.0
+Destination service                      1678            0.015976  ...                 0           0.0
+Direction                              795582            7.574729  ...                 0           0.0
+Message code                                0            0.000000  ...                 0           0.0
+Operation                                1671            0.015910  ...                 0           0.0
+Protocol                                 1678            0.015976  ...                 0           0.0
+Source IP                                1678            0.015976  ...                 0           0.0
+Source hostname                      10503108          100.000000  ...                 0           0.0
+Source port                              1678            0.015976  ...                 0           0.0
+Syslog priority                             0            0.000000  ...                 0           0.0
+
+[15 rows x 6 columns]
 Columns: Date/time, Syslog priority, Operation, Message code, Protocol, Source IP, Destination IP, Source hostname, Destination hostname, Source port, Destination port, Destination service, Direction, Connections built, Connections torn down
 Data Types: Date/time: string, Syslog priority: string, Operation: string, Message code: string, Protocol: string, Source IP: string, Destination IP: string, Source hostname: string, Destination hostname: string, Source port: string, Destination port: string, Destination service: string, Direction: string, Connections built: string, Connections torn down: string
 Cleaned dataset saved as: cleaned_Firewall-04072012.csv
@@ -54,7 +92,7 @@ Cleaned dataset saved as: cleaned_Firewall-04072012.csv
 Dataset: IDS-0406.csv
 Path: ..\data\MC2-CSVFirewallandIDSlogs\IDS-0406.csv
 Number of Rows (after handling missing values): 32643
-Missing Values Summary:
+Missing Values Summary (Before Imputation):
                     Missing Count  Missing Percentage
 time                            0            0.000000
 sourceIP                        0            0.000000
@@ -68,6 +106,21 @@ packet info                   604            1.850320
 packet info cont'd            604            1.850320
 xref                         9893           30.306651
 Missing values imputed based on previous behavior of Source IP / Destination IP.
+Comparison of Missing Values Before and After Imputation:
+                    Missing Count (Before)  Missing % (Before)  ...  Count Difference  % Difference
+classification                           0            0.000000  ...                 0           0.0
+destIP                                   0            0.000000  ...                 0           0.0
+destPort                                 0            0.000000  ...                 0           0.0
+label                                    0            0.000000  ...                 0           0.0
+packet info                            604            1.850320  ...                 0           0.0
+packet info cont'd                     604            1.850320  ...                 0           0.0
+priority                                 0            0.000000  ...                 0           0.0
+sourceIP                                 0            0.000000  ...                 0           0.0
+sourcePort                               0            0.000000  ...                 0           0.0
+time                                     0            0.000000  ...                 0           0.0
+xref                                  9893           30.306651  ...                 0           0.0
+
+[11 rows x 6 columns]
 Columns: Date/time, Source IP, Source Port, Destination IP, Destination Port, classification, priority, label, packet info, packet info cont'd, xref
 Data Types: Date/time: string, Source IP: string, Source Port: string, Destination IP: string, Destination Port: string, classification: string, priority: string, label: string, packet info: string, packet info cont'd: string, xref: string
 Cleaned dataset saved as: cleaned_IDS-0406.csv
@@ -75,7 +128,7 @@ Cleaned dataset saved as: cleaned_IDS-0406.csv
 Dataset: IDS-0407.csv
 Path: ..\data\MC2-CSVFirewallandIDSlogs\IDS-0407.csv
 Number of Rows (after handling missing values): 18430
-Missing Values Summary:
+Missing Values Summary (Before Imputation):
                     Missing Count  Missing Percentage
 time                            0            0.000000
 sourceIP                        0            0.000000
@@ -89,6 +142,21 @@ packet info                   374            2.029300
 packet info cont'd            374            2.029300
 xref                         6633           35.990233
 Missing values imputed based on previous behavior of Source IP / Destination IP.
+Comparison of Missing Values Before and After Imputation:
+                    Missing Count (Before)  Missing % (Before)  ...  Count Difference  % Difference
+classification                           0            0.000000  ...                 0           0.0
+destIP                                   0            0.000000  ...                 0           0.0
+destPort                                 0            0.000000  ...                 0           0.0
+label                                    0            0.000000  ...                 0           0.0
+packet info                            374            2.029300  ...                 0           0.0
+packet info cont'd                     374            2.029300  ...                 0           0.0
+priority                                 0            0.000000  ...                 0           0.0
+sourceIP                                 0            0.000000  ...                 0           0.0
+sourcePort                               0            0.000000  ...                 0           0.0
+time                                     0            0.000000  ...                 0           0.0
+xref                                  6633           35.990233  ...                 0           0.0
+
+[11 rows x 6 columns]
 Columns: Date/time, Source IP, Source Port, Destination IP, Destination Port, classification, priority, label, packet info, packet info cont'd, xref
 Data Types: Date/time: string, Source IP: string, Source Port: string, Destination IP: string, Destination Port: string, classification: string, priority: string, label: string, packet info: string, packet info cont'd: string, xref: string
 Cleaned dataset saved as: cleaned_IDS-0407.csv

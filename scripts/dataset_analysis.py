@@ -68,8 +68,8 @@ def handle_missing_values(df, strategy='inspect', fill_value='Unknown'):
     - fill_value: str, value to replace missing entries if strategy is 'fill'
     
     Returns:
-    - df: Dask DataFrame with missing values handled
-    - missing_summary: Pandas DataFrame summarizing missing values
+    - df: Dask DataFrame with missing values handled (if 'drop' or 'fill')
+    - missing_summary: Pandas DataFrame summarizing missing values before any imputation
     """
     # Compute missing values
     missing_counts = df.isnull().sum().compute()
@@ -80,6 +80,7 @@ def handle_missing_values(df, strategy='inspect', fill_value='Unknown'):
         'Missing Percentage': missing_percent
     })
     
+    # Handle according to strategy
     if strategy == 'drop':
         df = df.dropna()
     elif strategy == 'fill':
@@ -123,7 +124,6 @@ def standardize_column_names(name, df):
             'destIP': 'Destination IP',
             'destPort': 'Destination Port',
             'time': 'Date/time'
-            # Add more mappings if necessary
         }
         df = trim_column_names(df)
         df = df.rename(columns=rename_dict)
@@ -168,19 +168,17 @@ def impute_missing_values(df):
     numerical_cols = df.select_dtypes(include=['float64', 'int64']).columns
     categorical_cols = df.select_dtypes(include=['object']).columns
 
-    # Impute numerical columns using previous behavior (Source IP or Destination IP)
+    # For large datasets, imputation can be expensive. This is a conceptual example.
+    # Impute numerical columns using forward fill grouped by IPs
     for col in numerical_cols:
-        # Group by Source IP and forward fill missing values
         df[col] = df.groupby('Source IP')[col].fillna(method='ffill')
         df[col] = df.groupby('Destination IP')[col].fillna(method='ffill')
     
-    # Impute categorical columns using most frequent value (Source IP or Destination IP)
+    # Impute categorical columns. Forward fill first, then mode if still missing.
     for col in categorical_cols:
-        # Forward-fill missing categorical values based on Source IP or Destination IP
         df[col] = df.groupby('Source IP')[col].fillna(method='ffill')
         df[col] = df.groupby('Destination IP')[col].fillna(method='ffill')
-
-        # If still missing, fill with the mode value within each group
+        # If still missing, fill with mode per Source IP group
         mode_value = df.groupby('Source IP')[col].agg(lambda x: x.mode()[0] if not x.mode().empty else 'Unknown')
         df[col] = df[col].fillna(mode_value)
     
@@ -222,23 +220,45 @@ def analyze_and_clean_dataset(name, path, strategy='inspect', impute=False):
         # Trim whitespace from string data
         df = trim_data_whitespace(df)
 
-        # Handle missing values
-        df, missing_summary = handle_missing_values(df, strategy=strategy)
+        # Handle missing values based on the chosen strategy
+        df, missing_summary_before_imputation = handle_missing_values(df, strategy=strategy)
         summary += f"Number of Rows (after handling missing values): {df.shape[0].compute()}\n"
-        summary += f"Missing Values Summary:\n{missing_summary}\n"
+        summary += f"Missing Values Summary (Before Imputation):\n{missing_summary_before_imputation}\n"
 
-        # Optionally perform imputation
+        # If imputation is requested, compare before and after imputation
         if impute:
+            # Record missing values before imputation
+            before_counts = missing_summary_before_imputation['Missing Count']
+            before_percent = missing_summary_before_imputation['Missing Percentage']
+
+            # Perform imputation
             df = impute_missing_values(df)
             summary += "Missing values imputed based on previous behavior of Source IP / Destination IP.\n"
 
-        # -----------------------------------------
-        # Removed duplication removal to preserve counts
-        # df = remove_duplicates(df)
-        # summary += f"Number of Rows (after removing duplicates): {df.shape[0].compute()}\n"
-        # -----------------------------------------
+            # Now re-check missing values after imputation
+            after_missing_counts = df.isnull().sum().compute()
+            total_rows = df.shape[0].compute()
+            after_missing_percent = (after_missing_counts / total_rows) * 100
+            after_summary = pd.DataFrame({
+                'Missing Count (After)': after_missing_counts,
+                'Missing % (After)': after_missing_percent
+            })
 
-        # Standardize column names
+            # Combine before and after into a comparison
+            comparison = pd.DataFrame({
+                'Missing Count (Before)': before_counts,
+                'Missing % (Before)': before_percent
+            }).join(after_summary, how='outer')
+
+            # Calculate differences
+            comparison['Count Difference'] = comparison['Missing Count (Before)'] - comparison['Missing Count (After)']
+            comparison['% Difference'] = comparison['Missing % (Before)'] - comparison['Missing % (After)']
+
+            # Add this comparison to the summary
+            summary += "Comparison of Missing Values Before and After Imputation:\n"
+            summary += f"{comparison}\n"
+
+        # Standardize column names (after all missing handling steps)
         df = standardize_column_names(name, df)
 
         # Update columns after standardization
@@ -284,8 +304,8 @@ def main():
             all_summaries += "-" * 50 + "\n"
             continue
 
-        # Analyze and clean the dataset with imputation
-        summary, cleaned_path = analyze_and_clean_dataset(name, path, strategy='inspect', impute=True)  # Set impute=True to perform imputation
+        # Analyze and clean the dataset with imputation set to True to see before/after differences
+        summary, cleaned_path = analyze_and_clean_dataset(name, path, strategy='inspect', impute=True)
         all_summaries += summary
 
         # Store the path of the cleaned dataset for integration
@@ -360,10 +380,8 @@ def main():
         print(f"Failed to append extra spaces handling summary to '{OUTPUT_FILE}': {e}")
 
     # ----------------------- Future Steps -----------------------
-    # After trimming extra spaces, you can proceed to handle missing values
-    # For example, you can choose to fill missing values based on previous behaviors
-
-    # This part can be implemented as needed based on the inspection results
+    # Additional custom analyses, advanced imputations, or further feature engineering
+    # can be applied here as needed.
 
 if __name__ == "__main__":
     main()

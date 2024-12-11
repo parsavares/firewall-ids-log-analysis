@@ -61,11 +61,33 @@ firewall-ids-log-analysis/
 │   ├── components
 │       ├── Heatmap
 │           ├── HeatmapContainer.js
+│           ├── HeatmapD3.js
+│           ├── generate_data.js
+│           ├── heatmap_data.csv
+│       ├── StackedBarchart
+│           ├── StackedBarchartContainer.js
+│           ├── StackedBarchartD3.js
 |
 ├── scripts/                    # Python scripts for data analysis
-│   ├── firewall_stats.py
+│   ├── dataset_analysis.py
+│   ├── dataset_summary.txt
+|   ├── firewall_stats.py
 │   ├── ids_stats.py
+│   ├── new_analysis.py
 │   ├── query.py
+│   ├── refine_data.py
+│   ├── test-post-cleaning.py
+|
+├── server/                    
+│   ├── __pycache__
+│       ├── data_handler.cpython-39.pyc
+│       ├── heatmap.cpython-39.pyc
+│       ├── stacked_barchart.cpython-39.pyc
+│       ├── utils.cpython-39.pyc
+│   ├── data_handler.py
+│   ├── heatmap.py
+│   ├── server.py
+│   ├── stacked_barchart.py
 |
 ├── README.md                   # Description and setup instructions
 ├── package-lock.json

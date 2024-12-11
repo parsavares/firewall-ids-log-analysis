@@ -1,12 +1,13 @@
 from flask import Flask
 from flask_cors import CORS
 
-from heatmap import Heatmap 
-from stacked_barchart import StackedBarchart
-
 from flask import request
 import pandas as pd
 from data_handler import DataHandler
+
+from heatmap import Heatmap 
+from stacked_barchart import StackedBarchart
+from parallel_sets import ParallelSets
 
 app = Flask(__name__)
 app.debug = True
@@ -57,8 +58,21 @@ def get_stacked_barchart():
     stacked_barchart = StackedBarchart()
     return stacked_barchart.get_stacked_barchart_data(data_handler.get_dataframe(start_datetime_str, end_datetime_str), xAttribute, yAttribute)
 
+@app.route("/getParallelSets")
+def get_parallel_sets():
+    start_datetime_str = request.args.get('start_datetime')
+    end_datetime_str = request.args.get('end_datetime')
+    print(request.args)
+    assert start_datetime_str is not None
+    assert end_datetime_str is not None
+
+    subnet_bits = int(request.args.get('subnet_bits'))
+
+    parallel_sets = ParallelSets()
+    return parallel_sets.get_parallel_sets_data(data_handler.get_dataframe(start_datetime_str, end_datetime_str), subnet_bits)
+
 if __name__ == "__main__":
     print("Loading data...")
-    data_handler.load_csv("/home/df/Documenti/Universita/HPDA/firewall-ids-log-analysis/data/Firewall-04062012.csv", 1000)
+    data_handler.load_csv("../data/MC2-CSVFirewallandIDSlogs/FIREWALL.csv")
     print("Data loaded.")
     app.run()
