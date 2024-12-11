@@ -61,6 +61,9 @@ firewall-ids-log-analysis/
 │   ├── components
 │       ├── Heatmap
 │           ├── HeatmapContainer.js
+│           ├── HeatmapD3.js
+│           ├── generate_data.js
+│           ├── heatmap_data.csv
 |
 ├── scripts/                    # Python scripts for data analysis
 │   ├── dataset_analysis.py
