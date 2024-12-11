@@ -104,14 +104,6 @@ def main():
     #change the Date format in the dataset
     FIREWALL['Date'] = pd.to_datetime(FIREWALL['Date'])
     
-<<<<<<< HEAD
-    
-    
-    #assign a category to the IPs
-    FIREWALL['cat_src'] = FIREWALL['Source IP'].apply(classify_ip)
-    FIREWALL['cat_dst'] = FIREWALL['Destination IP'].apply(classify_ip)
-    
-=======
     #assign a category to the IPs
     FIREWALL['cat_src'] = FIREWALL['Source IP'].apply(classify_ip)
     FIREWALL['cat_dst'] = FIREWALL['Destination IP'].apply(classify_ip)
@@ -119,7 +111,6 @@ def main():
     # Clean the 'Destination Service' column
     FIREWALL['Destination service'] = FIREWALL['Destination service'].apply(lambda x: x.split('_')[-1] if pd.notnull(x) else x)
 
->>>>>>> parallel_coordinates
     print("Lines in FIREWALL  ", len(FIREWALL))
     
     print("LINES Syslog priority 'Info' and with Operation 'Built':  ", ((FIREWALL['Syslog priority'] == 'Info') & (FIREWALL['Operation'] == 'Built')).sum())
@@ -128,18 +119,10 @@ def main():
     print("LINES Syslog priority 'Info' and with Operation 'Command executed':  ", ((FIREWALL['Syslog priority'] == 'Info') & (FIREWALL['Operation'] == 'Command executed')).sum())
     print("LINES Syslog priority 'Info' and with Operation 'Deny':  ", ((FIREWALL['Syslog priority'] == 'Info') & (FIREWALL['Operation'] == 'Deny')).sum())
     print("LINES Syslog priority 'Info' and with Operation 'Deny by ACL':  ", ((FIREWALL['Syslog priority'] == 'Info') & (FIREWALL['Operation'] == 'Deny by ACL')).sum())
-<<<<<<< HEAD
-   
-
-    # Rename columns to remove spaces, replace with underscores, and convert to lower case
-    FIREWALL.columns = FIREWALL.columns.str.replace(' ', '_').str.lower()
-    
-=======
     
     # Rename columns to remove spaces, replace with underscores, and convert to lower case
     FIREWALL.columns = FIREWALL.columns.str.replace(' ', '_').str.lower()
 
->>>>>>> parallel_coordinates
     FIREWALL.to_csv('../data/MC2-CSVFirewallandIDSlogs/FIREWALL.csv')
     
     
