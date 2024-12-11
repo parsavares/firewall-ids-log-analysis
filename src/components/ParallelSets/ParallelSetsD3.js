@@ -87,6 +87,13 @@ export default class ParallelSetsD3 {
         this.updateAxis(data);
         console.log(this.yScales)
 
+        const firstAttribute = this.dimensions[0];
+        const uniqueValues = [...new Set(data.map(d => d[firstAttribute]))];
+
+        const colorMap = d3.scaleOrdinal()
+            .domain(uniqueValues)
+            .range(d3.schemeCategory10)
+
 
 
         this.parallelSetsSvg
@@ -95,8 +102,8 @@ export default class ParallelSetsD3 {
         .enter().append("path")
         .attr("d",  this.path)
         .style("fill", "none")
-        .style("stroke", "#69b3a2")
-        .style("opacity", 0.02)
+        .style("stroke", d => colorMap(d[firstAttribute]))
+        .style("opacity", 1)
         .style("stroke-width", 0.5)
 
     }
