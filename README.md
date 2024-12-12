@@ -113,7 +113,7 @@ The data covers a specific timeframe and is instrumental in identifying suspicio
 
 ## Features
 1. **Configuration Setup**: Defines paths to datasets and the output summary file.
-2. **Data Cleaning**: The logs were cleaned including, replacing empty fields with NaN.
+2. **Data Cleaning**: The logs were cleaned, including replacing empty fields with NaN.
 3. **Data Transformation**: Transform logs to make them suitable for visualization, including checking errors, changing data and time format, refining columns for final output.
 4. **Interactive Dashboard**: A React-based dashboard providing:
    - **Heatmaps** to analyze the frequency of connections and events.
