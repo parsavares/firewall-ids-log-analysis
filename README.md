@@ -91,8 +91,10 @@ firewall-ids-log-analysis/
 │       ├── utils.cpython-39.pyc
 │   ├── data_handler.py
 │   ├── heatmap.py
+│   ├── parallel_sets.py
 │   ├── server.py
 │   ├── stacked_barchart.py
+│   ├── utils.py
 |
 ├── README.md                   # Description and setup instructions
 ├── package-lock.json
