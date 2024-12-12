@@ -6,7 +6,7 @@ class StackedBarchart:
     def get_stacked_barchart_data_2(self, df: pd.DataFrame, yAttribute: str):
 
         df['date_time_objs'] = pd.to_datetime(df['date_time'])
-        df['date_bin'] = pd.cut(df['date_time_objs'], bins=500)
+        df['date_bin'] = pd.cut(df['date_time_objs'], bins=100)
         bins = df.groupby(['date_bin', yAttribute]).size().unstack(fill_value=0)
 
         result = []

@@ -1,6 +1,7 @@
 import {useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import StackedbarchartD3 from './StackedBarchartD3';
+import { setStackedBarchartData } from '../../redux/DatasetSlice';
 
 export default function StackedbarchartContainer(){
 
@@ -24,6 +25,28 @@ export default function StackedbarchartContainer(){
         const stackedbarchartD3Instance = new StackedbarchartD3(divContainerRef.current);
         stackedbarchartD3Instance.create({size:getCharSize()});
         StackedbarchartD3Ref.current = stackedbarchartD3Instance;
+
+
+        // Fetch the data from server
+        const api_endpoint = "debug";
+        const xAttribute = "date_time";
+        const yAttribute = "syslog_priority";
+
+        const start_date_str = "2011/04/06 17:40:00";
+        const end_date_str = "2020/04/06 20:40:00";
+
+        fetchData(api_endpoint, xAttribute, yAttribute, start_date_str, end_date_str).then(data => {
+
+            const newState = {
+                data: data,
+                xAttribute,
+                yAttribute
+            }
+
+            console.log(newState);
+            dispatch(setStackedBarchartData(newState));
+        });
+
         return () => {
             const stackedbarchartD3Instance = StackedbarchartD3Ref.current;
             stackedbarchartD3Instance.clear();
@@ -50,21 +73,16 @@ export default function StackedbarchartContainer(){
     }
 
     useEffect(()=>{
-        const StackedbarchartD3 = StackedbarchartD3Ref.current;
 
-        const api_endpoint = "debug";
-        const xAttribute = "date_time";
-        const yAttribute = "syslog_priority";
+        if(state.stackedbarchart_data === null){
+            return;
+        }
 
-        const start_date_str = "2011/04/06 17:40:00";
-        const end_date_str = "2020/04/06 20:40:00";
-
-        fetchData(api_endpoint, xAttribute, yAttribute, start_date_str, end_date_str).then(data => {
-            const keys = Object.keys(data[0]);
-            StackedbarchartD3.render(data, keys[0], keys[1]);
-            
-        });
-
+        console.log("state: ", state)
+        const data = state.stackedbarchart_data.data;
+        const xAttribute = state.stackedbarchart_data.xAttribute;
+        const yAttribute = state.stackedbarchart_data.yAttribute;   
+        StackedbarchartD3Ref.current.render(data, xAttribute, yAttribute);
     }, [state, dispatch]);
 
     return (
