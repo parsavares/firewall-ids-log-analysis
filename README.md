@@ -112,13 +112,14 @@ firewall-ids-log-analysis/
 The data covers a specific timeframe and is instrumental in identifying suspicious activities, intrusion attempts, and general traffic behavior.
 
 ## Features
-1. **Data Cleaning and Transformation**: The logs were cleaned and preprocessed to make them suitable for visualization.
-2. **Interactive Dashboard**: A React-based dashboard providing:
+1. **Configuration Setup**: Defines paths to datasets and the output summary file.
+2. **Data Cleaning and Transformation**: The logs were cleaned and preprocessed to make them suitable for visualization, including checking errors and spaces.
+3. **Interactive Dashboard**: A React-based dashboard providing:
    - **Heatmaps** to analyze the frequency of connections and events.
    - **Network Graphs** to visualize communication patterns between different IP addresses.
    - **Bar Charts** for the frequency of message codes and classification labels.
-3. **Event Filtering and Detection**: Identify the five most notable events based on frequency and priority, and apply filters to isolate specific times, IPs, or protocols.
-4. **Security Trend Analysis**: Using visual analytics, observe trends over the two-day period to identify patterns such as potential denial-of-service attacks or repeated suspicious activity.
+4. **Event Filtering and Detection**: Identify the five most notable events based on frequency and priority, and apply filters to isolate specific times, IPs, or protocols.
+5. **Security Trend Analysis**: Using visual analytics, observe trends over the two-day period to identify patterns such as potential denial-of-service attacks or repeated suspicious activity.
 
 ## Technologies Used
 - **Frontend**: React, D3.js, JavaScript.
