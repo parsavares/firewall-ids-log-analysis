@@ -64,6 +64,9 @@ firewall-ids-log-analysis/
 │           ├── HeatmapD3.js
 │           ├── generate_data.js
 │           ├── heatmap_data.csv
+│       ├── ParallelSets
+│           ├── ParallelSetsContainer.js
+│           ├── ParallelSetsD3.js
 │       ├── StackedBarchart
 │           ├── StackedBarchartContainer.js
 │           ├── StackedBarchartD3.js
