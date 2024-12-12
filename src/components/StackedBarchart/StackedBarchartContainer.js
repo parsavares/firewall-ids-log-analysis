@@ -21,6 +21,29 @@ export default function StackedbarchartContainer(){
         return {width:width, height:height};
     }
 
+    const delete_priorities = function(data, priority) {
+        console.log(priority);
+        data = data.map(obj => {
+            // Copy the occurrences object
+            const newOccurrences = { ...obj.occurrences };
+    
+            // Update all keys except the priority to have a value of 0
+            Object.keys(newOccurrences).forEach(key => {
+                if (key !== priority) {
+                    newOccurrences[key] = 0;
+                }
+            });
+    
+            // Return the updated object
+            return {
+                interval_center: obj.interval_center,
+                total_occurrences: obj.total_occurrences,
+                occurrences: newOccurrences
+            };
+        });
+        return data;
+    };
+
     useEffect(()=>{
         const stackedbarchartD3Instance = new StackedbarchartD3(divContainerRef.current);
         stackedbarchartD3Instance.create({size:getCharSize()});
@@ -77,11 +100,15 @@ export default function StackedbarchartContainer(){
         if(state.stackedbarchart_data === null){
             return;
         }
+        
+        console.log("before", state.stackedbarchart_data.data)
 
-        console.log("state: ", state)
-        const data = state.stackedbarchart_data.data;
+        const data = delete_priorities(state.stackedbarchart_data.data, state.priority)
         const xAttribute = state.stackedbarchart_data.xAttribute;
-        const yAttribute = state.stackedbarchart_data.yAttribute;   
+        const yAttribute = state.stackedbarchart_data.yAttribute;
+
+        
+        console.log("updated", data)
         StackedbarchartD3Ref.current.render(data, xAttribute, yAttribute);
     }, [state, dispatch]);
 

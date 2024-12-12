@@ -1,6 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 //import Papa from "papaparse"
 
+function delete_priorities(item) {
+  //arr[index] = item * 10;
+  console.log("item.occurrences", item.occurrences)
+} 
+
 // get the data in asyncThunk
 export const fetchFileData = createAsyncThunk('seoulBikeData/fetchData', async () => {
   /*
@@ -23,7 +28,11 @@ export const stateSlice = createSlice({
   initialState: {
     stackedbarchart_data: null,
     heatmap_data: null,
-    parallelsets_data: null
+    parallelsets_data: null,
+    heatmap_data_copy: null,
+    parallelsets_data_copy: null,
+    priority: 'Info',
+
   },
   reducers: {
     setStackedBarchartData: (state, action) => {
@@ -31,9 +40,23 @@ export const stateSlice = createSlice({
     },
     setHeatmapData: (state, action) => {
       state.heatmap_data = action.payload
+      state.heatmap_data_copy = action.payload
     },
     setParallelsetsData: (state, action) => {
       state.parallelsets_data = action.payload
+      state.parallelsets_data_copy = action.payload
+    },
+    filterPrioritiesParallel: (state, action) => {
+      state.parallelsets_data_copy = action.payload
+    },
+    filterPrioritiesStacked: (state, action) => {
+
+      state.priority = action.payload;
+      //state.stackedbarchart_data_copy = {... state.stackedbarchart_data}
+      //console.log(state.stackedbarchart_data_copy)
+      //state.stackedbarchart_data_copy = 
+      //state.stackedbarchart_data_copy.forEach(delete_priorities);
+    
     }
 
   },
@@ -48,6 +71,6 @@ export const stateSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setStackedBarchartData, setHeatmapData, setParallelsetsData} = stateSlice.actions
+export const { filterPrioritiesStacked, filterPrioritiesParallel, setStackedBarchartData, setHeatmapData, setParallelsetsData} = stateSlice.actions
 
 export default stateSlice.reducer

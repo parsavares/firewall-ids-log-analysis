@@ -92,7 +92,9 @@ export default class StackedbarchartD3 {
         this.xAttribute = xAttribute;
         this.yAttribute = yAttribute;
 
+        d3.select(".seriesG").remove()
         
+        this.stackedbarSvg.append("g")
         const subgroups = Object.keys(data[0].occurrences); 
 
         console.log("sub: ", subgroups)
@@ -125,6 +127,7 @@ export default class StackedbarchartD3 {
 
         // Append a group for each series, and a rect for each element in the series.
         this.stackedbarSvg.append("g")
+        .attr("class", "seriesG")
         .selectAll("g")
         // Enter in the stack data = loop key per key = group per group
         .data(stackedData)
