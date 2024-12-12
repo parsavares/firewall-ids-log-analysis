@@ -17,33 +17,37 @@ export const fetchFileData = createAsyncThunk('seoulBikeData/fetchData', async (
     return {}
 })
 
-const prepareInitialState = (data) => {
-
-
-  return {
-    xAttribute: "FirstValue",
-    yAttribute: "SecondValue",
-    data: [] 
-  }
-}
 
 export const stateSlice = createSlice({
   name: 'state',
   initialState: {
-    xAttribute: "FirstValue",
-    yAttribute: "SecondValue",
-    data: [] 
+    stackedbarchart_data: null,
+    heatmap_data: null,
+    parallelsets_data: null
   },
-  reducers: {},
+  reducers: {
+    setStackedBarchartData: (state, action) => {
+      state.stackedbarchart_data = action.payload;
+    },
+    setHeatmapData: (state, action) => {
+      state.heatmap_data = action.payload
+    },
+    setParallelsetsData: (state, action) => {
+      state.parallelsets_data = action.payload
+    }
+
+  },
+  /*
   extraReducers: builder => {
     builder.addCase(fetchFileData.fulfilled, (state, action) => {
       // Add any fetched house to the array
       return prepareInitialState(action.payload)
     })
   }
+    */
 })
 
 // Action creators are generated for each case reducer function
-export const {  updateAxisAttributes, updateSelectedItemsIndices} = stateSlice.actions
+export const { setStackedBarchartData, setHeatmapData, setParallelsetsData} = stateSlice.actions
 
 export default stateSlice.reducer

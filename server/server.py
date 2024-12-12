@@ -42,6 +42,13 @@ def get_heatmap():
     heatmap = Heatmap()
     return heatmap.get_heatmap_data(data_handler.get_dataframe(start_datetime_str, end_datetime_str), xAttribute, yAttribute, subnet_bits)
 
+@app.route("/debug")
+def debug():
+    stacked_barchart = StackedBarchart()
+    xAttribute = "date_time"
+    yAttribute = "syslog_priority"
+    return stacked_barchart.get_stacked_barchart_data_2(data_handler.get_dataframe("2000-01-01 00:00:00", "2020-01-01 00:00:00"), yAttribute)
+
 @app.route("/getStackedBarchart")
 def get_stacked_barchart():
     params = request.args
