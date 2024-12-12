@@ -102,6 +102,7 @@ firewall-ids-log-analysis/
 ├── README.md                   # Description and setup instructions
 ├── package-lock.json
 ├── package.json
+├── records
 └── stats.txt                   # Statistics
 ```
 
