@@ -52,7 +52,7 @@ export default function StackedbarchartContainer(){
     useEffect(()=>{
         const StackedbarchartD3 = StackedbarchartD3Ref.current;
 
-        const api_endpoint = "getStackedBarchart";
+        const api_endpoint = "debug";
         const xAttribute = "date_time";
         const yAttribute = "syslog_priority";
 

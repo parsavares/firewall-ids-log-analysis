@@ -7,9 +7,9 @@ export default class StackedbarchartD3 {
     height;
 
     margin = {
-    	top: 50,
+    	top: 10,
     	right: 50,
-    	bottom: 50,
+    	bottom: 200,
     	left: 50
     };
 
@@ -21,27 +21,40 @@ export default class StackedbarchartD3 {
     xAttribute;
     yAttribute;
     controllerMethods;
-    numBins = 40;
-    maxBins;
-    bin;
-    timeExtent = [new Date(), new Date(0)];
 
     
     constructor(el){
         this.el = el;
     }
 
-    updateAxis = function(){
+    updateAxis = function(data){
         
-        const bottomAxis = d3.axisBottom(this.x);
+        const groups = data.map(d => d.interval_center)
+        const maxBar = d3.max(d3.map(data, g => g.total_occurrences)) 
+
+        console.log("groups: ", groups)
+        console.log("maxBar: ", maxBar)
+        // Prepare the scales for positional and color encodings.
+        this.x = d3.scaleBand()
+        .domain(groups)
+        .range([this.margin.left, this.width - this.margin.right])
+        .padding(0.1);
+
+        this.y = d3.scaleLinear()
+        .domain([0, maxBar])
+        .rangeRound([this.height - this.margin.bottom, this.margin.top]);
+
+        const bottomAxis = d3.axisBottom(this.x).tickValues(this.x.domain().filter(function(d,i){ return !(i%10)}));
+
         const leftAxis = d3.axisLeft(this.y);
 
         this.stackedbarSvg.select(".xAxisG")
             .call(bottomAxis)            
             .selectAll("text")  
             .attr("transform", "rotate(-90)")
-            //.attr("dy", "-0em")
-            .attr("dx", "-5em")
+            .attr("dy", "-0em")
+            .attr("dx", "-10em")
+
         
         this.stackedbarSvg.select(".yAxisG")
             .call(leftAxis)
@@ -65,57 +78,66 @@ export default class StackedbarchartD3 {
         // Build the axis
         this.stackedbarSvg.append("g")
             .attr("class","xAxisG")
-            .attr("transform","translate(0,"+this.height+")");
+            .attr("transform","translate(0," + (this.height + this.margin.top) + ")");
 
         this.stackedbarSvg.append("g")
             .attr("class","yAxisG");
 
     }
     
-    beBinnable = function(data){
-        data.forEach(d => {
-            d.date_time = new Date(d.date_time);
-        });
-    }
-
-
     render = function(data, xAttribute, yAttribute){ 
 
-        console.assert(data.length>0, "data is empty");
-        console.assert(xAttribute in data[0], "xAttribute not in data");
-        console.assert(yAttribute in data[0], "yAttribute not in data");
-
+        
         this.visData = data;
         this.xAttribute = xAttribute;
         this.yAttribute = yAttribute;
-        this.beBinnable(data);
-        this.bin = d3.bin().value((d) => d.date_time).thresholds(this.numBins);
-
-        const binned_data = this.bin(data)
-        this.maxBins = d3.max(binned_data, d => d.length);
-         console.log(this.maxBins)
-        //this.updateAxis(data, xAttribute, yAttribute);
-        this.timeExtent = d3.extent(data.map(d => d.date_time));
-
-        this.x = d3.scaleTime().domain(this.timeExtent).range([this.margin.left, this.width - this.margin.right]);
-        this.y = d3.scaleLinear().domain([0, this.maxBins]).nice().range([this.height - this.margin.bottom, this.margin.top])
-
-    	
-        //console.log("x:" , x);
-        console.log("this.height", this.height);
-        console.log("this.width", this.width);
 
         
-    	
-    	this.stackedbarSvg.attr("width", this.width).attr("height", this.height);
-        
-        
-        this.updateAxis()
-    	this.stackedbarSvg.append("g").selectAll("rect").data(binned_data).join("rect").attr("fill", "steelblue").attr("x", d => this.x(d.x0) + 1).attr("width", d => Math.max(0, this.x(d.x1) - this.x(d.x0) - 1)).attr("y", d => this.y(d.length)).attr("height", d => this.y(0) - this.y(d.length))
+        const subgroups = Object.keys(data[0].occurrences); 
+
+        console.log("sub: ", subgroups)
+
+        this.updateAxis(data)
+
+        const colorMap = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(d3.schemeCategory10)
 
 
+        // Prepare the data for the stack layout
+        let data_to_stack = [];
+        data.forEach(d => {
+            let mergedOccurrences = {};
+            subgroups.forEach(subgroup => {
+                mergedOccurrences[subgroup] = d.occurrences[subgroup];
+            });
+            data_to_stack.push({
+                interval_center: d.interval_center,
+                ...mergedOccurrences
+            });
+        });
+            
+        const stackedData = d3.stack()
+        .keys(subgroups)
+        (data_to_stack)
 
+        console.log("stacked data: ", stackedData)
 
+        // Append a group for each series, and a rect for each element in the series.
+        this.stackedbarSvg.append("g")
+        .selectAll("g")
+        // Enter in the stack data = loop key per key = group per group
+        .data(stackedData)
+        .enter().append("g")
+          .attr("fill", d => colorMap(d.key) )
+          .selectAll("rect")
+          // enter a second time = loop subgroup per subgroup to add all rectangles
+          .data(function(d) { return d; })
+          .enter().append("rect")
+            .attr("x", d =>  this.x(d.data.interval_center))
+            .attr("y", d =>  this.y(d[1])) 
+            .attr("height", d => this.y(d[0]) - this.y(d[1]))
+            .attr("width", this.x.bandwidth())
     }
 
     clear = function(){
