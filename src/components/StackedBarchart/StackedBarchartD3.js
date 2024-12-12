@@ -68,7 +68,32 @@ export default class StackedbarchartD3 {
         this.width = this.size.width - this.margin.left - this.margin.right;
         this.height = this.size.height - this.margin.top - this.margin.bottom;
         
-        this.stackedbarSvg=d3.select(this.el).append("svg")
+        // Ensure tooltip element exists
+        if (d3.select("#tooltip").empty()) {
+            d3.select("body").append("div")
+                .attr("id", "tooltip")
+                .style("position", "absolute")
+                .style("display", "none")
+                .style("border-radius", "5px")
+                .style("position", "absolute")
+                .style("background-color", "white")
+                .style("border", "solid")
+                .style("border-width", "1px")
+                    .style("padding", "10px");
+        }
+                // Create a tooltip div. This should be added to your HTML file or dynamically created in your script.
+                if (d3.select(this.el).select(".tooltip").empty()) {
+                    d3.select(this.el).append("div")
+                    .attr("class", "tooltip")
+                    .style("opacity", 0)
+                    .style("position", "absolute")
+                    .style("background-color", "white")
+                    .style("border", "solid")
+                    .style("border-width", "1px")
+                        .style("padding", "10px");
+                    }
+
+        this.stackedbarSvg = d3.select(this.el).append("svg")
             .attr("width", this.width + this.margin.left + this.margin.right)
             .attr("height", this.height + this.margin.top + this.margin.bottom)
             .append("g")
@@ -138,7 +163,22 @@ export default class StackedbarchartD3 {
             .attr("y", d =>  this.y(d[1])) 
             .attr("height", d => this.y(d[0]) - this.y(d[1]))
             .attr("width", this.x.bandwidth())
+            .on("mouseover", (event, d) => {
+                const [x, y] = d3.pointer(event);
+                const categoryData = `Interval Center: ${d.data.interval_center}<br>` + subgroups.map(subgroup => `${subgroup}: ${d.data[subgroup]}`).join("<br>");
+                d3.select("#tooltip")
+                    .style("left", `${x + 10}px`)
+                    .style("top", `${y + 10}px`)
+                    .style("display", "inline-block")
+                    .html(categoryData);
+            })
+            .on("mouseout", function() {
+            d3.select("#tooltip")
+                .style("display", "none");
+            })
+            
     }
+    
 
     clear = function(){
         d3.select(this.el).selectAll("*").remove();

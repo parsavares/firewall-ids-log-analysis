@@ -45,25 +45,22 @@ def get_heatmap():
 @app.route("/debug")
 def debug():
     stacked_barchart = StackedBarchart()
-    xAttribute = "date_time"
     yAttribute = "syslog_priority"
-    return stacked_barchart.get_stacked_barchart_data_2(data_handler.get_dataframe("2000-01-01 00:00:00", "2020-01-01 00:00:00"), yAttribute)
+    return stacked_barchart.get_stacked_barchart_data(data_handler.get_dataframe("2000-01-01 00:00:00", "2020-01-01 00:00:00"), yAttribute)
 
 @app.route("/getStackedBarchart")
 def get_stacked_barchart():
     params = request.args
-    xAttribute = params.get('xAttribute')
     yAttribute = params.get('yAttribute')
     start_datetime_str = params.get('start_datetime')
     end_datetime_str = params.get('end_datetime')
     print(params)
-    assert xAttribute is not None
     assert yAttribute is not None
     assert start_datetime_str is not None
     assert end_datetime_str is not None
 
     stacked_barchart = StackedBarchart()
-    return stacked_barchart.get_stacked_barchart_data(data_handler.get_dataframe(start_datetime_str, end_datetime_str), xAttribute, yAttribute)
+    return stacked_barchart.get_stacked_barchart_data(data_handler.get_dataframe(start_datetime_str, end_datetime_str), yAttribute)
 
 @app.route("/getParallelSets")
 def get_parallel_sets():
@@ -80,7 +77,7 @@ def get_parallel_sets():
 
 if __name__ == "__main__":
     print("Loading data...")
-    data_handler.load_csv("../data/MC2-CSVFirewallandIDSlogs/FIREWALL.csv", 1000)
+    data_handler.load_csv("../data/MC2-CSVFirewallandIDSlogs/FIREWALL.csv")
 
     print("Data loaded.")
     app.run()

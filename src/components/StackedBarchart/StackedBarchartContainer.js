@@ -28,9 +28,9 @@ export default function StackedbarchartContainer(){
 
 
         // Fetch the data from server
-        const api_endpoint = "debug";
+        const api_endpoint = "/getStackedBarchart";
         const xAttribute = "date_time";
-        const yAttribute = "syslog_priority";
+        const yAttribute = "operation";
 
         const start_date_str = "2011/04/06 17:40:00";
         const end_date_str = "2020/04/06 20:40:00";
