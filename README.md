@@ -113,17 +113,18 @@ The data covers a specific timeframe and is instrumental in identifying suspicio
 
 ## Features
 1. **Configuration Setup**: Defines paths to datasets and the output summary file.
-2. **Data Cleaning and Transformation**: The logs were cleaned and preprocessed to make them suitable for visualization, including checking errors and spaces.
-3. **Interactive Dashboard**: A React-based dashboard providing:
+2. **Data Cleaning**: The logs were cleaned including to replace empty fields with NaN.
+3. **Data Transformation**: Transform logs to make them suitable for visualization, including checking errors, changing data and time format, refining columns for final output.
+4. **Interactive Dashboard**: A React-based dashboard providing:
    - **Heatmaps** to analyze the frequency of connections and events.
    - **Network Graphs** to visualize communication patterns between different IP addresses.
    - **Bar Charts** for the frequency of message codes and classification labels.
-4. **Event Filtering and Detection**: Identify the five most notable events based on frequency and priority, and apply filters to isolate specific times, IPs, or protocols.
-5. **Security Trend Analysis**: Using visual analytics, observe trends over the two-day period to identify patterns such as potential denial-of-service attacks or repeated suspicious activity.
+5. **Event Filtering and Detection**: Identify the five most notable events based on frequency and priority, and apply filters to isolate specific times, IPs, or protocols.
+6. **Security Trend Analysis**: Using visual analytics, observe trends over the two-day period to identify patterns such as potential denial-of-service attacks or repeated suspicious activity.
 
 ## Technologies Used
 - **Frontend**: React, D3.js, JavaScript.
-- **Backend/Analysis**: Python, Pandas, Matplotlib.
+- **Backend/Analysis**: Python, Matplotlib, Pandas, Plotly, Seaborn.
 - **Visualization Dashboard**: React with D3.js components for interactive visualizations.
 
 ## Installation and Setup
