@@ -64,11 +64,19 @@ firewall-ids-log-analysis/
 │           ├── HeatmapD3.js
 │           ├── generate_data.js
 │           ├── heatmap_data.csv
+│       ├── ParallelSets
+│           ├── ParallelSetsContainer.js
+│           ├── ParallelSetsD3.js
 │       ├── StackedBarchart
 │           ├── StackedBarchartContainer.js
 │           ├── StackedBarchartD3.js
 |
 ├── scripts/                    # Python scripts for data analysis
+│   ├── analysis_summaries
+│       ├── external_ips_ids_alerts.csv
+│       ├── suspicious_teardown_rebuild_pairs.csv
+│       ├── unusual_services_traffic_sample.csv
+│   ├── Patterns.py
 │   ├── dataset_analysis.py
 │   ├── dataset_summary.txt
 |   ├── firewall_stats.py
@@ -86,8 +94,10 @@ firewall-ids-log-analysis/
 │       ├── utils.cpython-39.pyc
 │   ├── data_handler.py
 │   ├── heatmap.py
+│   ├── parallel_sets.py
 │   ├── server.py
 │   ├── stacked_barchart.py
+│   ├── utils.py
 |
 ├── README.md                   # Description and setup instructions
 ├── package-lock.json
