@@ -124,7 +124,7 @@ The data covers a specific timeframe and is instrumental in identifying suspicio
 
 ## Technologies Used
 - **Frontend**: React, D3.js, JavaScript.
-- **Backend/Analysis**: Python, Matplotlib, Pandas, Plotly, Seaborn.
+- **Backend/Analysis**: Python, Dask, Matplotlib, Pandas, Plotly, Seaborn.
 - **Visualization Dashboard**: React with D3.js components for interactive visualizations.
 
 ## Installation and Setup
