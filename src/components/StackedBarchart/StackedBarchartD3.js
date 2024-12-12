@@ -37,12 +37,12 @@ export default class StackedbarchartD3 {
         // Prepare the scales for positional and color encodings.
         this.x = d3.scaleBand()
         .domain(groups)
-        .range([this.margin.left, this.width - this.margin.right])
+        .range([0, this.width])
         .padding(0.1);
 
         this.y = d3.scaleLinear()
         .domain([0, maxBar])
-        .rangeRound([this.height - this.margin.bottom, this.margin.top]);
+        .rangeRound([this.height, 0])
 
         const bottomAxis = d3.axisBottom(this.x).tickValues(this.x.domain().filter(function(d,i){ return !(i%10)}));
 

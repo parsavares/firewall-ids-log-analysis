@@ -18,7 +18,7 @@ export default class HeatmapD3 {
         this.el = el;
     }
 
-    updateAxis = function(visData,xAttribute,yAttribute){
+    updateAxis = function(visData){
 
     
         var myGroups = Array.from(new Set(visData.map(d => d.xAttribute)));
@@ -110,6 +110,35 @@ export default class HeatmapD3 {
             .style("stroke-width", 4)
             .style("stroke", "none")
             .style("opacity", 0.8)  
+            .on("mouseover", function(event, d) {
+                d3.select(this)
+                    .style("stroke", "black")
+                    .style("opacity", 1);
+                d3.select(".tooltip")
+                    .style("opacity", 1)
+                    .html(`x: ${d.xAttribute}<br>y: ${d.yAttribute}<br>frequency: ${d.frequency}`)
+                    .style("left", (event.pageX + 5) + "px")
+                    .style("top", (event.pageY + 20) + "px");
+            })
+            .on("mouseout", function() {
+                d3.select(this)
+                    .style("stroke", "none")
+                    .style("opacity", 0.8);
+                d3.select(".tooltip")
+                    .style("opacity", 0);
+            });
+
+        // Create a tooltip div. This should be added to your HTML file or dynamically created in your script.
+        if (d3.select(this.el).select(".tooltip").empty()) {
+            d3.select(this.el).append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0)
+            .style("position", "absolute")
+            .style("background-color", "white")
+            .style("border", "solid")
+            .style("border-width", "1px")
+                .style("padding", "10px");
+            }
 
     }
 
