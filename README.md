@@ -69,6 +69,11 @@ firewall-ids-log-analysis/
 │           ├── StackedBarchartD3.js
 |
 ├── scripts/                    # Python scripts for data analysis
+│   ├── analysis_summaries
+│       ├── external_ips_ids_alerts.csv
+│       ├── suspicious_teardown_rebuild_pairs.csv
+│       ├── unusual_services_traffic_sample.csv
+│   ├── Patterns.py
 │   ├── dataset_analysis.py
 │   ├── dataset_summary.txt
 |   ├── firewall_stats.py
