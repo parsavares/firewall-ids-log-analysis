@@ -112,8 +112,8 @@ firewall-ids-log-analysis/
 The data covers a specific timeframe and is instrumental in identifying suspicious activities, intrusion attempts, and general traffic behavior.
 
 ## Features
-1. **Configuration Setup**: Defines paths to datasets and the output summary file.
-2. **Data Cleaning**: Replacing empty fields with NaN, removing duplicates, etc.
+1. **Configuration Setup**: Define paths to datasets and the output summary file.
+2. **Data Cleaning**: Replace empty fields with NaN, removing duplicates, etc.
 3. **Data Transformation**: Transform logs to make them suitable for visualization, including checking errors, changing data and time format, refining columns for final output.
 4. **Interactive Dashboard**: A React-based dashboard providing:
    - **Heatmaps** to analyze the frequency of connections and events.
