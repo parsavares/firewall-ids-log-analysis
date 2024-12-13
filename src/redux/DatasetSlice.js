@@ -49,8 +49,10 @@ export const stateSlice = createSlice({
     filterPrioritiesParallel: (state, action) => {
       state.parallelsets_data_copy = action.payload
     },
-    filterPrioritiesStacked: (state, action) => {
-
+    filterPrioritiesFirewall: (state, action) => {
+      //alert(string)
+      //console.log('string', string)
+      console.log('action.payload', action.payload)
       state.priority = action.payload;
       //state.stackedbarchart_data_copy = {... state.stackedbarchart_data}
       //console.log(state.stackedbarchart_data_copy)
@@ -71,6 +73,6 @@ export const stateSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { filterPrioritiesStacked, filterPrioritiesParallel, setStackedBarchartData, setHeatmapData, setParallelsetsData} = stateSlice.actions
+export const { filterPrioritiesFirewall, filterPrioritiesParallel, setStackedBarchartData, setHeatmapData, setParallelsetsData} = stateSlice.actions
 
 export default stateSlice.reducer
