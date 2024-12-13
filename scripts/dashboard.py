@@ -22,15 +22,23 @@ except Exception as e:
     print(f"[ERROR] Could not load one or more analysis files. {e}")
     exit()
 
-# Data Cleaning
-firewall_traffic_df['Source_Priority'] = pd.to_numeric(firewall_traffic_df.get('Source_Priority', 0), errors='coerce').fillna(0)
-ids_traffic_df['priority'] = pd.to_numeric(ids_traffic_df.get('priority', 0), errors='coerce').fillna(0)
+# Data Cleaning and Enhancements
+firewall_traffic_df['Source_Priority'] = pd.to_numeric(firewall_traffic_df.get('Source_Priority', 1), errors='coerce').fillna(1)
+ids_traffic_df['priority'] = pd.to_numeric(ids_traffic_df.get('priority', 1), errors='coerce').fillna(1)
+
+# Replace zero weights to avoid ZeroDivisionError
+firewall_traffic_df.loc[firewall_traffic_df['Source_Priority'] == 0, 'Source_Priority'] = 1
+ids_traffic_df.loc[ids_traffic_df['priority'] == 0, 'priority'] = 1
+
+# Replace NaN or None in critical columns for sunburst
+firewall_traffic_df['Source_NodeType'] = firewall_traffic_df['Source_NodeType'].fillna('Unknown')
+firewall_traffic_df['Operation'] = firewall_traffic_df['Operation'].fillna('Other')
 
 # ================================
 # 🔥 Initialize Dash Application
 # ================================
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
-app.title = "Firewall & IDS Visualization Dashboard"
+app.title = "🔥 Firewall & IDS Visualization Dashboard 🔥"
 
 # ================================
 # 📊 Layout for Dashboard
@@ -38,7 +46,7 @@ app.title = "Firewall & IDS Visualization Dashboard"
 app.layout = html.Div([
     dcc.Tabs([
         dcc.Tab(label='Firewall Analysis', children=[
-            html.H2("Firewall Analysis"),
+            html.H2("🔥 Firewall Analysis 🔥"),
             dcc.Loading(
                 children=[
                     dcc.Graph(
@@ -47,92 +55,82 @@ app.layout = html.Div([
                             top_services_df,
                             path=['Destination service'],
                             values='count',
-                            title="Top 50 Destination Services",
+                            title="Top Destination Services",
                             color='count',
                             color_continuous_scale='Blues'
                         )
                     ),
                     dcc.Graph(
-                        id='destination-port-usage',
-                        figure=px.bar(
+                        id='destination-port-bubble',
+                        figure=px.scatter(
                             top_ports_df,
                             x='Destination port',
                             y='count',
+                            size='count',
                             color='count',
-                            title="Top 50 Destination Ports",
+                            title="Top Destination Ports (Bubble Chart)",
                             color_continuous_scale='Viridis'
                         )
                     ),
                     dcc.Graph(
                         id='source-node-type-distribution',
-                        figure=px.pie(
+                        figure=px.sunburst(
                             firewall_traffic_df,
-                            names='Source_NodeType',
-                            title="Source Node Type Distribution",
-                            color_discrete_sequence=px.colors.qualitative.Set3
+                            path=['Source_NodeType', 'Operation'],
+                            values='Source_Priority',
+                            title="Source Node Type & Operations",
+                            color='Source_Priority',
+                            color_continuous_scale='Cividis'
                         )
                     ),
                     dcc.Graph(
-                        id='high-priority-traffic-line',
-                        figure=px.line(
+                        id='high-priority-traffic',
+                        figure=px.area(
                             firewall_traffic_df,
                             x='Date/time',
                             y='Source_Priority',
-                            color_discrete_sequence=["#636EFA"],
-                            title="High-Priority Traffic Analysis",
-                            markers=True
+                            title="High-Priority Traffic Analysis (Area Chart)",
+                            color_discrete_sequence=["#EF553B"]
                         )
-                    ),
-                    dcc.Graph(
-                        id='external-ip-analysis',
-                        figure=px.scatter(
-                            firewall_traffic_df,
-                            x='Source IP',
-                            y='Destination IP',
-                            size='Source_Priority',
-                            color='Operation',
-                            title="External IP Analysis",
-                            color_discrete_sequence=px.colors.qualitative.Dark24
-                        )
-                    ),
+                    )
                 ]
             )
         ]),
 
         dcc.Tab(label='IDS Analysis', children=[
-            html.H2("IDS Analysis"),
+            html.H2("🚀 IDS Analysis 🚀"),
             dcc.Loading(
                 children=[
                     dcc.Graph(
                         id='ids-alert-counts',
-                        figure=px.line(
+                        figure=px.bar(
                             ids_traffic_df,
                             x='Date/time',
                             y='priority',
-                            color_discrete_sequence=["#EF553B"],
                             title="IDS Alert Counts Over Time",
-                            markers=True
+                            color='priority',
+                            color_continuous_scale='Reds'
                         )
                     ),
                     dcc.Graph(
-                        id='top-20-external-ips',
-                        figure=px.bar(
+                        id='top-external-ips',
+                        figure=px.funnel(
                             top_ips_df,
                             x='count',
                             y='Source IP',
-                            orientation='h',
-                            color='count',
-                            title="Top 20 External IPs Triggering Alerts",
-                            color_continuous_scale='Agsunset'
+                            title="Top External IPs Triggering Alerts",
+                            color='count'
                         )
                     ),
                     dcc.Graph(
                         id='classification-of-alerts',
-                        figure=px.pie(
+                        figure=px.sunburst(
                             ids_traffic_df,
-                            names='classification',
+                            path=['classification', 'priority'],
+                            values='priority',
                             title="Classification of IDS Alerts",
-                            color_discrete_sequence=px.colors.qualitative.Prism
+                            color='priority',
+                            color_continuous_scale='Cividis'
                         )
                     ),
                     dcc.Graph(
@@ -143,16 +141,16 @@ app.layout = html.Div([
                             y='Destination IP',
                             size='priority',
                             color='priority',
-                            title="Source IP vs Destination IP",
-                            color_continuous_scale='Cividis'
+                            title="Source IP vs Destination IP (Color by Priority)",
+                            color_continuous_scale='Magma'
                         )
-                    ),
+                    )
                 ]
             )
         ]),
 
         dcc.Tab(label='Hybrid Analysis', children=[
-            html.H2("Hybrid Analysis (IDS + Firewall)"),
+            html.H2("🧬 Hybrid Analysis (IDS + Firewall) 🧬"),
             dcc.Loading(
                 children=[
                     dcc.Graph(
@@ -163,7 +161,8 @@ app.layout = html.Div([
                             x='Date/time',
                             y='priority',
                             color='source',
-                            title="Combined IDS & Firewall Alert Counts Over Time"
+                            title="Combined IDS & Firewall Alert Counts Over Time",
+                            color_discrete_sequence=px.colors.qualitative.Pastel
                         )
                     ),
                     dcc.Graph(
@@ -174,12 +173,13 @@ app.layout = html.Div([
                             x='Source IP',
                             y='Destination IP',
                             color='Source_NodeType',
-                            title="Combined Source IP vs Destination IP"
+                            title="Combined Source IP vs Destination IP (Interactive)",
+                            color_discrete_sequence=px.colors.qualitative.T10
                         )
-                    ),
+                    )
                 ]
             )
-        ]),
+        ])
     ])
 ])
 
