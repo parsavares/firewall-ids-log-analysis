@@ -9,3 +9,18 @@ export function formatDate(date) {
   
     return `${yyyy}/${mm}/${dd} ${hh}:${min}:${ss}`;
   }
+
+export  const syslog_priority_colors = [
+            '#ff0000', // red
+            '#800080', // purple
+            '#ffa500', // orange
+            '#008000', // green
+            '#add8e6', // light blue
+        ];
+export const syslog_priority_labels = [
+            'Error',
+            'Critical',
+            'Warning',
+            'Notice',
+            'Info']
+

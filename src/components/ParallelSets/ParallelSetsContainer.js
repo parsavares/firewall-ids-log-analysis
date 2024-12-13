@@ -1,6 +1,6 @@
 import {useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-
+import {formatDate} from '../../utils';
 import ParallelSetsD3 from './ParallelSetsD3';
 import { setParallelsetsData } from '../../redux/DatasetSlice';
 
@@ -56,8 +56,8 @@ export default function ParallelSetsContainer(){
     async function fetchDataAndUpdate(){
         const api_endpoint = "getParallelSets";
 
-        const start_date_str = "2011/04/06 17:40:00";
-        const end_date_str = "2020/04/06 20:40:00";
+        const start_date_str = formatDate(state.global_date_time_interval[0])
+        const end_date_str = formatDate(state.global_date_time_interval[1])
         const subnet_bits = 24;
  
         const baseUrl = `http://localhost:5000/${api_endpoint}`;

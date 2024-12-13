@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-
+import { syslog_priority_colors, syslog_priority_labels} from '../../utils'
 
 export default class StackedbarchartD3 {
 
@@ -125,8 +125,8 @@ export default class StackedbarchartD3 {
         this.updateAxis(data)
 
         const colorMap = d3.scaleOrdinal()
-        .domain(subgroups)
-        .range(d3.schemeCategory10)
+        .domain(syslog_priority_labels)
+        .range(syslog_priority_colors);
 
 
         // Prepare the data for the stack layout
