@@ -2,6 +2,7 @@ import {useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 
 import ParallelSetsD3 from './ParallelSetsD3';
+import { setParallelsetsData } from '../../redux/DatasetSlice';
 
 export default function ParallelSetsContainer(){
 
@@ -25,14 +26,40 @@ export default function ParallelSetsContainer(){
         const ParallelSetsD3Instance = new ParallelSetsD3(divContainerRef.current);
         ParallelSetsD3Instance.create({size:getCharSize()});
         ParallelSetsD3Ref.current = ParallelSetsD3Instance;
+
+        fetchDataAndUpdate();
         return () => {
             const ParallelSetsD3Instance = ParallelSetsD3Ref.current;
             ParallelSetsD3Instance.clear();
         }
     }, []);
 
-    async function fetchData(api_endpoint, start_date_str, end_date_str, subnet_bits){
 
+    useEffect(()=>{
+        divContainerRef.current.style.opacity = 0.5;
+        fetchDataAndUpdate();
+    }, [state.global_date_time_interval]);
+
+    useEffect(()=>{
+        if(state.parallelsets_data===null)
+            return;
+
+        divContainerRef.current.style.opacity = 1;
+        const data = state.parallelsets_data;
+        
+        console.log(data);
+        ParallelSetsD3Ref.current.clear();
+        ParallelSetsD3Ref.current.create({size:getCharSize()});
+        ParallelSetsD3Ref.current.render(data);
+    }, [state.parallelsets_data]);
+
+    async function fetchDataAndUpdate(){
+        const api_endpoint = "getParallelSets";
+
+        const start_date_str = "2011/04/06 17:40:00";
+        const end_date_str = "2020/04/06 20:40:00";
+        const subnet_bits = 24;
+ 
         const baseUrl = `http://localhost:5000/${api_endpoint}`;
         const params = 
             {
@@ -46,23 +73,11 @@ export default function ParallelSetsContainer(){
         const response = await fetch(url);
         const data = await response.json();
 
-        return data;
+
+        dispatch(setParallelsetsData(data));
+
     }
 
-    useEffect(()=>{
-        const ParallelSetsD3 = ParallelSetsD3Ref.current;
-
-        const api_endpoint = "getParallelSets";
-
-        const start_date_str = "2011/04/06 17:40:00";
-        const end_date_str = "2020/04/06 20:40:00";
-        const subnet_bits = 24;
-        fetchData(api_endpoint, start_date_str, end_date_str, subnet_bits).then(data => {
-            alert("Fetched")
-            ParallelSetsD3.render(data);
-        });
-
-    }, [state, dispatch]);
 
     return (
         <div ref={divContainerRef} className="Stackedbarchart-container h-100">

@@ -81,13 +81,10 @@ export default class HeatmapD3 {
    render = function(data, xAttribute, yAttribute){ 
 
 
-        console.log(data);  
-        console.log(xAttribute);
-        console.log(yAttribute);
-
         this.visData = data;
         this.xAttribute = xAttribute;
         this.yAttribute = yAttribute;
+
 
         this.updateAxis(data, xAttribute, yAttribute);
 

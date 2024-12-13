@@ -87,8 +87,9 @@ export default class ParallelSetsD3 {
         this.updateAxis(data);
         console.log(this.yScales)
 
-        const firstAttribute = this.dimensions[0];
-        const uniqueValues = [...new Set(data.map(d => d[firstAttribute]))];
+        const color_attribute = "syslog_priority"
+        // For now, just firewall
+        const uniqueValues = [...new Set(data.map(d => d[color_attribute]))]
 
         const colorMap = d3.scaleOrdinal()
             .domain(uniqueValues)
@@ -102,7 +103,7 @@ export default class ParallelSetsD3 {
         .enter().append("path")
         .attr("d",  this.path)
         .style("fill", "none")
-        .style("stroke", d => colorMap(d[firstAttribute]))
+        .style("stroke", d => colorMap(d[color_attribute]))
         .style("opacity", 1)
         .style("stroke-width", 0.5)
 

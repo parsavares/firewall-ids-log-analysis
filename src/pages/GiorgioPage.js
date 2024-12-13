@@ -3,10 +3,6 @@ import StackedbarchartContainer from '../components/StackedBarchart/StackedBarch
 export default function GiorgioPage() {
     return (
         <div className='h-100'>
-        <h1>Giorgio</h1>
-        <p>
-            Giorgio's page
-        </p>
         <StackedbarchartContainer/>
         </div>
     );

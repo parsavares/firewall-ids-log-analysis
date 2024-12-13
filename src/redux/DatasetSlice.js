@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { set } from 'date-fns'
 //import Papa from "papaparse"
 
 // get the data in asyncThunk
@@ -22,7 +21,7 @@ export const fetchFileData = createAsyncThunk('seoulBikeData/fetchData', async (
 export const stateSlice = createSlice({
   name: 'state',
   initialState: {
-    global_date_time_interval: [],
+    global_date_time_interval: [new Date(2012, 3, 5, 0, 0, 0), new Date(2012, 3, 7, 23, 59, 0)],
     stackedbarchart_data: null,
     heatmap_data: null,
     parallelsets_data: null
@@ -40,7 +39,6 @@ export const stateSlice = createSlice({
     setParallelsetsData: (state, action) => {
       state.parallelsets_data = action.payload
     }
-
   },
   /*
   extraReducers: builder => {
@@ -53,6 +51,6 @@ export const stateSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setStackedBarchartData, setHeatmapData, setParallelsetsData} = stateSlice.actions
+export const { setStackedBarchartData, setHeatmapData, setParallelsetsData, setGlobalDateTimeInterval} = stateSlice.actions
 
 export default stateSlice.reducer

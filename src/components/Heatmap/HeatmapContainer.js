@@ -3,6 +3,7 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import HeatmapD3 from './HeatmapD3';
 import { setHeatmapData } from '../../redux/DatasetSlice';
+import {formatDate} from '../../utils';
 
 export default function HeatmapContainer(){
 
@@ -27,24 +28,9 @@ export default function HeatmapContainer(){
         heatmapD3.create({size:getCharSize()});
         heatmapD3Ref.current = heatmapD3;
         
-        const api_endpoint = "getHeatmap"
-        //const xAttribute = "cat_dst";
-        //const yAttribute = "cat_src";
-        const xAttribute = "source_ip";
-        const yAttribute = "destination_ip";
 
-        const start_date_str = "2011/04/06 17:40:00";
-        const end_date_str = "2020/04/06 20:40:00";
+        fetchDataAndUpdate()
 
-
-        fetchData(api_endpoint, xAttribute, yAttribute, start_date_str, end_date_str, 24).then(data => {
-            const newState = {
-                data: data,
-                xAttribute,
-                yAttribute
-            }
-            dispatch(setHeatmapData(newState));
-        });
 
         return () => {
 
@@ -53,7 +39,38 @@ export default function HeatmapContainer(){
         }
     }, []);
 
-    async function fetchData(api_endpoint, xAttribute, yAttribute, start_date_str, end_date_str, subnet_bits){
+    useEffect(()=>{
+        divContainerRef.current.style.opacity = 0.5;
+        fetchDataAndUpdate();
+    }, [state.global_date_time_interval]);
+
+    useEffect(()=>{ 
+        if(state.heatmap_data === null){
+            return;
+        }
+        
+        divContainerRef.current.style.opacity = 1;
+
+        const data = state.heatmap_data.data;
+        const keys = Object.keys(data[0]);
+        heatmapD3Ref.current.clear();
+        heatmapD3Ref.current.create({size:getCharSize()});
+        heatmapD3Ref.current.render(data, keys[0], keys[1]);
+
+
+    }, [state.heatmap_data]);
+
+    async function fetchDataAndUpdate(){
+
+        const api_endpoint = "getHeatmap"
+        //const xAttribute = "cat_dst";
+        //const yAttribute = "cat_src";
+        const xAttribute = "source_ip";
+        const yAttribute = "destination_ip";
+
+        const start_date_str = formatDate(state.global_date_time_interval[0])
+        const end_date_str = formatDate(state.global_date_time_interval[1])
+        const subnet_bits = 24;
 
         const baseUrl = `http://localhost:5000/${api_endpoint}`;
         const params = 
@@ -70,23 +87,17 @@ export default function HeatmapContainer(){
         const response = await fetch(url);
         const data = await response.json();
 
-        return data;
+        const newState = {
+            data: data,
+            xAttribute,
+            yAttribute
+        }
+        dispatch(setHeatmapData(newState));
     }
 
-    useEffect(()=>{
-        if(state.heatmap_data === null){
-            return;
-        }
-
-        const data = state.heatmap_data.data;
-        const keys = Object.keys(data[0]);
-        heatmapD3Ref.current.render(data, keys[0], keys[1]);
-
-    }, [state, dispatch]);
 
     return (
         <div ref={divContainerRef} className="heatmap-container h-100">
-            <h1>Heatmap</h1>
 
         </div>
     )

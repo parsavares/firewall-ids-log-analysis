@@ -14,9 +14,12 @@ import GiorgioPage from './pages/GiorgioPage';
 import FerraPage from './pages/FerraPage';
 import ParsaPage from './pages/ParsaPage';
 
+import TimeControlbar from './components/TimeControlbar/TimeControlbar';
+
 function App() {
   return (
     <div className="App h-100">
+      <TimeControlbar/>
       <Router>
         <nav>
           <ul>

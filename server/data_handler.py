@@ -10,6 +10,8 @@ class DataHandler:
         assert(self.df is not None)
 
         print(self.df["date_time"][0])
+        print(pd.to_datetime(start_datetime_str))
+        
         if start_datetime_str and end_datetime_str:
 
             # !! @TODO: This is a temporary fix, we need to handle different date formats

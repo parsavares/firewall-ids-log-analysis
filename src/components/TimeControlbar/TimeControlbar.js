@@ -1,70 +1,72 @@
-import React from 'react'  
+import React, {useState} from 'react'  
 import { endOfToday, set } from 'date-fns' 
 import TimeRange from '@harveyconnor/react-timeline-range-slider'  
 import { subDays } from 'date-fns'
 import { useDispatch, useSelector } from 'react-redux'
+import { setGlobalDateTimeInterval } from '../../redux/DatasetSlice'
 
-const now = new Date()
-const yesterday = subDays(now, 1)
+function App() {  
 
-const getTodayAtSpecificHour = (hour = 12) =>
-	set(now, { hours: hour, minutes: 0, seconds: 0, milliseconds: 0 })
+    const startDate = new Date(2012, 3, 5, 0, 0, 0)
+    const endDate = new Date(2012, 3, 7, 0, 0, 0)
 
-const getYesterdayAtSpecificHour = (hour = 12) =>
-    set(yesterday, { hours: hour, minutes: 0, seconds: 0, milliseconds: 0 })
+    const [state, setState] = useState({  
+        error: false,  
+        selectedInterval: [startDate, endDate],  
+    })
 
-const selectedStart = getYesterdayAtSpecificHour(0)
-const selectedEnd = getTodayAtSpecificHour(14)
-
-const startTime = getTodayAtSpecificHour(0)
-const endTime = endOfToday()
-
-class App extends React.Component {  
-  state = {  
-    error: false,  
-    selectedInterval: [selectedStart, selectedEnd],  
-  }
+    const redux_state = useSelector(state => state.state)
+    const dispatch = useDispatch()
 
 
-    errorHandler = ({ error }) => {}
+    const errorHandler = ({ error }) => {}
 
-    onChangeCallback = selectedInterval => {
+    const onChangeCallback = selectedInterval => {
+        dispatch(setGlobalDateTimeInterval(selectedInterval))
         console.log(selectedInterval)
-        this.setState({ selectedInterval })  
+        setState(prevState => ({ ...prevState, selectedInterval }))  
+        
     }
 
-  render() {  
-    const { selectedInterval, error } = this.state  
-    return (  
-      <TimeRange
-        error={error}  
-        ticksNumber={36}  
-        selectedInterval={selectedInterval}  
-        timelineInterval={[startTime, endTime]}  
-        onUpdateCallback={this.errorHandler}  
-        onChangeCallback={this.onChangeCallback}
-        formatTick={ms => {
-        const date = new Date(ms);
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1; // Months are zero-indexed
-        const day = date.getDate();
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
-        return `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day} ${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
-        }}
-        trackStyles={{
-        valid: {
-          backgroundColor: 'rgba(98, 203, 102, 0.5)',
-          borderLeft: '1px solid #62CB66',
-          borderRight: '1px solid #62CB66',
-        }
-        }}
-        handleColors={{
-        valid: 'rgb(98, 203, 102)'
-        }}
-      />
-    )  
-  }  
+
+
+    return (
+        <div className="w-100">
+            <div className='mb-5'>
+                <TimeRange
+                    error={state.error}
+                    ticksNumber={36}
+                    selectedInterval={state.selectedInterval}
+                    timelineInterval={[startDate, endDate]}
+                    onUpdateCallback={errorHandler}
+                    onChangeCallback={onChangeCallback}
+                    formatTick={ms => {
+                        const date = new Date(ms);
+                        const year = date.getFullYear();
+                        const month = date.getMonth() + 1; // Months are zero-indexed
+                        const day = date.getDate();
+                        const hours = date.getHours();
+                        const minutes = date.getMinutes();
+                        return `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day} ${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+                    }}
+                    trackStyles={{
+                        valid: {
+                            backgroundColor: 'rgba(98, 203, 102, 0.5)',
+                            borderLeft: '1px solid #62CB66',
+                            borderRight: '1px solid #62CB66',
+                        }
+                    }}
+                    handleColors={{
+                        valid: 'rgb(98, 203, 102)'
+                    }}
+                />
+            </div>
+            <div className="d-flex justify-content-center">
+                {state.selectedInterval[0].toLocaleString()} - {state.selectedInterval[1].toLocaleString()}
+            </div>
+        </div>
+    )
+    
 }  
 
 export default App

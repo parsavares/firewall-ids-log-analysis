@@ -59,6 +59,7 @@ def get_stacked_barchart():
     assert start_datetime_str is not None
     assert end_datetime_str is not None
 
+    print("start: ", start_datetime_str)
     stacked_barchart = StackedBarchart()
     return stacked_barchart.get_stacked_barchart_data(data_handler.get_dataframe(start_datetime_str, end_datetime_str), yAttribute)
 
