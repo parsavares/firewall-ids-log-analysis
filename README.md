@@ -153,6 +153,39 @@ The data covers a specific timeframe and is instrumental in identifying suspicio
     npm start
     ```
     The application will be accessible at `http://localhost:3000`.
+   
+## Setup with Yarn
+
+To install dependencies and run the project using Yarn, follow these steps:
+
+1. **Install Yarn** (if not already installed):
+   ```bash
+   npm install -g yarn
+   ```
+
+2. **Install dependencies**:
+   Navigate to the project directory and run:
+   ```bash
+   yarn install
+   ```
+
+3. **Start the application**:
+   Run the application (replace `yarn start` with the actual start command for your project):
+   ```bash
+   yarn start
+   ```
+
+4. **Other useful Yarn commands**:
+   - Build the project for production:
+     ```bash
+     yarn build
+     ```
+   - Run tests:
+     ```bash
+     yarn test
+     ```
+
+For more information on using Yarn, visit the [official Yarn documentation](https://yarnpkg.com/).
 
 ## Usage Instructions
 1. **Load the Data**: Once the app is running, use the provided interface to load the cleaned data files.
