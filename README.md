@@ -73,18 +73,24 @@ firewall-ids-log-analysis/
 |
 ├── scripts/                    # Python scripts for data analysis
 │   ├── analysis_summaries
-│       ├── external_ips_ids_alerts.csv
-│       ├── suspicious_teardown_rebuild_pairs.csv
-│       ├── unusual_services_traffic_sample.csv
+│       ├── top_20_external_ips.csv
+│       ├── top_50_destination_ports.csv
+│       ├── top_50_destination_services.csv
+│   ├── DataProcessing.py
+│   ├── GeoLite2-City.mmdb
 │   ├── Patterns.py
+|   ├── Patterns2-out.txt
+│   ├── Patterns2.py
+│   ├── dashboard.py
 │   ├── dataset_analysis.py
 │   ├── dataset_summary.txt
-|   ├── firewall_stats.py
+│   ├── firewall_stats.py
 │   ├── ids_stats.py
 │   ├── new_analysis.py
 │   ├── query.py
 │   ├── refine_data.py
 │   ├── test-post-cleaning.py
+│   ├── test.py
 |
 ├── server/                    
 │   ├── __pycache__
