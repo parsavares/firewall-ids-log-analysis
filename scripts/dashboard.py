@@ -12,8 +12,8 @@ ANALYSIS_SUMMARIES_DIR = os.path.join('scripts', 'analysis_summaries')
 
 # Load the preprocessed data
 try:
-    firewall_traffic_df = pd.read_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, 'external_firewall_traffic.csv')).head(10000)  # Limiting to 10k rows
-    ids_traffic_df = pd.read_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, 'external_ids_traffic.csv')).head(10000)  # Limiting to 10k rows
+    firewall_traffic_df = pd.read_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, 'external_firewall_traffic.csv')).head(10000)
+    ids_traffic_df = pd.read_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, 'external_ids_traffic.csv')).head(10000)
     top_services_df = pd.read_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, 'top_50_destination_services.csv'))
     top_ports_df = pd.read_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, 'top_50_destination_ports.csv'))
     top_ips_df = pd.read_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, 'top_20_external_ips.csv'))
@@ -22,32 +22,9 @@ except Exception as e:
     print(f"[ERROR] Could not load one or more analysis files. {e}")
     exit()
 
-# Convert priority columns to numeric
-if 'Source_Priority' in firewall_traffic_df.columns:
-    firewall_traffic_df['Source_Priority'] = pd.to_numeric(firewall_traffic_df['Source_Priority'], errors='coerce')
-
-if 'priority' in ids_traffic_df.columns:
-    ids_traffic_df['priority'] = pd.to_numeric(ids_traffic_df['priority'], errors='coerce')
-
-# Fill NaNs with 0 to avoid Plotly size errors
-if 'Source_Priority' in firewall_traffic_df.columns:
-    firewall_traffic_df['Source_Priority'] = firewall_traffic_df['Source_Priority'].fillna(0)
-
-if 'priority' in ids_traffic_df.columns:
-    ids_traffic_df['priority'] = ids_traffic_df['priority'].fillna(0)
-
-# Fix column names if needed
-if 'Destination service' not in top_services_df.columns:
-    top_services_df.reset_index(inplace=True)
-    top_services_df.rename(columns={'index': 'Destination service'}, inplace=True)
-
-if 'Destination port' not in top_ports_df.columns:
-    top_ports_df.reset_index(inplace=True)
-    top_ports_df.rename(columns={'index': 'Destination port'}, inplace=True)
-
-if 'Source IP' not in top_ips_df.columns:
-    top_ips_df.reset_index(inplace=True)
-    top_ips_df.rename(columns={'index': 'Source IP'}, inplace=True)
+# Data Cleaning
+firewall_traffic_df['Source_Priority'] = pd.to_numeric(firewall_traffic_df.get('Source_Priority', 0), errors='coerce').fillna(0)
+ids_traffic_df['priority'] = pd.to_numeric(ids_traffic_df.get('priority', 0), errors='coerce').fillna(0)
 
 # ================================
 # 🔥 Initialize Dash Application
@@ -70,7 +47,9 @@ app.layout = html.Div([
                             top_services_df,
                             path=['Destination service'],
                             values='count',
-                            title="Top 50 Destination Services"
+                            title="Top 50 Destination Services",
+                            color='count',
+                            color_continuous_scale='Blues'
                         )
                     ),
                     dcc.Graph(
@@ -79,7 +58,9 @@ app.layout = html.Div([
                             top_ports_df,
                             x='Destination port',
                             y='count',
-                            title="Top 50 Destination Ports"
+                            color='count',
+                            title="Top 50 Destination Ports",
+                            color_continuous_scale='Viridis'
                         )
                     ),
                     dcc.Graph(
@@ -87,7 +68,8 @@ app.layout = html.Div([
                         figure=px.pie(
                             firewall_traffic_df,
                             names='Source_NodeType',
-                            title="Source Node Type Distribution"
+                            title="Source Node Type Distribution",
+                            color_discrete_sequence=px.colors.qualitative.Set3
                         )
                     ),
                     dcc.Graph(
@@ -96,7 +78,9 @@ app.layout = html.Div([
                             firewall_traffic_df,
                             x='Date/time',
                             y='Source_Priority',
-                            title="High-Priority Traffic Analysis"
+                            color_discrete_sequence=["#636EFA"],
+                            title="High-Priority Traffic Analysis",
+                            markers=True
                         )
                     ),
                     dcc.Graph(
@@ -105,9 +89,10 @@ app.layout = html.Div([
                             firewall_traffic_df,
                             x='Source IP',
                             y='Destination IP',
-                            size='Source_Priority',  # Now numeric and no NaN
+                            size='Source_Priority',
                             color='Operation',
-                            title="External IP Analysis"
+                            title="External IP Analysis",
+                            color_discrete_sequence=px.colors.qualitative.Dark24
                         )
                     ),
                 ]
@@ -124,7 +109,9 @@ app.layout = html.Div([
                             ids_traffic_df,
                             x='Date/time',
                             y='priority',
-                            title="IDS Alert Counts Over Time"
+                            color_discrete_sequence=["#EF553B"],
+                            title="IDS Alert Counts Over Time",
+                            markers=True
                         )
                     ),
                     dcc.Graph(
@@ -134,7 +121,9 @@ app.layout = html.Div([
                             x='count',
                             y='Source IP',
                             orientation='h',
-                            title="Top 20 External IPs Triggering Alerts"
+                            color='count',
+                            title="Top 20 External IPs Triggering Alerts",
+                            color_continuous_scale='Agsunset'
                         )
                     ),
                     dcc.Graph(
@@ -142,7 +131,8 @@ app.layout = html.Div([
                         figure=px.pie(
                             ids_traffic_df,
                             names='classification',
-                            title="Classification of IDS Alerts"
+                            title="Classification of IDS Alerts",
+                            color_discrete_sequence=px.colors.qualitative.Prism
                         )
                     ),
                     dcc.Graph(
@@ -151,24 +141,12 @@ app.layout = html.Div([
                             ids_traffic_df,
                             x='Source IP',
                             y='Destination IP',
+                            size='priority',
                             color='priority',
-                            size='priority',  # Now priority is numeric and not NaN
-                            title="Source IP vs Destination IP"
+                            title="Source IP vs Destination IP",
+                            color_continuous_scale='Cividis'
                         )
                     ),
-                    # GEOIP Analysis (Commented Out)
-                    # dcc.Graph(
-                    #     id='geoip-analysis',
-                    #     figure=px.scatter_geo(
-                    #         geoip_lookup_df,
-                    #         lat='Latitude',
-                    #         lon='Longitude',
-                    #         text='City',
-                    #         title="GeoIP Analysis of External IPs",
-                    #         hover_name='City',
-                    #         hover_data=['Country', 'IP']
-                    #     )
-                    # ),
                 ]
             )
         ]),
