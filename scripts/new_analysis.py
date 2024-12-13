@@ -16,16 +16,27 @@ def classify_ip(ip):
     
     # Check if the IP is in the specific '172.23.X.X' range (private network of the bank)
     if ip_obj in ip_network('172.23.0.0/16'):
-        if ip == '172.23.0.2':
+        if ip_obj == "172.23.0.1":
+            return "int_cisco_firweall"
+        if ip_obj == '172.23.0.2':
             return "int_log_server"
-        if ip == '172.23.0.10':
+        if ip_obj == '172.23.0.10':
             return "int_dns_server"
         if ip_obj in ip_network('172.23.214.0/24'):
             return "int_financial_servers"
         if ip_obj in ip_network('172.23.229.0/24'):
             return "int_financial_servers"
-        
-    if ip_obj in ip_network('10.0.0.0/8'): #external websites
+        return "int_workstation"
+    
+    if ip_obj == "10.32.0.100":
+        return "ext_dc_firewall"
+    if ip_obj == "10.32.2.100" or ip_obj == "10.32.2.101":
+        return "ext_financial_server"
+    if ip_obj == "10.32.0.1":
+        return "ext_cisco_firewall"
+    
+    
+    if ip_obj in ip_network('10.32.0.0/16'): #external websites
         return "ext_website"
     
     return "ext_dns"
