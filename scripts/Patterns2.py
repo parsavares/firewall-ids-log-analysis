@@ -7,6 +7,7 @@ import geoip2.database  # For GeoIP lookup (requires `geoip2` package)
 # 🔧 Configuration
 # ===============================
 REFINED_DATA_DIR = os.path.join('..', 'data', 'MC2-CSVFirewallandIDSlogs')
+ANALYSIS_SUMMARIES_DIR = os.path.join('scripts', 'analysis_summaries')
 
 # Corrected file paths
 REFINED_FIREWALL = [
@@ -56,7 +57,6 @@ def load_dask_dataframe(file_paths, file_type="firewall"):
         print(f"[ERROR] Could not load {file_type} data due to: {str(e)}")
         return None
 
-
 # Load the data
 firewall_ddf = load_dask_dataframe(REFINED_FIREWALL, file_type="firewall")
 ids_ddf = load_dask_dataframe(REFINED_IDS, file_type="IDS")
@@ -80,27 +80,22 @@ print(ids_ddf.head(5))
 external_firewall_ddf = firewall_ddf[(firewall_ddf['Source_IsInternal'] == False) | (firewall_ddf['Dest_IsInternal'] == False)]
 external_ids_ddf = ids_ddf[(ids_ddf['Source_IsInternal'] == False) | (ids_ddf['Dest_IsInternal'] == False)]
 
-print("\n[DEBUG] External Firewall Traffic Sample (5 rows):")
-print(external_firewall_ddf.head(5))
-
-print("\n[DEBUG] External IDS Traffic Sample (5 rows):")
-print(external_ids_ddf.head(5))
+external_firewall_ddf.to_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, 'high_priority_traffic_sample.csv'), index=False)
+print("\n[INFO] Exported high priority traffic sample.")
 
 # 2️⃣ Destination Services
 try:
     service_counts = external_firewall_ddf['Destination service'].value_counts().nlargest(50).compute()
-    print("\n[DEBUG] Top 50 Destination Services in Logs:")
-    print(service_counts)
+    service_counts.to_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, 'top_50_destination_services.csv'))
+    print("\n[INFO] Exported top 50 destination services.")
 except Exception as e:
     print(f"[ERROR] Could not compute 'Destination service' counts due to: {str(e)}")
 
 # 3️⃣ Destination Ports
 try:
     port_counts = external_firewall_ddf['Destination port'].value_counts().nlargest(50).compute()
-    port_counts = port_counts.reset_index()
-    port_counts['Service'] = port_counts['index'].apply(lambda port: PORT_TO_SERVICE.get(port, 'Unknown'))
-    print("\n[DEBUG] Top 50 Destination Ports with Service Mapping:")
-    print(port_counts.head(50))
+    port_counts.to_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, 'top_50_destination_ports.csv'))
+    print("\n[INFO] Exported top 50 destination ports.")
 except Exception as e:
     print(f"[ERROR] Could not compute 'Destination port' counts due to: {str(e)}")
 
@@ -108,18 +103,14 @@ except Exception as e:
 try:
     firewall_node_types = external_firewall_ddf['Source_NodeType'].value_counts().compute()
     ids_node_types = external_ids_ddf['Source_NodeType'].value_counts().compute()
-    print("\n[DEBUG] Source Node Types in Firewall Data:")
-    print(firewall_node_types)
-    print("\n[DEBUG] Source Node Types in IDS Data:")
-    print(ids_node_types)
 except Exception as e:
     print(f"[ERROR] Could not compute 'Source_NodeType' counts due to: {str(e)}")
 
 # 5️⃣ IDS Alerts
 try:
     external_ids_alert_counts = external_ids_ddf['Source IP'].value_counts().nlargest(20).compute()
-    print("\n[DEBUG] Top 20 External IPs Triggering IDS Alerts:")
-    print(external_ids_alert_counts)
+    external_ids_alert_counts.to_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, 'top_20_external_ips.csv'))
+    print("\n[INFO] Exported top 20 external IPs.")
 except Exception as e:
     print(f"[ERROR] Could not compute IDS alert counts due to: {str(e)}")
 
@@ -141,9 +132,9 @@ try:
             except Exception as e:
                 ip_locations[ip] = {'Country': 'Unknown', 'City': 'Unknown', 'Latitude': None, 'Longitude': None}
 
-    print("\n[DEBUG] GeoIP Lookup for Top 20 Alerting IPs:")
-    for ip, loc in ip_locations.items():
-        print(f"IP: {ip}, Location: {loc}")
+    ip_locations_df = pd.DataFrame.from_dict(ip_locations, orient='index')
+    ip_locations_df.to_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, 'external_ips_ids_alerts.csv'))
+    print("\n[INFO] Exported IPs GeoIP lookup data.")
 except Exception as e:
     print(f"[ERROR] Could not perform GeoIP lookup due to: {str(e)}")
 
