@@ -1,17 +1,16 @@
 import {useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import StackedbarchartD3 from './StackedBarchartD3';
+import StackedbarchartD3_ids from './StackedbarchartD3_ids';
 import { setStackedBarchartData } from '../../redux/DatasetSlice';
-import {formatDate} from '../../utils';
 
-export default function StackedbarchartContainer(){
+export default function StackedbarchartContainer_ids(){
 
     const state = useSelector(state => state.state);
     const dispatch = useDispatch();
 
     const divContainerRef = useRef(null);
     const StackedbarchartD3Ref = useRef(null);
-    const StackedbarchartD3Ref_ids = useRef(null);
+    //const StackedbarchartD3Ref_ids = useRef(null);
 
     const getCharSize = function(){
         let width;
@@ -47,19 +46,20 @@ export default function StackedbarchartContainer(){
     };
 
     useEffect(()=>{
-        const stackedbarchartD3Instance = new StackedbarchartD3(divContainerRef.current);
-        const stackedbarchartD3Instance_ids = new StackedbarchartD3(divContainerRef.current);
+        const stackedbarchartD3Instance = new StackedbarchartD3_ids(divContainerRef.current);
+        //const stackedbarchartD3Instance_ids = new StackedbarchartD3(divContainerRef.current);
 
         stackedbarchartD3Instance.create({size:getCharSize()});
-        stackedbarchartD3Instance_ids.create({size:getCharSize()});
+        //stackedbarchartD3Instance_ids.create({size:getCharSize()});
 
         StackedbarchartD3Ref.current = stackedbarchartD3Instance;
+        //StackedbarchartD3Ref_ids.current = stackedbarchartD3Instance_ids;
 
 
         // Fetch the data from server
-        const api_endpoint = "debug";
+        const api_endpoint = "debug_ids";
         const xAttribute = "date_time";
-        const yAttribute = "syslog_priority";
+        const yAttribute = "priority";
 
         const start_date_str = "2011/04/06 17:40:00";
         const end_date_str = "2020/04/06 20:40:00";
@@ -80,25 +80,14 @@ export default function StackedbarchartContainer(){
             const stackedbarchartD3Instance = StackedbarchartD3Ref.current;
             stackedbarchartD3Instance.clear();
 
-            const stackedbarchartD3Instance_ids = StackedbarchartD3Ref_ids.current;
-            stackedbarchartD3Instance_ids.clear();
+            //const stackedbarchartD3Instance_ids = StackedbarchartD3Ref_ids.current;
+            //stackedbarchartD3Instance_ids.clear();
 
 
         }
     }, []);
 
-    async function fetchDataAndUpdate(){
-
-        // Fetch the data from server
-        const api_endpoint = "getStackedBarchart";
-        const xAttribute = "date_time";
-        const yAttribute = "syslog_priority";
-
-        const start_date_str = formatDate(state.global_date_time_interval[0])
-        const end_date_str = formatDate(state.global_date_time_interval[1])
-            
-       // const start_date_str = "2011/04/06 17:40:00";
-        //const end_date_str = "2020/04/06 20:40:00";
+    async function fetchData(api_endpoint, xAttribute, yAttribute, start_date_str, end_date_str){
 
         const baseUrl = `http://localhost:5000/${api_endpoint}`;
         const params = 
@@ -114,39 +103,28 @@ export default function StackedbarchartContainer(){
         const response = await fetch(url);
         const data = await response.json();
 
-        const newState = {
-            data: data,
-            xAttribute,
-            yAttribute
-        }
-
-        console.log(newState);
-        dispatch(setStackedBarchartData(newState));
+        return data;
     }
 
     useEffect(()=>{
-        divContainerRef.current.style.opacity = 0.5;
-        fetchDataAndUpdate();
-    }, [state.global_date_time_interval]);
-    useEffect(()=>{
 
-        if(state.stackedbarchart_data === null){
+        if(state.stackedbarchart_data_ids === null){
             return;
         }
         
         console.log("before", state.stackedbarchart_data.data)
 
-        const data = delete_priorities(state.stackedbarchart_data.data, state.priority_firewall)
+        const data = delete_priorities(state.stackedbarchart_data_ids.data, state.priority_ids)
         const xAttribute = state.stackedbarchart_data.xAttribute;
         const yAttribute = state.stackedbarchart_data.yAttribute;
 
         
         console.log("updated", data)
         StackedbarchartD3Ref.current.render(data, xAttribute, yAttribute);
-    }, [state.stackedbarchart_data]);
+    }, [state, dispatch]);
 
     return (
-        <div ref={divContainerRef} className="Stackedbarchart-container h-100" >
+        <div ref={divContainerRef} className="Stackedbarchart-container h-100">
             <h1>Stackedbarchart</h1>
 
         </div>

@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-//import Papa from "papaparse"
 
+
+/*
 // get the data in asyncThunk
 export const fetchFileData = createAsyncThunk('seoulBikeData/fetchData', async () => {
-  /*
+  
     const response = await fetch('data/SeoulBikeData.csv');
     const responseText = await response.text();
     console.log("loaded file length:" + responseText.length);
@@ -12,20 +13,26 @@ export const fetchFileData = createAsyncThunk('seoulBikeData/fetchData', async (
     //return responseJson.data.map((item,i)=>{return {...item,index:i}}).slice(0, 10); // 
     return responseJson.data.map((item,i)=>{return {...item,index:i}});
     // when a result is returned, extraReducer below is triggered with the case setSeoulBikeData.fulfilled
-    */
+    
 
     return {}
 })
-
+*/
 
 export const stateSlice = createSlice({
   name: 'state',
   initialState: {
     global_date_time_interval: [new Date(2012, 3, 5, 0, 0, 0), new Date(2012, 3, 7, 23, 59, 0)],
     stackedbarchart_data: null,
+    stackedbarchart_data_ids: null,
     heatmap_data: null,
     parallelsets_data: null,
-    sankediagram_data: null
+    sankediagram_data: null,
+    heatmap_data_copy: null,
+    parallelsets_data_copy: null,
+    priority_firewall: ['Info', 'Notice', 'Warning', 'Critical', 'Error'],
+    priority_ids: ['3', '2', '1']
+
   },
   reducers: {
     setGlobalDateTimeInterval: (state, action) => {
@@ -34,8 +41,12 @@ export const stateSlice = createSlice({
     setStackedBarchartData: (state, action) => {
       state.stackedbarchart_data = action.payload;
     },
+    setStackedBarchartData_ids: (state, action) => {
+      state.stackedbarchart_data_ids = action.payload;
+    },
     setHeatmapData: (state, action) => {
       state.heatmap_data = action.payload
+      state.heatmap_data_copy = action.payload
     },
     setParallelsetsData: (state, action) => {
       state.parallelsets_data = action.payload
