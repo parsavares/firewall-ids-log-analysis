@@ -186,6 +186,28 @@ def clean_ids():
     
     print("lines in the original IDS datset: ", len(IDS))
     
+    #handle name of columns
+    IDS.rename(columns={'time': 'Date_time'}, inplace=True)
+
+    
+    
+    # split the Date_time column into two columns
+    IDS[['Date', 'Time']] = IDS['Date_time'].str.split(' ', expand=True)
+    
+    #change the Date format in the dataset
+    IDS['Date'] = pd.to_datetime(IDS['Date'])
+    
+    #assign a category to the IPs
+    IDS['cat_src'] = IDS[' sourceIP'].apply(classify_ip)
+    IDS['cat_dst'] = IDS[' destIP'].apply(classify_ip)
+    
+    # Rename columns to remove spaces, replace with underscores, and convert to lower case
+    IDS.columns = IDS.columns.str.replace(' ', '_').str.lower()
+
+    IDS.to_csv('../data/MC2-CSVFirewallandIDSlogs/IDS.csv')
+    
+    
+    '''
     #print("lines in IDS with NaN as label", (IDS[' label'] == 'NaN').sum())
     print("lines in IDS with NaN as label", IDS[' label'].isna().sum())
     print("lines in IDS with with priority minimum", (IDS[' priority'] == 3).sum())
@@ -232,6 +254,7 @@ def clean_ids():
 
     # Print the number of remaining rows
     #print("Lines in the IDS dataset: ", len(IDS))
+    '''
 
     return
 

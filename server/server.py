@@ -13,6 +13,7 @@ app = Flask(__name__)
 app.debug = True
 
 data_handler = DataHandler()
+data_handler_ids = DataHandler()
 
 # allows cross origin to be called from localhost:3000
 # not recommended in production
@@ -49,6 +50,13 @@ def debug():
     yAttribute = "syslog_priority"
     return stacked_barchart.get_stacked_barchart_data_2(data_handler.get_dataframe("2000-01-01 00:00:00", "2020-01-01 00:00:00"), yAttribute)
 
+@app.route("/debug_ids")
+def debug_ids():
+    stacked_barchart = StackedBarchart()
+    xAttribute = "date_time"
+    yAttribute = "priority"
+    return stacked_barchart.get_stacked_barchart_data_2(data_handler_ids.get_dataframe("2000-01-01 00:00:00", "2020-01-01 00:00:00"), yAttribute)
+
 @app.route("/getStackedBarchart")
 def get_stacked_barchart():
     params = request.args
@@ -81,6 +89,7 @@ def get_parallel_sets():
 if __name__ == "__main__":
     print("Loading data...")
     data_handler.load_csv("../data/MC2-CSVFirewallandIDSlogs/FIREWALL.csv", 100000)
+    data_handler_ids.load_csv("../data/MC2-CSVFirewallandIDSlogs/IDS.csv", 100000)
 
     print("Data loaded.")
     app.run()

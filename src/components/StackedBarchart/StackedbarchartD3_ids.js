@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 
-export default class StackedbarchartD3 {
+export default class StackedbarchartD3_ids {
 
     width;
     height;
