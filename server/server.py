@@ -31,17 +31,20 @@ def get_heatmap():
     yAttribute = params.get('yAttribute')
     start_datetime_str = params.get('start_datetime')
     end_datetime_str = params.get('end_datetime')
-    print(params)
+    data_source = params.get('data_source')
+
     assert xAttribute is not None
     assert yAttribute is not None
     assert start_datetime_str is not None
     assert end_datetime_str is not None
+    assert data_source is not None
 
     # Used when dealing with IPS, so optional    
     subnet_bits = int(params.get('subnet_bits'))
 
     heatmap = Heatmap()
-    return heatmap.get_heatmap_data(data_handler.get_dataframe(start_datetime_str, end_datetime_str), xAttribute, yAttribute, subnet_bits)
+    df = data_handler.get_dataframe(start_datetime_str, end_datetime_str) if data_source == "FIREWALL" else data_handler_ids.get_dataframe(start_datetime_str, end_datetime_str)
+    return heatmap.get_heatmap_data(df, xAttribute, yAttribute, subnet_bits)
 
 @app.route("/debug")
 def debug():
@@ -64,32 +67,40 @@ def get_stacked_barchart():
     yAttribute = params.get('yAttribute')
     start_datetime_str = params.get('start_datetime')
     end_datetime_str = params.get('end_datetime')
-    print(params)
+    data_source = params.get('data_source')
+
     assert xAttribute is not None
     assert yAttribute is not None
     assert start_datetime_str is not None
     assert end_datetime_str is not None
+    assert data_source is not None
 
     stacked_barchart = StackedBarchart()
-    return stacked_barchart.get_stacked_barchart_data(data_handler.get_dataframe(start_datetime_str, end_datetime_str), xAttribute, yAttribute)
+    df = data_handler.get_dataframe(start_datetime_str, end_datetime_str) if data_source == "FIREWALL" else data_handler_ids.get_dataframe(start_datetime_str, end_datetime_str)
+    return stacked_barchart.get_stacked_barchart_data(df, xAttribute, yAttribute)
 
 @app.route("/getParallelSets")
 def get_parallel_sets():
     start_datetime_str = request.args.get('start_datetime')
     end_datetime_str = request.args.get('end_datetime')
-    print(request.args)
-    assert start_datetime_str is not None
-    assert end_datetime_str is not None
+    data_source = request.args.get('data_source')
+    data_source = request.get('data_source')
 
     subnet_bits = int(request.args.get('subnet_bits'))
 
+    assert start_datetime_str is not None
+    assert end_datetime_str is not None
+    assert data_source is not None
+    assert subnet_bits is not None
+
     parallel_sets = ParallelSets()
-    return parallel_sets.get_parallel_sets_data(data_handler.get_dataframe(start_datetime_str, end_datetime_str), subnet_bits)
+    df = data_handler.get_dataframe(start_datetime_str, end_datetime_str) if data_source == "FIREWALL" else data_handler_ids.get_dataframe(start_datetime_str, end_datetime_str)
+    return parallel_sets.get_parallel_sets_data(df, subnet_bits)
 
 if __name__ == "__main__":
     print("Loading data...")
-    data_handler.load_csv("../data/MC2-CSVFirewallandIDSlogs/FIREWALL.csv", 100000)
-    data_handler_ids.load_csv("../data/MC2-CSVFirewallandIDSlogs/IDS.csv", 100000)
+    data_handler.load_csv("../data/MC2-CSVFirewallandIDSlogs/FIREWALL.csv")
+    data_handler_ids.load_csv("../data/MC2-CSVFirewallandIDSlogs/IDS.csv")
 
     print("Data loaded.")
     app.run()
