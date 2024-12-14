@@ -186,23 +186,19 @@ def clean_ids():
     
     print("lines in the original IDS datset: ", len(IDS))
     
-    #handle name of columns
-    IDS.rename(columns={'time': 'Date_time'}, inplace=True)
+    # Remove white spaces from column names
+    IDS.columns = IDS.columns.str.replace(' ', '')
 
-    
-    
-    # split the Date_time column into two columns
-    IDS[['Date', 'Time']] = IDS['Date_time'].str.split(' ', expand=True)
-    
     #change the Date format in the dataset
-    IDS['Date'] = pd.to_datetime(IDS['Date'])
-    
+    IDS.rename(columns={"time": "date_time", "sourceIP": "source_ip", "destIP": "dest_ip", "sourcePort": "source_port", "destPort": "destination_port", "packetinfocont'd": "packetinfo_2"}, inplace=True) 
+    IDS['date_time'] = pd.to_datetime(IDS['date_time'])
     #assign a category to the IPs
-    IDS['cat_src'] = IDS[' sourceIP'].apply(classify_ip)
-    IDS['cat_dst'] = IDS[' destIP'].apply(classify_ip)
-    
-    # Rename columns to remove spaces, replace with underscores, and convert to lower case
-    IDS.columns = IDS.columns.str.replace(' ', '_').str.lower()
+    IDS['cat_src'] = IDS['source_ip'].apply(classify_ip)
+    IDS['cat_dst'] = IDS['dest_ip'].apply(classify_ip)
+
+    # To lowercase 
+    IDS.columns = IDS.columns.str.lower()
+
 
     IDS.to_csv('../data/MC2-CSVFirewallandIDSlogs/IDS.csv')
     
