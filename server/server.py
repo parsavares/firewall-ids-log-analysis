@@ -8,6 +8,7 @@ from data_handler import DataHandler
 from heatmap import Heatmap 
 from stacked_barchart import StackedBarchart
 from parallel_sets import ParallelSets
+from sanke_diagram import SankeDiagram
 
 app = Flask(__name__)
 app.debug = True
@@ -44,9 +45,9 @@ def get_heatmap():
 
 @app.route("/debug")
 def debug():
-    stacked_barchart = StackedBarchart()
-    yAttribute = "syslog_priority"
-    return stacked_barchart.get_stacked_barchart_data(data_handler.get_dataframe("2000-01-01 00:00:00", "2020-01-01 00:00:00"), yAttribute)
+
+    sanke_diagram = SankeDiagram()
+    return sanke_diagram.get_sanke_diagram_data(data_handler.get_dataframe(), 24)
 
 @app.route("/getStackedBarchart")
 def get_stacked_barchart():
@@ -75,6 +76,19 @@ def get_parallel_sets():
 
     parallel_sets = ParallelSets()
     return parallel_sets.get_parallel_sets_data(data_handler.get_dataframe(start_datetime_str, end_datetime_str), subnet_bits)
+
+@app.route("/getSankeDiagram")
+def get_sanke_diagram():
+    start_datetime_str = request.args.get('start_datetime')
+    end_datetime_str = request.args.get('end_datetime')
+    print(request.args)
+    assert start_datetime_str is not None
+    assert end_datetime_str is not None
+
+    subnet_bits = int(request.args.get('subnet_bits'))
+
+    sanke_diagram = SankeDiagram()
+    return sanke_diagram.get_sanke_diagram_data(data_handler.get_dataframe(start_datetime_str, end_datetime_str), subnet_bits)
 
 if __name__ == "__main__":
     print("Loading data...")
