@@ -7,7 +7,7 @@ class StackedBarchart:
 
         assert(df is not None)
         df['date_time_objs'] = pd.to_datetime(df['date_time'])
-        df['date_bin'] = pd.cut(df['date_time_objs'], bins=100)
+        df['date_bin'] = pd.cut(df['date_time_objs'], bins=150)
         bins = df.groupby(['date_bin', yAttribute]).size().unstack(fill_value=0)
 
         result = []

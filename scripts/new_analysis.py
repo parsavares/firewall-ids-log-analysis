@@ -267,8 +267,8 @@ def clean_ids():
 
 def main():
     
-    #clean_firewall()
-    clean_ids()
+    clean_firewall()
+    #clean_ids()
     return
 
 if __name__ == "__main__":

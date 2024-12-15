@@ -40,7 +40,7 @@ export default class SankeyDiagramD3 {
 
         const graph = this.transformData(data);
     
-
+        console.log(graph);
         // Create the sankey layout
         this.sankeyGenerator(graph);
     

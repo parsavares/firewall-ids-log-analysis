@@ -1,14 +1,14 @@
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 
 import HeatmapD3 from './HeatmapD3';
 import { setHeatmapData } from '../../redux/DatasetSlice';
 import {formatDate} from '../../utils';
 
-export default function HeatmapContainer(){
+export default function HeatmapContainer({data_source, xAttribute, yAttribute, subnet_bits=24}){
 
-    const state = useSelector(state => state.state);
-    const dispatch = useDispatch();
+    const redux_state = useSelector(state => state.state);
+    const [state, setState] = useState(null);
 
     const divContainerRef = useRef(null);
     const heatmapD3Ref = useRef(null);
@@ -42,35 +42,29 @@ export default function HeatmapContainer(){
     useEffect(()=>{
         divContainerRef.current.style.opacity = 0.5;
         fetchDataAndUpdate();
-    }, [state.global_date_time_interval]);
+    }, [redux_state.global_date_time_interval]);
 
     useEffect(()=>{ 
-        if(state.heatmap_data === null){
+        if(state === null){
             return;
         }
         
         divContainerRef.current.style.opacity = 1;
 
-        const data = state.heatmap_data.data;
-        const keys = Object.keys(data[0]);
+        const data = state.data;
         heatmapD3Ref.current.clear();
         heatmapD3Ref.current.create({size:getCharSize()});
-        heatmapD3Ref.current.render(data, keys[0], keys[1]);
+        heatmapD3Ref.current.render(data, state.xAttribute, state.yAttribute);
 
 
-    }, [state.heatmap_data]);
+    }, [state]);
 
     async function fetchDataAndUpdate(){
 
         const api_endpoint = "getHeatmap"
-        const xAttribute = "cat_dst";
-        const yAttribute = "cat_src";
-        //const xAttribute = "source_ip";
-        //const yAttribute = "destination_ip";
 
-        const start_date_str = formatDate(state.global_date_time_interval[0])
-        const end_date_str = formatDate(state.global_date_time_interval[1])
-        const subnet_bits = 24;
+        const start_date_str = formatDate(redux_state.global_date_time_interval[0])
+        const end_date_str = formatDate(redux_state.global_date_time_interval[1])
 
         const baseUrl = `http://localhost:5000/${api_endpoint}`;
         const params = 
@@ -79,7 +73,8 @@ export default function HeatmapContainer(){
                 yAttribute: yAttribute,
                 start_datetime: start_date_str,
                 end_datetime: end_date_str,
-                subnet_bits: subnet_bits
+                subnet_bits: subnet_bits,
+                data_source: data_source
             }
         
         const queryString = new URLSearchParams(params).toString();
@@ -92,7 +87,7 @@ export default function HeatmapContainer(){
             xAttribute,
             yAttribute
         }
-        dispatch(setHeatmapData(newState));
+        setState(newState)
     }
 
 

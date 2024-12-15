@@ -60,12 +60,6 @@ def debug_ids():
     yAttribute = "priority"
     return stacked_barchart.get_stacked_barchart_data_2(data_handler_ids.get_dataframe("2000-01-01 00:00:00", "2020-01-01 00:00:00"), yAttribute)
 
-@app.route("/debug_ids")
-def debug_ids():
-    stacked_barchart = StackedBarchart()
-    xAttribute = "date_time"
-    yAttribute = "priority"
-    return stacked_barchart.get_stacked_barchart_data_2(data_handler_ids.get_dataframe("2000-01-01 00:00:00", "2020-01-01 00:00:00"), yAttribute)
 
 @app.route("/getStackedBarchart")
 def get_stacked_barchart():
@@ -90,7 +84,6 @@ def get_parallel_sets():
     start_datetime_str = request.args.get('start_datetime')
     end_datetime_str = request.args.get('end_datetime')
     data_source = request.args.get('data_source')
-    data_source = request.get('data_source')
 
     subnet_bits = int(request.args.get('subnet_bits'))
 
@@ -108,7 +101,6 @@ def get_sanke_diagram():
     start_datetime_str = request.args.get('start_datetime')
     end_datetime_str = request.args.get('end_datetime')
     data_source = request.args.get('data_source')
-    data_source = request.get('data_source')
 
     subnet_bits = int(request.args.get('subnet_bits'))
 
@@ -117,8 +109,8 @@ def get_sanke_diagram():
     assert data_source is not None
     assert subnet_bits is not None
 
-    parallel_sets = ParallelSets()
-    return parallel_sets.get_parallel_sets_data(data_handler.get_dataframe(start_datetime_str, end_datetime_str), subnet_bits)
+    sanke_diagram = SankeDiagram()
+    return sanke_diagram.get_sanke_diagram_data(data_handler.get_dataframe(start_datetime_str, end_datetime_str), subnet_bits)
 
 if __name__ == "__main__":
     print("Loading data...")

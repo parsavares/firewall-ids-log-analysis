@@ -22,7 +22,7 @@ export const fetchFileData = createAsyncThunk('seoulBikeData/fetchData', async (
 export const stateSlice = createSlice({
   name: 'state',
   initialState: {
-    global_date_time_interval: [new Date(2012, 3, 5, 0, 0, 0), new Date(2012, 3, 7, 23, 59, 0)],
+    global_date_time_interval: [new Date(2012, 3, 6, 15, 0, 0), new Date(2012, 3, 6, 17, 30, 0)],
     stackedbarchart_data: null,
     stackedbarchart_data_ids: null,
     heatmap_data: null,
@@ -41,20 +41,15 @@ export const stateSlice = createSlice({
     setStackedBarchartData: (state, action) => {
       state.stackedbarchart_data = action.payload;
     },
-    setStackedBarchartData_ids: (state, action) => {
-      state.stackedbarchart_data_ids = action.payload;
-    },
     setHeatmapData: (state, action) => {
       state.heatmap_data = action.payload
-      state.heatmap_data_copy = action.payload
     },
     setParallelsetsData: (state, action) => {
       state.parallelsets_data = action.payload
     },
     setSankeDiagramData: (state, action) => {
       state.sankediagram_data= action.payload
-    }
-  },
+    },
   /*
   extraReducers: builder => {
     builder.addCase(fetchFileData.fulfilled, (state, action) => {
@@ -63,9 +58,9 @@ export const stateSlice = createSlice({
     })
   }
     */
-})
+  }})
 
 // Action creators are generated for each case reducer function
-export const { setStackedBarchartData, setHeatmapData, setParallelsetsData, setSankeDiagramData, setGlobalDateTimeInterval} = stateSlice.actions
+export const { setStackedBarchartData, setHeatmapData, setParallelsetsData, setSankeDiagramData, setGlobalDateTimeInterval, setFilterPrioritiesFirewall, setFilterPrioritiesIds} = stateSlice.actions
 
 export default stateSlice.reducer

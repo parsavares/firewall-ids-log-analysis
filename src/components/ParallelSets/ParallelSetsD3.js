@@ -96,7 +96,7 @@ export default class ParallelSetsD3 {
         .range(syslog_priority_colors);
 
         console.log(data)
-        const thickness = d3.scaleLinear().domain([0, d3.max(data, d => d["count"])]).range([0.5, 5])
+        const thickness = d3.scaleLinear().domain([0, d3.max(data, d => d["count"])]).range([5, 5])
 
         this.parallelSetsSvg
         .selectAll("myPath")

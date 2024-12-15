@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {formatDate} from '../../utils';
 import ParallelSetsD3 from './ParallelSetsD3';
@@ -6,8 +6,9 @@ import { setParallelsetsData } from '../../redux/DatasetSlice';
 
 export default function ParallelSetsContainer(){
 
-    const state = useSelector(state => state.state);
-    const dispatch = useDispatch();
+    const redux_state = useSelector(state => state.state);
+    const [state, setState] = useState(null);
+    
 
     const divContainerRef = useRef(null);
     const ParallelSetsD3Ref = useRef(null);
@@ -38,34 +39,36 @@ export default function ParallelSetsContainer(){
     useEffect(()=>{
         divContainerRef.current.style.opacity = 0.5;
         fetchDataAndUpdate();
-    }, [state.global_date_time_interval]);
+    }, [redux_state.global_date_time_interval]);
 
     useEffect(()=>{
-        if(state.parallelsets_data===null)
+        if(state===null)
             return;
 
         divContainerRef.current.style.opacity = 1;
-        const data = state.parallelsets_data;
+        const data = state;
         
         console.log(data);
         ParallelSetsD3Ref.current.clear();
         ParallelSetsD3Ref.current.create({size:getCharSize()});
         ParallelSetsD3Ref.current.render(data);
-    }, [state.parallelsets_data]);
+    }, [state]);
 
     async function fetchDataAndUpdate(){
         const api_endpoint = "getParallelSets";
 
-        const start_date_str = formatDate(state.global_date_time_interval[0])
-        const end_date_str = formatDate(state.global_date_time_interval[1])
+        const start_date_str = formatDate(redux_state.global_date_time_interval[0])
+        const end_date_str = formatDate(redux_state.global_date_time_interval[1])
         const subnet_bits = 24;
- 
+        const data_source = "FIREWALL"
+
         const baseUrl = `http://localhost:5000/${api_endpoint}`;
         const params = 
             {
                 start_datetime: start_date_str,
                 end_datetime: end_date_str,
-                subnet_bits
+                subnet_bits,
+                data_source
             }
         
         const queryString = new URLSearchParams(params).toString();
@@ -74,7 +77,7 @@ export default function ParallelSetsContainer(){
         const data = await response.json();
 
 
-        dispatch(setParallelsetsData(data));
+        setState(data);
 
     }
 

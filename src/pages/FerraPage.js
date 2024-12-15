@@ -10,10 +10,10 @@ export default function FerraPage() {
             {/*<HeatmapContainer />*/}
             <div className="row h-50">
                 <div className="col-6">
-                    <StackedbarchartContainer />
+                    {/* <StackedbarchartContainer /> */}
                 </div>
                 <div className="col-6">
-                    <HeatmapContainer/>
+                    <HeatmapContainer data_source={"FIREWALL"}  yAttribute={"cat_src"} xAttribute={"destination_ip"} subnet_bits={24}/>
                 </div>
             </div>
             <div className="row h-50">

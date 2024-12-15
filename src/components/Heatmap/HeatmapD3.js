@@ -20,9 +20,9 @@ export default class HeatmapD3 {
 
     updateAxis = function(visData){
 
-    
-        var myGroups = Array.from(new Set(visData.map(d => d.xAttribute)));
-        var myVars = Array.from(new Set(visData.map(d => d.yAttribute)));
+        var myGroups = Array.from(new Set(visData.map(d => d.xAttribute))).sort();
+        var myVars = Array.from(new Set(visData.map(d => d.yAttribute))).sort();
+
 
 
         this.xScale = d3.scaleBand()
@@ -74,7 +74,23 @@ export default class HeatmapD3 {
 
         this.heatmapSvg.append("g")
             .attr("class","yAxisG");
-        
+
+        // Add X axis label
+        this.heatmapSvg.append("text")
+            .attr("class", "xAxisLabel")
+            .attr("text-anchor", "end")
+            .attr("x", this.width)
+            .attr("y", this.height + this.margin.top - 10)
+            .text(this.xAttribute);
+
+        // Add Y axis label
+        this.heatmapSvg.append("text")
+            .attr("class", "yAxisLabel")
+            .attr("text-anchor", "end")
+            .attr("transform", "rotate(-90)")
+            .attr("y", -this.margin.left + 20)
+            .attr("x", -this.margin.top)
+            .text(this.yAttribute);
 
     }
 
@@ -89,7 +105,7 @@ export default class HeatmapD3 {
         this.updateAxis(data, xAttribute, yAttribute);
 
         var maxFrequency = d3.max(data, d => d.frequency);
-        var myColor = d3.scaleSequential()
+        var myColor = d3.scaleSequentialLog()
         .interpolator(d3.interpolateViridis)
         .domain([1, maxFrequency])
 

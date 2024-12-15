@@ -16,6 +16,7 @@ class Heatmap:
         xAttributeModified = xAttribute
         yAttributeModified = yAttribute 
 
+        #df = df[df['syslog_priority'] != 'Info']
         # If the rwequested attributes are IP addresses, we need to group them by subnet
         if(xAttribute == 'source_ip' or xAttribute == 'destination_ip' or yAttribute == 'source_ip' or yAttribute == 'destination_ip'):
             assert subnet_bits is not None

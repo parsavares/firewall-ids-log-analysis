@@ -1,5 +1,4 @@
 import * as d3 from 'd3';
-import { syslog_priority_colors, syslog_priority_labels} from '../../utils'
 
 export default class StackedbarchartD3 {
 
@@ -32,8 +31,6 @@ export default class StackedbarchartD3 {
         const groups = data.map(d => d.interval_center)
         const maxBar = d3.max(d3.map(data, g => g.total_occurrences)) 
 
-        console.log("groups: ", groups)
-        console.log("maxBar: ", maxBar)
         // Prepare the scales for positional and color encodings.
         this.x = d3.scaleBand()
         .domain(groups)
@@ -53,12 +50,27 @@ export default class StackedbarchartD3 {
             .selectAll("text")  
             .attr("transform", "rotate(-90)")
             .attr("dy", "-0em")
-            .attr("dx", "-10em")
+            .attr("dx", "-10em");
 
-        
         this.stackedbarSvg.select(".yAxisG")
-            .call(leftAxis)
-        ;
+            .call(leftAxis);
+
+        // Add X axis label
+        this.stackedbarSvg.append("text")
+            .attr("class", "x axis-label")
+            .attr("text-anchor", "end")
+            .attr("x", this.width / 2 + this.margin.left)
+            .attr("y", this.height + this.margin.top + 40)
+            .text(this.xAttribute);
+
+        // Add Y axis label
+        this.stackedbarSvg.append("text")
+            .attr("class", "y axis-label")
+            .attr("text-anchor", "end")
+            .attr("transform", "rotate(-90)")
+            .attr("x", -this.height / 2)
+            .attr("y", -this.margin.left + 20)
+            .text(this.yAttribute);
 
     }
 
@@ -81,17 +93,7 @@ export default class StackedbarchartD3 {
                 .style("border-width", "1px")
                     .style("padding", "10px");
         }
-                // Create a tooltip div. This should be added to your HTML file or dynamically created in your script.
-                if (d3.select(this.el).select(".tooltip").empty()) {
-                    d3.select(this.el).append("div")
-                    .attr("class", "tooltip")
-                    .style("opacity", 0)
-                    .style("position", "absolute")
-                    .style("background-color", "white")
-                    .style("border", "solid")
-                    .style("border-width", "1px")
-                        .style("padding", "10px");
-                    }
+
 
         this.stackedbarSvg = d3.select(this.el).append("svg")
             .attr("width", this.width + this.margin.left + this.margin.right)
@@ -108,6 +110,23 @@ export default class StackedbarchartD3 {
         this.stackedbarSvg.append("g")
             .attr("class","yAxisG");
 
+        // Add X axis label
+        this.stackedbarSvg.append("text")
+            .attr("class", "x axis-label")
+            .attr("text-anchor", "end")
+            .attr("x", this.width / 2 + this.margin.left)
+            .attr("y", this.height + this.margin.top + 40)
+            .text(config.xAttribute);
+
+        // Add Y axis label
+        this.stackedbarSvg.append("text")
+            .attr("class", "y axis-label")
+            .attr("text-anchor", "end")
+            .attr("transform", "rotate(-90)")
+            .attr("x", -this.height / 2)
+            .attr("y", -this.margin.left + 20)
+            .text(config.yAttribute);
+
     }
     
     render = function(data, xAttribute, yAttribute){ 
@@ -117,12 +136,11 @@ export default class StackedbarchartD3 {
         this.xAttribute = xAttribute;
         this.yAttribute = yAttribute;
 
-        d3.select(".seriesG").remove()
+        this.stackedbarSvg.select(".seriesG").remove()
         
         this.stackedbarSvg.append("g")
         const subgroups = Object.keys(data[0].occurrences); 
 
-        console.log("sub: ", subgroups)
 
         this.updateAxis(data)
 
@@ -149,7 +167,6 @@ export default class StackedbarchartD3 {
         .keys(subgroups)
         (data_to_stack)
 
-        console.log("stacked data: ", stackedData)
 
         // Append a group for each series, and a rect for each element in the series.
         this.stackedbarSvg.append("g")
@@ -185,6 +202,6 @@ export default class StackedbarchartD3 {
     
 
     clear = function(){
-        d3.select(this.el).selectAll("*").remove();
+        d3.select(this.stackedbarSvg).selectAll("*").remove();
     }
 }
