@@ -6,10 +6,10 @@ export default class StackedbarchartD3 {
     height;
 
     margin = {
-    	top: 10,
-    	right: 200,
-    	bottom: 200,
-    	left: 200
+    	top: 20,
+    	right: 100,
+    	bottom: 20,
+    	left: 100
     };
 
     size;
@@ -141,6 +141,8 @@ export default class StackedbarchartD3 {
         this.stackedbarSvg.append("g")
         const subgroups = Object.keys(data[0].occurrences); 
 
+        //need to change subgroups in order to reflect the change of the time domain
+
 
         this.updateAxis(data)
 
@@ -197,11 +199,44 @@ export default class StackedbarchartD3 {
             d3.select("#tooltip")
                 .style("display", "none");
             })
+
+            //
+            const subgroups_legend = Object.keys(data[0].occurrences); 
+
+            this.createLegend(colorMap, subgroups_legend);
             
     }
+
+    createLegend = function (colorMap, subgroups) {
+        this.stackedbarSvg.select(".legend").remove();
+        const legend = this.stackedbarSvg.append("g")
+            .attr("class", "legend")
+            .attr("transform", `translate(${this.width + 20}, 20)`);
+
+        subgroups.forEach((subgroup, index) => {
+            const legendRow = legend.append("g")
+                .attr("transform", `translate(0, ${index * 20})`);
+
+            legendRow.append("rect")
+                .attr("width", 18)
+                .attr("height", 18)
+                .attr("fill", colorMap(subgroup));
+
+            legendRow.append("text")
+                .attr("x", 25)
+                .attr("y", 14)
+                .text(subgroup)
+                .style("font-size", "12px");
+        });
+    };
     
 
+    /*
     clear = function(){
         d3.select(this.stackedbarSvg).selectAll("*").remove();
     }
+    */
+    clear = function() {
+        this.stackedbarSvg.selectAll("*").remove();
+    };
 }
