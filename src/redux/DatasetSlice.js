@@ -19,10 +19,13 @@ export const fetchFileData = createAsyncThunk('seoulBikeData/fetchData', async (
 })
 */
 
+const startDate = new Date(2012, 3, 5, 17, 55, 0)
+const endDate = new Date(2012, 3, 7, 9, 4, 0)
+
 export const stateSlice = createSlice({
   name: 'state',
   initialState: {
-    global_date_time_interval: [new Date(2012, 3, 6, 15, 0, 0), new Date(2012, 3, 6, 17, 30, 0)],
+    global_date_time_interval: [startDate, endDate],
     stackedbarchart_data: null,
     stackedbarchart_data_ids: null,
     heatmap_data: null,

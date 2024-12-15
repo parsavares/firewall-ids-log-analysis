@@ -7,8 +7,8 @@ import { setGlobalDateTimeInterval } from '../../redux/DatasetSlice'
 
 function App() {  
 
-    const startDate = new Date(2012, 3, 5, 0, 0, 0)
-    const endDate = new Date(2012, 3, 7, 0, 0, 0)
+    const startDate = new Date(2012, 3, 5, 17, 55, 0)
+    const endDate = new Date(2012, 3, 7, 9, 4, 0)
 
     const [state, setState] = useState({  
         error: false,  
