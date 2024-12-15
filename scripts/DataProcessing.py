@@ -84,17 +84,22 @@ ids_ddf = classify_internal_external(ids_ddf)
 # 🔥 Port to Service Mapping 
 # ===============================
 PORT_TO_SERVICE = {
-    22: 'SSH', 23: 'Telnet', 25: 'SMTP', 53: 'DNS', 80: 'HTTP',
-    110: 'POP3', 143: 'IMAP', 443: 'HTTPS', 465: 'SMTPS', 993: 'IMAPS',
-    995: 'POP3S', 135: 'Microsoft RPC', 137: 'NetBIOS Name Service',
-    138: 'NetBIOS Datagram Service', 139: 'NetBIOS Session Service',
-    1433: 'SQL Server', 1521: 'Oracle DB', 3306: 'MySQL', 3389: 'RDP',
-    8080: 'HTTP Proxy', 8443: 'HTTPS Proxy', 5900: 'VNC', 5060: 'SIP',
-    21: 'FTP', 554: 'RTSP', 1720: 'H.323', 1812: 'RADIUS Authentication',
-    1813: 'RADIUS Accounting', 8888: 'Alternate HTTP'
+    '22': 'SSH', '23': 'Telnet', '25': 'SMTP', '53': 'DNS', '80': 'HTTP',
+    '110': 'POP3', '143': 'IMAP', '443': 'HTTPS', '465': 'SMTPS', '993': 'IMAPS',
+    '995': 'POP3S', '135': 'Microsoft RPC', '137': 'NetBIOS Name Service',
+    '138': 'NetBIOS Datagram Service', '139': 'NetBIOS Session Service',
+    '1433': 'SQL Server', '1521': 'Oracle DB', '3306': 'MySQL', '3389': 'RDP',
+    '8080': 'HTTP Proxy', '8443': 'HTTPS Proxy', '5900': 'VNC', '5060': 'SIP',
+    '21': 'FTP', '554': 'RTSP', '1720': 'H.323', '1812': 'RADIUS Authentication',
+    '1813': 'RADIUS Accounting', '8888': 'Alternate HTTP'
 }
 
 def map_ports_to_services(df):
+    # 🔥 Convert ports to strings to avoid mixed types
+    df['Source port'] = df['Source port'].astype(str)
+    df['Destination port'] = df['Destination port'].astype(str)
+
+    # Map ports to services using pre-defined mapping
     df['Source Service'] = df['Source port'].replace(PORT_TO_SERVICE)
     df['Destination Service'] = df['Destination port'].replace(PORT_TO_SERVICE)
     return df

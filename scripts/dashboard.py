@@ -16,50 +16,58 @@ ANALYSIS_SUMMARIES_DIR = os.path.join('scripts', 'analysis_summaries')
 # ================================
 try:
     dtypes = {
-        'Source Service': 'object',
-        'Destination Service': 'object',
-        'Source IP': 'object',
-        'Destination IP': 'object',
-        'Source port': 'object',
-        'Destination port': 'object',
-        'Source_Priority': 'float64',
+        'source_service': 'object',
+        'destination_service': 'object',
+        'source_ip': 'object',
+        'destination_ip': 'object',
+        'source_port': 'object',
+        'destination_port': 'object',
+        'source_priority': 'float64',
         'priority': 'float64',
         'classification': 'object',
-        'Operation': 'object',
-        'Source_NodeType': 'object',
-        'IsExternalTraffic': 'bool'
+        'operation': 'object',
+        'source_nodetype': 'object',
+        'isexternaltraffic': 'bool'
     }
 
-    # Load large files using Dask
     firewall_traffic_df = dd.read_csv(
         os.path.join(ANALYSIS_SUMMARIES_DIR, 'external_firewall_traffic.csv'),
         dtype=dtypes, 
         assume_missing=True,
         low_memory=False
-    ).head(10000)  # Load a small sample
+    ).head(10000)
 
     ids_traffic_df = dd.read_csv(
         os.path.join(ANALYSIS_SUMMARIES_DIR, 'external_ids_traffic.csv'),
         dtype=dtypes, 
         assume_missing=True,
         low_memory=False
-    ).head(10000)  # Load a small sample
+    ).head(10000)
 
-    # Read smaller files directly using Pandas
     top_services_df = pd.read_csv(
         os.path.join(ANALYSIS_SUMMARIES_DIR, 'top_50_destination_services.csv'),
-        dtype={'Destination Service': 'object', 'count': 'int64'}
+        dtype={'destination_service': 'object', 'count': 'int64'}
     )
 
     top_ports_df = pd.read_csv(
         os.path.join(ANALYSIS_SUMMARIES_DIR, 'top_50_destination_ports.csv'),
-        dtype={'Destination port': 'int64', 'count': 'int64'}
+        dtype={'destination_port': 'int64', 'count': 'int64'}
     )
 
     top_ips_df = pd.read_csv(
         os.path.join(ANALYSIS_SUMMARIES_DIR, 'top_50_external_ips.csv'),
-        dtype={'Source IP': 'object', 'count': 'int64'}
+        dtype={'source_ip': 'object', 'count': 'int64'}
     )
+
+    # 🔥 Debug: Print the column names and data types for verification
+    print("[DEBUG] Firewall Traffic DataFrame Columns and Data Types")
+    print(firewall_traffic_df.dtypes)
+    print("[DEBUG] IDS Traffic DataFrame Columns and Data Types")
+    print(ids_traffic_df.dtypes)
+    print("[DEBUG] Firewall Traffic DataFrame Preview")
+    print(firewall_traffic_df.head())
+    print("[DEBUG] IDS Traffic DataFrame Preview")
+    print(ids_traffic_df.head())
 
 except Exception as e:
     print(f"[ERROR] Could not load one or more analysis files. {e}")
@@ -69,32 +77,12 @@ except Exception as e:
 # 🔥 Data Cleaning and Enhancements
 # ================================
 try:
-    # Normalize column names (strip spaces and lowercase)
-    firewall_traffic_df.columns = firewall_traffic_df.columns.str.strip().str.title().str.replace(' ', '_')
-    ids_traffic_df.columns = ids_traffic_df.columns.str.strip().str.title().str.replace(' ', '_')
-    top_services_df.columns = top_services_df.columns.str.strip().str.title().str.replace(' ', '_')
-    top_ports_df.columns = top_ports_df.columns.str.strip().str.title().str.replace(' ', '_')
-    top_ips_df.columns = top_ips_df.columns.str.strip().str.title().str.replace(' ', '_')
-
-    # Ensure 'Source_Priority' exists, if not, create it
-    if 'Source_Priority' not in firewall_traffic_df.columns:
-        firewall_traffic_df['Source_Priority'] = 1
-
-    if 'Priority' not in ids_traffic_df.columns:
-        ids_traffic_df['Priority'] = 1
-
-    # Convert 'Source_Priority' to numeric and fill NaNs
-    firewall_traffic_df['Source_Priority'] = pd.to_numeric(
-        firewall_traffic_df['Source_Priority'], errors='coerce'
-    ).fillna(1)
-
-    # Convert 'priority' to numeric and fill NaNs
-    ids_traffic_df['Priority'] = pd.to_numeric(
-        ids_traffic_df['Priority'], errors='coerce'
-    ).fillna(1)
-
-    firewall_traffic_df['Source_Nodetype'] = firewall_traffic_df.get('Source_Nodetype', 'Unknown')
-    firewall_traffic_df['Operation'] = firewall_traffic_df.get('Operation', 'Other')
+    # Normalize column names (strip spaces, lowercase, and replace spaces with underscores)
+    firewall_traffic_df.columns = firewall_traffic_df.columns.str.strip().str.lower().str.replace(' ', '_')
+    ids_traffic_df.columns = ids_traffic_df.columns.str.strip().str.lower().str.replace(' ', '_')
+    top_services_df.columns = top_services_df.columns.str.strip().str.lower().str.replace(' ', '_')
+    top_ports_df.columns = top_ports_df.columns.str.strip().str.lower().str.replace(' ', '_')
+    top_ips_df.columns = top_ips_df.columns.str.strip().str.lower().str.replace(' ', '_')
 
 except Exception as e:
     print(f"[ERROR] Data cleaning failed due to: {e}")
@@ -104,64 +92,98 @@ except Exception as e:
 # 🔥 Initialize Dash Application
 # ================================
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
-app.title = "🔥 Firewall & IDS Visualization Dashboard 🔥"
+app.title = "🔥 Firewall & IDS Analysis Dashboard 🔥"
 
 # ================================
 # 📊 Layout for Dashboard
 # ================================
 app.layout = html.Div([
     dcc.Tabs([
-        dcc.Tab(label='Firewall Analysis', children=[
-            html.H2("🔥 Firewall Analysis 🔥"),
+        dcc.Tab(label='Question 1: Critical Security Events', children=[
+            html.H2("🔥 Top 5 Most Critical Security Events 🔥"),
             dcc.Graph(
-                id='internal-vs-external-traffic',
-                figure=px.pie(
-                    firewall_traffic_df,
-                    names='Isexternaltraffic',
-                    title="Internal vs External Traffic",
-                    hole=0.4
+                id='critical-events-sunburst',
+                figure=px.sunburst(
+                    ids_traffic_df,
+                    path=['classification', 'priority'],
+                    values='priority',
+                    title="Classification of Top 5 Critical Events",
+                    color='priority',
+                    color_continuous_scale='Viridis'
                 )
             ),
             dcc.Graph(
-                id='destination-service-distribution',
+                id='attack-source-distribution',
                 figure=px.treemap(
-                    top_services_df,
-                    path=['Destination_Service'],
-                    values='Count',
-                    title="Top Destination Services"
+                    top_ips_df,
+                    path=['source_ip'],
+                    values='count',
+                    title="Top Sources of External Attacks",
+                    color='count',
+                    color_continuous_scale='Blues'
+                )
+            ),
+        ]),
+
+        dcc.Tab(label='Question 2: Security Trends', children=[
+            html.H2("📈 Security Trends Over 2-Day Period 📈"),
+            dcc.Graph(
+                id='firewall-traffic-trend',
+                figure=px.line(
+                    firewall_traffic_df,
+                    x='date/time',
+                    y='source_priority',
+                    title="Firewall Traffic Over Time",
+                    color_discrete_sequence=["#EF553B"]
                 )
             ),
             dcc.Graph(
-                id='destination-port-bubble',
+                id='ids-alert-trend',
+                figure=px.line(
+                    ids_traffic_df,
+                    x='date/time',
+                    y='priority',
+                    title="IDS Alert Counts Over Time",
+                    color_discrete_sequence=["#636EFA"]
+                )
+            ),
+        ]),
+
+        dcc.Tab(label='Question 3: Root Cause Analysis', children=[
+            html.H2("🕵️ Root Cause Analysis 🕵️"),
+            dcc.Graph(
+                id='port-usage-analysis',
                 figure=px.scatter(
                     top_ports_df,
-                    x='Destination_Port',
-                    y='Count',
-                    size='Count',
-                    color='Count',
-                    title="Top Destination Ports"
+                    x='destination_port',
+                    y='count',
+                    size='count',
+                    title="Analysis of Frequently Used Ports (Potential Exploits)"
+                )
+            ),
+            dcc.Graph(
+                id='source-vs-destination-ip',
+                figure=px.scatter(
+                    firewall_traffic_df,
+                    x='source_ip',
+                    y='destination_ip',
+                    color='source_nodetype',
+                    title="Source IP vs Destination IP (Network Attack Tracing)"
                 )
             )
         ]),
 
-        dcc.Tab(label='IDS Analysis', children=[
-            html.H2("🚀 IDS Analysis 🚀"),
+        dcc.Tab(label='Hybrid Analysis', children=[
+            html.H2("🧬 Hybrid Analysis (IDS + Firewall) 🧬"),
             dcc.Graph(
-                id='ids-alert-counts',
-                figure=px.bar(
-                    ids_traffic_df,
-                    x='Date/Time',
-                    y='Priority',
-                    title="IDS Alert Counts Over Time"
-                )
-            ),
-            dcc.Graph(
-                id='top-external-ips',
-                figure=px.funnel(
-                    top_ips_df,
-                    x='Count',
-                    y='Source_Ip',
-                    title="Top External IPs"
+                id='combined-ip-connection',
+                figure=px.scatter(
+                    pd.concat([firewall_traffic_df.assign(source='firewall'),
+                               ids_traffic_df.assign(source='ids')]),
+                    x='source_ip',
+                    y='destination_ip',
+                    color='source_nodetype',
+                    title="Combined Source IP vs Destination IP (Interactive)"
                 )
             )
         ])
