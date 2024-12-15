@@ -22,19 +22,14 @@ REFINED_IDS = [
 
 # Port-to-service mapping
 PORT_TO_SERVICE = {
-    22: 'SSH',
-    80: 'HTTP',
-    443: 'HTTPS',
-    21: 'FTP',
-    25: 'SMTP',
-    53: 'DNS',
-    110: 'POP3',
-    143: 'IMAP',
-    3389: 'RDP',
-    3306: 'MySQL',
-    1521: 'Oracle DB',
-    8080: 'HTTP Proxy',
-    5900: 'VNC',
+    22: 'SSH', 23: 'Telnet', 25: 'SMTP', 53: 'DNS', 80: 'HTTP',
+    110: 'POP3', 143: 'IMAP', 443: 'HTTPS', 465: 'SMTPS', 993: 'IMAPS',
+    995: 'POP3S', 135: 'Microsoft RPC', 137: 'NetBIOS Name Service',
+    138: 'NetBIOS Datagram Service', 139: 'NetBIOS Session Service',
+    1433: 'SQL Server', 1521: 'Oracle DB', 3306: 'MySQL', 3389: 'RDP',
+    8080: 'HTTP Proxy', 8443: 'HTTPS Proxy', 5900: 'VNC', 5060: 'SIP',
+    21: 'FTP', 554: 'RTSP', 1720: 'H.323', 1812: 'RADIUS Authentication',
+    1813: 'RADIUS Accounting', 8888: 'Alternate HTTP'
 }
 
 # ===============================

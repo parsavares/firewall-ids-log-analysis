@@ -16,21 +16,32 @@ def classify_ip(ip):
     
     # Check if the IP is in the specific '172.23.X.X' range (private network of the bank)
     if ip_obj in ip_network('172.23.0.0/16'):
-        if ip == '172.23.0.2':
+        if ip_obj == "172.23.0.1":
+            return "int_cisco_firweall"
+        if ip_obj == '172.23.0.2':
             return "int_log_server"
-        if ip == '172.23.0.10':
+        if ip_obj == '172.23.0.10':
             return "int_dns_server"
         if ip_obj in ip_network('172.23.214.0/24'):
             return "int_financial_servers"
         if ip_obj in ip_network('172.23.229.0/24'):
             return "int_financial_servers"
-        
-    if ip_obj in ip_network('10.0.0.0/8'): #external websites
+        return "int_workstation"
+    
+    if ip_obj == "10.32.0.100":
+        return "ext_dc_firewall"
+    if ip_obj == "10.32.2.100" or ip_obj == "10.32.2.101":
+        return "ext_financial_server"
+    if ip_obj == "10.32.0.1":
+        return "ext_cisco_firewall"
+    
+    
+    if ip_obj in ip_network('10.32.0.0/16'): #external websites
         return "ext_website"
     
     return "ext_dns"
 
-def main():
+def clean_firewall():
     
     #read data
     FIREWALL1 = pd.read_csv('../data/MC2-CSVFirewallandIDSlogs/Firewall-04062012.csv')
@@ -175,7 +186,89 @@ def main():
     #considering this statistics we start to cut
     #df = df.drop(df[(df.score < 50) & (df.score > 20)].index)
     '''
+    return
+
+def clean_ids():
+    IDS1 = pd.read_csv('../data/MC2-CSVFirewallandIDSlogs/IDS-0406.csv')
+    IDS2 = pd.read_csv('../data/MC2-CSVFirewallandIDSlogs/IDS-0407.csv')
+    IDS = pd.concat([IDS1, IDS2])
+
+    print(IDS.head())
     
+    print("lines in the original IDS datset: ", len(IDS))
+    
+    # Remove white spaces from column names
+    IDS.columns = IDS.columns.str.replace(' ', '')
+
+    #change the Date format in the dataset
+    IDS.rename(columns={"time": "date_time", "sourceIP": "source_ip", "destIP": "dest_ip", "sourcePort": "source_port", "destPort": "destination_port", "packetinfocont'd": "packetinfo_2"}, inplace=True) 
+    IDS['date_time'] = pd.to_datetime(IDS['date_time'])
+    #assign a category to the IPs
+    IDS['cat_src'] = IDS['source_ip'].apply(classify_ip)
+    IDS['cat_dst'] = IDS['dest_ip'].apply(classify_ip)
+
+    # To lowercase 
+    IDS.columns = IDS.columns.str.lower()
+
+
+    IDS.to_csv('../data/MC2-CSVFirewallandIDSlogs/IDS.csv')
+    
+    
+    '''
+    #print("lines in IDS with NaN as label", (IDS[' label'] == 'NaN').sum())
+    print("lines in IDS with NaN as label", IDS[' label'].isna().sum())
+    print("lines in IDS with with priority minimum", (IDS[' priority'] == 3).sum())
+    
+    # Get the value that appears most frequently and its count
+    most_common_value = IDS[' classification'].value_counts().idxmax()
+    count_of_most_common = IDS[' classification'].value_counts().max()
+
+    # Print the results
+    print(f"The most frequent value in 'classification' is '{most_common_value}' with {count_of_most_common} occurrences.")
+    print("lines in IDS with with priority minimum and generic command decode", ((IDS[' classification'] == ' Generic Protocol Command Decode') & (IDS[' priority'] == 3)).sum())
+    print("lines in IDS with MISC activity", (IDS[' classification'] == ' Misc activity').sum())
+    print("lines in IDS with with priority minimum and MISC activity", ((IDS[' classification'] == ' Misc activity') & (IDS[' priority'] == 3)).sum())
+    #we can ignore priority equal to 3 (the lowest)
+    # Filter the DataFrame to exclude specified classifications
+    
+    # Filter rows where classification is 'Generic Protocol Command Decode'
+    filtered_data = IDS[IDS[' classification'] == ' Generic Protocol Command Decode']
+
+    # Find the most common value in the 'label' column
+    most_common_label = filtered_data[' label'].value_counts().idxmax()
+    count_most_common = filtered_data[' label'].value_counts().max()
+
+    # Print the result
+    #print(f"The most frequent value in 'label' for classification 'Generic Protocol Command Decode' is '{most_common_label}' with {count_most_common} occurrences.")
+    # Filter rows where classification is 'Generic Protocol Command Decode'
+    filtered_data_1 = IDS[IDS[' classification'] == ' Generic Protocol Command Decode']
+    # Count the occurrences of each unique value in the 'label' column
+    label_counts_1 = filtered_data_1[' label'].value_counts()
+    # Print the result
+    print("Value counts in 'label' for classification 'Generic Protocol Command Decode':")
+    print(label_counts_1)
+
+    filtered_data_2 = IDS[IDS[' classification'] == ' Misc activity']
+    # Count the occurrences of each unique value in the 'label' column
+    label_counts_2 = filtered_data_2[' label'].value_counts()
+    # Print the result
+    print("Value counts in 'label' for classification 'Misc activity':")
+    print(label_counts_2)
+    
+    
+    
+    #IDS = IDS[~((IDS[' classification'] == ' Generic Protocol Command Decode') | (IDS[' classification'] == ' Misc activity'))]
+
+    # Print the number of remaining rows
+    #print("Lines in the IDS dataset: ", len(IDS))
+    '''
+
+    return
+
+def main():
+    
+    clean_firewall()
+    clean_ids()
     return
 
 if __name__ == "__main__":
