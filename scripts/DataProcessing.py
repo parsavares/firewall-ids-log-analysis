@@ -24,31 +24,32 @@ IDS_FILES = [
 # 📂 Data Loading & Cleaning
 # ===============================
 def load_and_clean_dask_dataframe(file_paths, file_type="firewall"):
-    na_values_list = ["(empty)", "N/A", "NULL", "?", "Unknown"]  
+    na_values_list = ["(empty)", "N/A", "NULL", "?", "Unknown"]  # List of representations of missing values
     try:
         ddf = dd.read_csv(file_paths, na_values=na_values_list, assume_missing=True)
-        ddf.columns = ddf.columns.str.strip()  
+        ddf.columns = ddf.columns.str.strip()  # Remove leading and trailing spaces from column names
 
         # Rename IDS-specific columns to match Firewall column names
         if file_type == "IDS":
             ddf = ddf.rename(columns={'time': 'Date/time', 'sourceIP': 'Source IP', 'sourcePort': 'Source port', 'destIP': 'Destination IP', 'destPort': 'Destination port'})
 
+        # Ensure required columns exist
         required_columns = ['Source IP', 'Destination IP', 'Source port', 'Destination port']
         for col in required_columns:
             if col not in ddf.columns:
-                ddf[col] = 'Missed_captured'
+                ddf[col] = None  # Set empty values as NaN (not as "Missed_captured")
 
+        # Trim extra whitespace from string columns
         object_columns = ddf.select_dtypes(include=['object']).columns
         for col in object_columns:
             ddf[col] = ddf[col].str.strip()
 
-        ddf['Source IP'] = ddf['Source IP'].fillna('Missed_captured')
-        ddf['Destination IP'] = ddf['Destination IP'].fillna('Missed_captured')
+        # Drop rows where critical columns are missing
+        ddf = ddf.dropna(subset=required_columns)
 
-        if file_type == "firewall" and 'Date/time' in ddf.columns:
+        # Convert 'Date/time' to datetime
+        if 'Date/time' in ddf.columns:
             ddf['Date/time'] = dd.to_datetime(ddf['Date/time'], errors='coerce')
-        elif file_type == "IDS" and 'Date/time' in ddf.columns:
-            ddf['Date/time'] = dd.to_datetime(ddf['Date/time'], format='%m/%d/%Y %H:%M', errors='coerce')
 
         print(f"[INFO] Successfully loaded and cleaned {len(file_paths)} {file_type} files.")
         return ddf
@@ -94,8 +95,8 @@ PORT_TO_SERVICE = {
 }
 
 def map_ports_to_services(df):
-    df['Source Service'] = df['Source port'].replace(PORT_TO_SERVICE).fillna('Unknown')
-    df['Destination Service'] = df['Destination port'].replace(PORT_TO_SERVICE).fillna('Unknown')
+    df['Source Service'] = df['Source port'].replace(PORT_TO_SERVICE)
+    df['Destination Service'] = df['Destination port'].replace(PORT_TO_SERVICE)
     return df
 
 firewall_ddf = map_ports_to_services(firewall_ddf)
@@ -104,11 +105,19 @@ ids_ddf = map_ports_to_services(ids_ddf)
 # ===============================
 # 🔥 Data Summarization
 # ===============================
-def summarize_and_export(df, column, file_name, top_n=50):
+def determine_top_n(count_series, coverage_threshold=0.95):
+    total = count_series.sum()
+    cumulative_sum = count_series.cumsum()
+    n = (cumulative_sum / total <= coverage_threshold).sum()
+    return max(n, 50)  # Ensure at least 50
+
+def summarize_and_export(df, column, file_name):
     try:
-        counts = df[column].value_counts().nlargest(top_n).compute()
-        counts.to_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, file_name))
-        print(f"[INFO] Exported {file_name}.")
+        counts = df[column].value_counts().compute()
+        top_n = determine_top_n(counts)
+        top_counts = counts.nlargest(top_n)
+        top_counts.to_csv(os.path.join(ANALYSIS_SUMMARIES_DIR, file_name))
+        print(f"[INFO] Exported {file_name} with top {top_n} entries.")
     except Exception as e:
         print(f"[ERROR] Could not export {file_name} due to: {str(e)}")
 
