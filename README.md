@@ -197,7 +197,7 @@ For more information on using Yarn, visit the [official Yarn documentation](http
 
 ---
 
-## **Python Dashboard Setup Instructions**
+## Python Dashboard Setup Instructions
 
 ---
 
