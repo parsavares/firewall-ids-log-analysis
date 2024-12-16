@@ -275,6 +275,8 @@ The dashboard has **4 key sections**, each designed to answer one of the 4 prima
 ---
 
 #### **1️⃣ Question 1: Critical Security Events**
+![1-1](https://github.com/user-attachments/assets/0a3135e7-66fb-4f88-8ee9-10f47f15b52d)
+![1-2](https://github.com/user-attachments/assets/25513846-f380-41be-9bd1-71ef86adca14)
 
 **Charts:**
 - **Sunburst Chart**: Displays the classification and priority of top 5 critical IDS events.
@@ -287,18 +289,19 @@ The dashboard has **4 key sections**, each designed to answer one of the 4 prima
 ---
 
 #### **2️⃣ Question 2: Security Trends**
+![2-1](https://github.com/user-attachments/assets/3bb00897-924c-43a4-805e-d737be9897f3)
 
 **Charts:**
 - **Line Chart**: Shows the number of connections built over time in the firewall.
-- **Line Chart**: Displays the IDS alert counts over time.
 
 **Usage:**
-- Identify key time periods with abnormal spikes in connections or IDS alerts.
 - Detect and analyze patterns of network activity and security events.
 
 ---
 
 #### **3️⃣ Question 3: Root Cause Analysis**
+![3-1](https://github.com/user-attachments/assets/ef489f8e-5d45-48f9-a80e-eebd6e775605)
+![3-2](https://github.com/user-attachments/assets/27f82304-5655-4abc-a26c-7736a11e634c)
 
 **Charts:**
 - **Scatter Plot**: Shows the frequency and distribution of ports that were most frequently used, helping to identify potential vulnerabilities.
@@ -311,6 +314,8 @@ The dashboard has **4 key sections**, each designed to answer one of the 4 prima
 ---
 
 #### **4️⃣ Hybrid Analysis (Combined Firewall + IDS)**
+![4-1](https://github.com/user-attachments/assets/c1213aea-4df8-4ba4-a90a-689ff6da56e2)
+![4-2](https://github.com/user-attachments/assets/4297d9f6-5d01-4da6-806d-afb3d7e815de)
 
 **Charts:**
 - **Interactive Scatter Plot**: Combines **IDS and Firewall** source IPs and destination IPs in one chart.
