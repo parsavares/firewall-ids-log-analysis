@@ -8,7 +8,7 @@ export default class StackedbarchartD3 {
     margin = {
     	top: 20,
     	right: 100,
-    	bottom: 20,
+    	bottom: 200,
     	left: 100
     };
 
