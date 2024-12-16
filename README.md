@@ -274,56 +274,79 @@ The dashboard has **4 key sections**, each designed to answer one of the 4 prima
 
 ---
 
-#### **1️⃣ Question 1: Critical Security Events**
-![1-1](https://github.com/user-attachments/assets/0a3135e7-66fb-4f88-8ee9-10f47f15b52d)
-![1-2](https://github.com/user-attachments/assets/25513846-f380-41be-9bd1-71ef86adca14)
 
-**Charts:**
-- **Sunburst Chart**: Displays the classification and priority of top 5 critical IDS events.
-- **Treemap**: Visualizes the top sources of external attacks.
 
-**Usage:**
-- Identify and analyze critical events flagged in the IDS logs.
-- View which IP addresses are generating the most alerts.
+### **1️⃣ Question 1: Critical Security Events**
+![1-1](https://github.com/user-attachments/assets/df3b16ab-6998-4e9d-a4b0-70338dc49480)
+![1-2](https://github.com/user-attachments/assets/28a3acb2-948a-49dc-b4aa-c0beec6f550f)
 
----
 
-#### **2️⃣ Question 2: Security Trends**
-![2-1](https://github.com/user-attachments/assets/3bb00897-924c-43a4-805e-d737be9897f3)
+#### **Charts**
+1. **Funnel Chart**: Displays the top 5 external IPs that triggered the most alerts.
+2. **Treemap Chart**: Visualizes the top sources of external attacks by IP.
 
-**Charts:**
-- **Line Chart**: Shows the number of connections built over time in the firewall.
+#### **Purpose**
+- Identify the most critical security events flagged in the IDS logs.
+- View which IP addresses are generating the most alerts, assisting in prioritizing which threats to investigate.
 
-**Usage:**
-- Detect and analyze patterns of network activity and security events.
+#### **Example Insights**
+- Discover which source IPs are repeatedly attempting access.
+- Identify IP addresses that are frequently attacking internal systems.
 
 ---
 
-#### **3️⃣ Question 3: Root Cause Analysis**
-![3-1](https://github.com/user-attachments/assets/ef489f8e-5d45-48f9-a80e-eebd6e775605)
-![3-2](https://github.com/user-attachments/assets/27f82304-5655-4abc-a26c-7736a11e634c)
+### **2️⃣ Question 2: Security Trends**
+![2-1](https://github.com/user-attachments/assets/39766f3a-2981-4883-80c7-ac2f0786f209)
 
-**Charts:**
-- **Scatter Plot**: Shows the frequency and distribution of ports that were most frequently used, helping to identify potential vulnerabilities.
-- **Scatter Plot**: Plots Source IP vs Destination IP for network attack tracing.
 
-**Usage:**
-- Detect abnormal use of ports and connections that may indicate potential exploits.
-- Trace the source-destination interactions that might reveal suspicious IP behavior.
+#### **Charts**
+1. **Line Chart**: Shows the number of connections built over time using firewall logs.
+2. 
+#### **Purpose**
+- Identify key time periods with abnormal spikes in connections or IDS alerts.
+- Detect and analyze patterns of network activity and security events over a 2-day period.
+
+#### **Example Insights**
+- View when the network sees the most activity and detect spikes in connections built.
+- Identify if specific time frames had abnormal IDS alerts, which may require further analysis.
 
 ---
 
-#### **4️⃣ Hybrid Analysis (Combined Firewall + IDS)**
-![4-1](https://github.com/user-attachments/assets/c1213aea-4df8-4ba4-a90a-689ff6da56e2)
-![4-2](https://github.com/user-attachments/assets/4297d9f6-5d01-4da6-806d-afb3d7e815de)
+### **3️⃣ Question 3: Root Cause Analysis**
+![3-1](https://github.com/user-attachments/assets/c29817d9-dd1a-4dd3-aa4f-a98683ef8cb9)
+![3-2](https://github.com/user-attachments/assets/6d6641dd-8cc2-467f-8b0e-b52af5acdb31)
 
-**Charts:**
-- **Interactive Scatter Plot**: Combines **IDS and Firewall** source IPs and destination IPs in one chart.
 
-**Usage:**
+#### **Charts**
+1. **Bubble Scatter Plot**: Shows the frequency and distribution of ports most frequently used, helping to identify potential vulnerabilities.
+2. **Scatter Plot**: Plots **Source IP vs Destination IP** for network attack tracing.
+
+#### **Purpose**
+- Detect abnormal port usage and connections that may indicate potential exploits.
+- Trace source-destination interactions that might reveal suspicious IP behavior.
+
+#### **Example Insights**
+- Identify unusual port usage that could indicate attempts to exploit vulnerable ports.
+- Map external IPs communicating with internal servers, helping to detect malicious IPs.
+
+---
+
+### **4️⃣ Hybrid Analysis (Combined Firewall + IDS)**
+![4-1](https://github.com/user-attachments/assets/f38da1c4-adf4-42ba-8eab-51e3e14710c4)
+![4-2](https://github.com/user-attachments/assets/5f1ae462-50ab-4b71-9346-c5ec308ca786)
+
+
+#### **Charts**
+1. **Interactive Scatter Plot**: Combines **IDS and Firewall** source IPs and destination IPs into a single chart.
+
+#### **Purpose**
 - View how Source IPs and Destination IPs from both IDS and Firewall logs relate.
 - Identify network flows and locate malicious IPs across both log sources.
 - Highlight which IPs might be involved in multiple attack vectors.
+
+#### **Example Insights**
+- Identify combined attack flows from external IPs using both IDS and firewall logs.
+- Pinpoint IPs and destinations that may be responsible for multi-pronged attacks.
 
 ---
 
