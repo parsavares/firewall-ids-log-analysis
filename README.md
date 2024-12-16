@@ -22,13 +22,11 @@ The main goal of this project is to enable visual exploration of security events
 3. [Features](#features)
 4. [Technologies Used](#technologies-used)
 5. [Installation and Setup](#installation-and-setup)
-6. [Setup with Yarn](Setup_with_Yarn)
-7. [Python Dashboard Setup Instructions](Python_Dashboard_Setup_Instructions)
-8. [Usage Instructions](#usage-instructions)
-9. [Analysis Approach](#analysis-approach)
-10. [Visual Analytics and Key Insights](#visual-analytics-and-key-insights)
-11. [Mini-Challenge Answers](#mini-challenge-answers)
-12. [Contributing](#contributing)
+6. [Usage Instructions](#usage-instructions)
+7. [Analysis Approach](#analysis-approach)
+8. [Visual Analytics and Key Insights](#visual-analytics-and-key-insights)
+9. [Mini-Challenge Answers](#mini-challenge-answers)
+10. [Contributing](#contributing)
 
 ## Project Structure
 ```
@@ -136,33 +134,10 @@ The data covers a specific timeframe and is instrumental in identifying suspicio
 - **Backend/Analysis**: Python, Dask, Matplotlib, Pandas, Plotly, Seaborn.
 - **Visualization Dashboard**: React with D3.js components for interactive visualizations.
 
-## Installation and Setup
-1. **Clone the Repository**:
-    ```sh
-    git clone https://github.com/yourusername/firewall-ids-log-analysis.git
-    cd firewall-ids-log-analysis
-    ```
-2. **Install Python Requirements**:
-    ```sh
-    pip install -r requirements.txt
-    ```
-3. **Install Frontend Dependencies**:
-    ```sh
-    cd src
-    npm install
-    ```
-4. **Run the Analysis Scripts**:
-    - Use the Python scripts in the `analysis` directory to clean and preprocess the data.
-    ```sh
-    python analysis/data_cleaning.py
-    ```
-5. **Run the Application**:
-    ```sh
-    npm start
-    ```
-    The application will be accessible at `http://localhost:3000`.
-   
-## Setup with Yarn
+## Installation and Setup   
+---
+
+### Setup with Yarn
 
 To install dependencies and run the project using Yarn, follow these steps:
 
@@ -197,9 +172,8 @@ For more information on using Yarn, visit the [official Yarn documentation](http
 
 ---
 
-## Python Dashboard Setup Instructions
+### Python Dashboard Setup Instructions
 
----
 
 #### **Installation and Setup**
 
