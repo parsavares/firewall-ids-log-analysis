@@ -282,7 +282,7 @@ The dashboard has **4 key sections**, each designed to answer one of the 4 prima
 
 
 #### **Charts**
-1. **Funnel Chart**: Displays the top 5 external IPs that triggered the most alerts.
+1. **Funnel Chart**: Displays the top external IPs that triggered the most alerts.
 2. **Treemap Chart**: Visualizes the top sources of external attacks by IP.
 
 #### **Purpose**
