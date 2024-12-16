@@ -50,15 +50,20 @@ firewall-ids-log-analysis/
 │   ├── reportWebVitals.js
 │   ├── setupTests.js
 │   ├── store.js
+│   ├── utils.js
+|
 │   ├── pages
 │       ├── DashboardPage.js
 │       ├── FerraPage.js
 │       ├── GiorgioPage.js
+│       ├── IDS.js
 │       ├── ParsaPage.js
-│       ├── YufeiPage.js
 │   ├── redux
 │       ├── DatasetSlice.js
 │   ├── components
+│       ├── ControlBar
+│           ├── ControlBar.js
+│           ├── ControlBar_ids.js
 │       ├── Heatmap
 │           ├── HeatmapContainer.js
 │           ├── HeatmapD3.js
@@ -67,30 +72,29 @@ firewall-ids-log-analysis/
 │       ├── ParallelSets
 │           ├── ParallelSetsContainer.js
 │           ├── ParallelSetsD3.js
+│       ├── SankeyDiagram
+│           ├── SankeDiagramContainer.js
+│           ├── SankeDiagramD3.js
 │       ├── StackedBarchart
 │           ├── StackedBarchartContainer.js
 │           ├── StackedBarchartD3.js
+│       ├── TimeControlbar
+│           ├── TimeControlbar.js
 |
 ├── scripts/                    # Python scripts for data analysis
 │   ├── analysis_summaries
-│       ├── top_20_external_ips.csv
-│       ├── top_50_destination_ports.csv
-│       ├── top_50_destination_services.csv
-│   ├── DataProcessing.py
-│   ├── GeoLite2-City.mmdb
+│       ├── external_ips_ids_alerts.csv
+│       ├── suspicious_teardown_rebuild_pairs.csv
+│       ├── unusual_services_traffic_sample.csv
 │   ├── Patterns.py
-|   ├── Patterns2-out.txt
-│   ├── Patterns2.py
-│   ├── dashboard.py
 │   ├── dataset_analysis.py
 │   ├── dataset_summary.txt
-│   ├── firewall_stats.py
+|   ├── firewall_stats.py
 │   ├── ids_stats.py
 │   ├── new_analysis.py
 │   ├── query.py
 │   ├── refine_data.py
 │   ├── test-post-cleaning.py
-│   ├── test.py
 |
 ├── server/                    
 │   ├── __pycache__
@@ -101,6 +105,7 @@ firewall-ids-log-analysis/
 │   ├── data_handler.py
 │   ├── heatmap.py
 │   ├── parallel_sets.py
+│   ├── sanke_diagram.py
 │   ├── server.py
 │   ├── stacked_barchart.py
 │   ├── utils.py
