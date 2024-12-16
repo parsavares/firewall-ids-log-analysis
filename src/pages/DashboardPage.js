@@ -12,7 +12,7 @@ export default function DashboardPage() {
             -Daniele Ferrario <br />
             -Parsa Vares <br />
             -Yufei Wei <br />
-            -Girgio Bettonte <br /><br />
+            -Giorgio Bettonte <br /><br />
             The code is available at: <a href="https://github.com/parsavares/firewall-ids-log-analysis/tree/Ferra">Github repository</a>
         </p>
         </div>
