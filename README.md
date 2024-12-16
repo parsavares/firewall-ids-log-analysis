@@ -22,11 +22,13 @@ The main goal of this project is to enable visual exploration of security events
 3. [Features](#features)
 4. [Technologies Used](#technologies-used)
 5. [Installation and Setup](#installation-and-setup)
-6. [Usage Instructions](#usage-instructions)
-7. [Analysis Approach](#analysis-approach)
-8. [Visual Analytics and Key Insights](#visual-analytics-and-key-insights)
-9. [Mini-Challenge Answers](#mini-challenge-answers)
-10. [Contributing](#contributing)
+6. [Setup with Yarn](Setup_with_Yarn)
+7. [Python Dashboard Setup Instructions](Python_Dashboard_Setup_Instructions)
+8. [Usage Instructions](#usage-instructions)
+9. [Analysis Approach](#analysis-approach)
+10. [Visual Analytics and Key Insights](#visual-analytics-and-key-insights)
+11. [Mini-Challenge Answers](#mini-challenge-answers)
+12. [Contributing](#contributing)
 
 ## Project Structure
 ```
@@ -192,6 +194,159 @@ To install dependencies and run the project using Yarn, follow these steps:
      ```
 
 For more information on using Yarn, visit the [official Yarn documentation](https://yarnpkg.com/).
+
+---
+
+## **Python Dashboard Setup Instructions**
+
+---
+
+#### **Installation and Setup**
+
+To run the Python Plotly Dashboard, follow these simple instructions:
+
+---
+
+#### **1. Prerequisites**
+
+Ensure you have **Python 3.8 or later** installed on your system. Check your Python version with:
+```bash
+python --version
+```
+
+---
+
+#### **2. Required Python Packages**
+
+To install the required Python libraries, run the following command:
+```bash
+pip install pandas dask numpy plotly dash geoip2
+```
+
+This command installs the following essential libraries:
+- **pandas**: Data manipulation and analysis.
+- **dask**: Parallel computing for large datasets.
+- **numpy**: Numerical computations.
+- **plotly**: For creating interactive plots and charts.
+- **dash**: For creating web-based interactive dashboards.
+- **geoip2**: For IP location lookup.
+
+---
+
+#### **3. Run the Preprocessing Scripts**
+
+The following scripts must be executed **in order** to prepare and process the data before launching the dashboard. 
+
+Run each of the following scripts from the **scripts** directory using Python:
+```bash
+cd scripts
+```
+
+1. **Run the Dataset Analysis**:
+    ```bash
+    python dataset_analysis.py
+    ```
+
+2. **Run the Patterns Detection (Phase 1)**:
+    ```bash
+    python Patterns.py
+    ```
+
+3. **Run the Patterns Detection (Phase 2)**:
+    ```bash
+    python Patterns2.py
+    ```
+
+4. **Run Data Processing and Cleaning**:
+    ```bash
+    python DataProcessing.py
+    ```
+
+These scripts process, clean, and generate intermediate summary files. You will see outputs like:
+```
+[INFO] Successfully loaded and cleaned 2 firewall files.
+[INFO] Successfully loaded and cleaned 2 IDS files.
+[INFO] Exported top_50_destination_services.csv with top 24696 entries.
+[INFO] Exported top_50_destination_ports.csv with top 24696 entries.
+[INFO] Exported top_50_external_ips.csv with top 95 entries.
+[INFO] Exported external_firewall_traffic.csv.
+[INFO] Exported external_ids_traffic.csv.
+[INFO] Data processing complete.
+```
+
+Once you see this output, you're ready to run the dashboard.
+
+---
+
+#### **4. Run the Dashboard**
+
+Run the dashboard by executing the following command in the **scripts** directory:
+```bash
+python dashboard.py
+```
+
+If everything is successful, you will see an output similar to:
+```
+Dash is running on http://127.0.0.1:8050/
+```
+
+Open your web browser and navigate to [http://127.0.0.1:8050/](http://127.0.0.1:8050/) to see the live dashboard.
+
+---
+
+### **Dashboard Overview**
+
+The dashboard has **4 key sections**, each designed to answer one of the 4 primary questions related to security analysis.
+
+---
+
+#### **1️⃣ Question 1: Critical Security Events**
+
+**Charts:**
+- **Sunburst Chart**: Displays the classification and priority of top 5 critical IDS events.
+- **Treemap**: Visualizes the top sources of external attacks.
+
+**Usage:**
+- Identify and analyze critical events flagged in the IDS logs.
+- View which IP addresses are generating the most alerts.
+
+---
+
+#### **2️⃣ Question 2: Security Trends**
+
+**Charts:**
+- **Line Chart**: Shows the number of connections built over time in the firewall.
+- **Line Chart**: Displays the IDS alert counts over time.
+
+**Usage:**
+- Identify key time periods with abnormal spikes in connections or IDS alerts.
+- Detect and analyze patterns of network activity and security events.
+
+---
+
+#### **3️⃣ Question 3: Root Cause Analysis**
+
+**Charts:**
+- **Scatter Plot**: Shows the frequency and distribution of ports that were most frequently used, helping to identify potential vulnerabilities.
+- **Scatter Plot**: Plots Source IP vs Destination IP for network attack tracing.
+
+**Usage:**
+- Detect abnormal use of ports and connections that may indicate potential exploits.
+- Trace the source-destination interactions that might reveal suspicious IP behavior.
+
+---
+
+#### **4️⃣ Hybrid Analysis (Combined Firewall + IDS)**
+
+**Charts:**
+- **Interactive Scatter Plot**: Combines **IDS and Firewall** source IPs and destination IPs in one chart.
+
+**Usage:**
+- View how Source IPs and Destination IPs from both IDS and Firewall logs relate.
+- Identify network flows and locate malicious IPs across both log sources.
+- Highlight which IPs might be involved in multiple attack vectors.
+
+---
 
 ## Usage Instructions
 1. **Load the Data**: Once the app is running, use the provided interface to load the cleaned data files.
