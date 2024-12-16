@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 
 
 export default class HeatmapD3 {
-    margin = { top: 100, right: 100, bottom: 100, left: 100 };
+    margin = { top: 100, right: 100, bottom: 100, left: 300 };
     size;
     height;
     width;

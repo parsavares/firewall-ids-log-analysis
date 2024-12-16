@@ -33,7 +33,11 @@ def get_heatmap():
     start_datetime_str = params.get('start_datetime')
     end_datetime_str = params.get('end_datetime')
     data_source = params.get('data_source')
-
+    priority = params.get('priority')
+    
+    if(priority == "null"):
+        priority = None
+        
     assert xAttribute is not None
     assert yAttribute is not None
     assert start_datetime_str is not None
@@ -45,7 +49,7 @@ def get_heatmap():
 
     heatmap = Heatmap()
     df = data_handler.get_dataframe(start_datetime_str, end_datetime_str) if data_source == "FIREWALL" else data_handler_ids.get_dataframe(start_datetime_str, end_datetime_str)
-    return heatmap.get_heatmap_data(df, xAttribute, yAttribute, subnet_bits)
+    return heatmap.get_heatmap_data(df, xAttribute, yAttribute, priority, subnet_bits)
 
 @app.route("/debug")
 def debug():

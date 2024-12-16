@@ -5,7 +5,15 @@ export default function DashboardPage() {
         <div>
         <h1>Dashboard</h1>
         <p>
-            This is the dashboard page. It is the main page of the application.
+          Welcolme on our web application!<br />
+          This website enable the visualization of data regarding network connections of a regional Bank's office <br />
+          You can explore the different folders, visualize and filter information about the logs of the network <br />
+          <br />Contributors: <br /><br />
+            -Daniele Ferrario <br />
+            -Parsa Vares <br />
+            -Yufei Wei <br />
+            -Girgio Bettonte <br /><br />
+            The code is available at: <a href="https://github.com/parsavares/firewall-ids-log-analysis/tree/Ferra">Github repository</a>
         </p>
         </div>
     );

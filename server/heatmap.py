@@ -6,7 +6,7 @@ from utils import handle_subnets
 
 class Heatmap:
 
-    def get_heatmap_data(self, df: pd.DataFrame, xAttribute: str, yAttribute: str, subnet_bits=None):
+    def get_heatmap_data(self, df: pd.DataFrame, xAttribute: str, yAttribute: str, priority, subnet_bits=None):
 
         assert(df is not None)
 
@@ -16,7 +16,9 @@ class Heatmap:
         xAttributeModified = xAttribute
         yAttributeModified = yAttribute 
 
-        #df = df[df['syslog_priority'] != 'Info']
+        if(priority is not None):
+            df = df[df['syslog_priority'] == priority]
+            
         # If the rwequested attributes are IP addresses, we need to group them by subnet
         if(xAttribute == 'source_ip' or xAttribute == 'destination_ip' or yAttribute == 'source_ip' or yAttribute == 'destination_ip'):
             assert subnet_bits is not None

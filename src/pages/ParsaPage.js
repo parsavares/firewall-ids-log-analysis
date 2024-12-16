@@ -10,7 +10,7 @@ export default function ParsaPage() {
         <div className='h-100 row'>
             <h1>FIREWALL histograms</h1>
             <div className="col-4">
-                <StackedbarchartContainer data_source={"FIREWALL"} yAttribute={"destination_service"}/>
+                <StackedbarchartContainer data_source={"FIREWALL"} yAttribute={"cat_src"}/>
 
                 {/* <StackedbarchartContainer data_source={"IDS"} yAttribute={"priority"}/>*/ }
             </div>
@@ -20,7 +20,7 @@ export default function ParsaPage() {
             </div>
             <div className="col-4 ">
 
-                <StackedbarchartContainer data_source={"FIREWALL"} yAttribute={"cat_src"}/>
+                <StackedbarchartContainer data_source={"FIREWALL"} yAttribute={"destination_service"}/>
             </div>
             {/*
             <div className="col-md-3 h-50" style={{flex: '0 0 50.00%', maxWidth: '33.333%'}}>

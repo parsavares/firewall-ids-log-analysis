@@ -5,7 +5,7 @@ import HeatmapD3 from './HeatmapD3';
 import { setHeatmapData } from '../../redux/DatasetSlice';
 import {formatDate} from '../../utils';
 
-export default function HeatmapContainer({data_source, xAttribute, yAttribute, subnet_bits=24}){
+export default function HeatmapContainer({data_source, xAttribute, yAttribute, priority=null, subnet_bits=24}){
 
     const redux_state = useSelector(state => state.state);
     const [state, setState] = useState(null);
@@ -74,7 +74,8 @@ export default function HeatmapContainer({data_source, xAttribute, yAttribute, s
                 start_datetime: start_date_str,
                 end_datetime: end_date_str,
                 subnet_bits: subnet_bits,
-                data_source: data_source
+                data_source: data_source,
+                priority: priority
             }
         
         const queryString = new URLSearchParams(params).toString();
