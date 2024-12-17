@@ -1,0 +1,163 @@
+PS C:\project\firewall-ids-log-analysis\scripts> python Patterns2.py
+[INFO] Successfully loaded 2 firewall files.
+[INFO] Successfully loaded 2 IDS files.
+
+[DEBUG] Firewall Data Sample:
+            Date/time Syslog priority Operation  Message code Protocol    Source IP Destination IP  
+0 2012-04-05 17:51:26            Info  Teardown  ASA-6-302016      UDP   172.23.0.1     172.23.0.2  
+1 2012-04-05 17:51:26            Info     Built  ASA-6-302015      UDP   172.23.0.1     172.23.0.2  
+2 2012-04-05 17:53:06            Info     Built  ASA-6-302015      UDP  172.23.0.10   198.32.64.12  
+3 2012-04-05 17:53:10            Info     Built  ASA-6-302015      UDP  172.23.0.10   202.12.27.33  
+4 2012-04-05 17:53:14            Info     Built  ASA-6-302015      UDP  172.23.0.10    128.9.0.107  
+
+[5 rows x 22 columns]
+
+[DEBUG] IDS Data Sample:
+            Date/time     Source IP  Source Port Destination IP  Destination Port                   
+0 2012-04-05 17:55:00  172.23.1.101       1101.0    172.23.0.10             139.0   Generic Protocol
+1 2012-04-05 17:55:00  172.23.1.101       1101.0    172.23.0.10             139.0   Generic Protocol
+2 2012-04-05 17:55:00  172.23.1.101       1104.0    172.23.0.10             139.0   Generic Protocol
+3 2012-04-05 17:55:00  172.23.1.101       1104.0    172.23.0.10             139.0   Generic Protocol
+4 2012-04-05 17:56:00  172.23.0.212       1222.0    172.23.0.10             445.0   Generic Protocol
+
+[5 rows x 20 columns]
+
+[DEBUG] External Firewall Traffic Sample (5 rows):
+            Date/time Syslog priority Operation  Message code Protocol    Source IP Destination IP  
+2 2012-04-05 17:53:06            Info     Built  ASA-6-302015      UDP  172.23.0.10   198.32.64.12  
+3 2012-04-05 17:53:10            Info     Built  ASA-6-302015      UDP  172.23.0.10   202.12.27.33  
+4 2012-04-05 17:53:14            Info     Built  ASA-6-302015      UDP  172.23.0.10    128.9.0.107  
+5 2012-04-05 17:53:14            Info     Built  ASA-6-302015      UDP  172.23.0.10    192.33.4.12  
+6 2012-04-05 17:53:26            Info     Built  ASA-6-302015      UDP  172.23.0.10     198.41.0.4  
+
+[5 rows x 22 columns]
+
+[DEBUG] External IDS Traffic Sample (5 rows):
+               Date/time   Source IP  Source Port  Destination IP  Destination Port  classification 
+2148 2012-04-05 20:25:00  10.32.5.51       6667.0  172.23.234.254            1230.0   Misc activity 
+2149 2012-04-05 20:25:00  10.32.5.56       6667.0   172.23.234.25            1231.0   Misc activity 
+2150 2012-04-05 20:25:00  10.32.5.54       6667.0  172.23.234.252            1236.0   Misc activity 
+2151 2012-04-05 20:25:00  10.32.5.56       6667.0   172.23.240.31            1260.0   Misc activity 
+2152 2012-04-05 20:25:00  10.32.5.58       6667.0  172.23.240.155            1259.0   Misc activity 
+
+[5 rows x 20 columns]
+
+[DEBUG] Top 50 Destination Services in Logs:
+Destination service
+http          9620598
+6667_tcp       956854
+ftp              1825
+domain            512
+22_tcp            496
+netbios-ns         74
+1026_udp           70
+1025_udp           38
+auth               14
+29098_udp          10
+3998_udp           10
+57379_udp          10
+57411_udp          10
+57916_udp          10
+7487_udp           10
+1140_udp           10
+1390_udp           10
+16755_udp          10
+36532_udp          10
+3952_udp           10
+46889_udp          10
+50365_udp          10
+14693_udp          10
+2847_udp           10
+54658_udp          10
+54692_udp          10
+1146_udp           10
+1385_udp           10
+1386_udp           10
+1389_udp           10
+18310_udp          10
+29137_udp          10
+31804_udp          10
+34986_udp          10
+46924_udp          10
+50372_udp          10
+57881_udp          10
+7460_udp           10
+12190_udp           8
+4051_udp            8
+1346_tcp            8
+14339_udp           8
+1943_tcp            8
+34994_udp           8
+43885_udp           8
+56800_udp           8
+1301_tcp            7
+1854_tcp            7
+1281_tcp            7
+1312_tcp            7
+Name: count, dtype: int64
+[ERROR] Could not compute 'Destination port' counts due to: 'index'
+
+[DEBUG] Source Node Types in Firewall Data:
+Source_NodeType
+Firewall                    1887
+Workstation             10579772
+DomainController/DNS        1114
+Unknown                    20763
+Name: count, dtype: int64
+
+[DEBUG] Source Node Types in IDS Data:
+Source_NodeType
+Unknown    17342
+Name: count, dtype: int64
+
+[DEBUG] Top 20 External IPs Triggering IDS Alerts:
+Source IP
+10.32.5.56    4100
+10.32.5.54    4074
+10.32.5.53    2584
+10.32.5.55    2572
+10.32.5.57    1174
+10.32.5.51    1151
+10.32.5.52    1134
+10.32.5.59     280
+10.32.5.58     273
+Name: count, dtype: int64
+
+[DEBUG] GeoIP Lookup for Top 20 Alerting IPs:
+IP: 10.32.5.56, Location: {'Country': 'Unknown', 'City': 'Unknown', 'Latitude': None, 'Longitude': N
+IP: 10.32.5.54, Location: {'Country': 'Unknown', 'City': 'Unknown', 'Latitude': None, 'Longitude': NPS C:\project\firewall-ids-log-analysis\scripts> python Patterns2.py
+[INFO] Successfully loaded 2 firewall files.
+[INFO] Successfully loaded 2 IDS files.
+
+[DEBUG] Firewall Data Sample:
+            Date/time Syslog priority Operation  ... Dest_IsInternal Dest_NodeType Dest_Priority
+0 2012-04-05 17:51:26            Info  Teardown  ...            True     LogServer          High
+1 2012-04-05 17:51:26            Info     Built  ...            True     LogServer          High
+2 2012-04-05 17:53:06            Info     Built  ...           False       Unknown        Normal
+3 2012-04-05 17:53:10            Info     Built  ...           False       Unknown        Normal
+4 2012-04-05 17:53:14            Info     Built  ...           False       Unknown        Normal
+
+[5 rows x 22 columns]
+
+[DEBUG] IDS Data Sample:
+            Date/time     Source IP  ...         Dest_NodeType Dest_Priority
+0 2012-04-05 17:55:00  172.23.1.101  ...  DomainController/DNS          High
+1 2012-04-05 17:55:00  172.23.1.101  ...  DomainController/DNS          High
+2 2012-04-05 17:55:00  172.23.1.101  ...  DomainController/DNS          High
+3 2012-04-05 17:55:00  172.23.1.101  ...  DomainController/DNS          High
+4 2012-04-05 17:56:00  172.23.0.212  ...  DomainController/DNS          High
+
+[5 rows x 20 columns]
+
+[INFO] Exported high priority traffic sample.
+
+[INFO] Exported top 50 destination services.
+
+[INFO] Exported top 50 destination ports.
+
+[INFO] Exported top 20 external IPs.
+
+[INFO] Exported IPs GeoIP lookup data.
+
+[INFO] Total rows in firewall data: 10603883
+[INFO] Dropped rows (due to 'Date/time' errors): 0 (0.00%)

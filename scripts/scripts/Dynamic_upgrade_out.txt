@@ -1,0 +1,11 @@
+PS C:\project\firewall-ids-log-analysis\Scripts> python DataProcessing.py 
+[INFO] Loading firewall data from ['..\\data\\MC2-CSVFirewallandIDSlogs\\Firewall-04062012.csv', '..\\data\\MC2-CSVFirewallandIDSlogs\\Firewall-04072012.csv']...
+[INFO] Successfully loaded and cleaned 2 firewall files.
+[INFO] Loading IDS data from ['..\\data\\MC2-CSVFirewallandIDSlogs\\IDS-0406.csv', '..\\data\\MC2-CSVFirewallandIDSlogs\\IDS-0407.csv']...
+[INFO] Successfully loaded and cleaned 2 IDS files.
+[INFO] Exported top_50_destination_services.csv with top 24696 entries.
+[INFO] Exported top_50_destination_ports.csv with top 24696 entries.
+[INFO] Exported top_50_external_ips.csv with top 95 entries.
+[INFO] Exported external_firewall_traffic.csv.
+[INFO] Exported external_ids_traffic.csv.
+[INFO] Data processing complete.
