@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-
+import { syslog_priority_labels, syslog_priority_colors } from '../../utils';
 
 export default class ParallelSetsD3 {
     margin = { top: 100, right: 100, bottom: 10, left: 100 };
@@ -23,6 +23,8 @@ export default class ParallelSetsD3 {
     updateAxis = function(visData){
 
         this.dimensions = Object.keys(visData[0])
+        this.dimensions = this.dimensions.filter(d => d !== "count")
+        
         this.yScales = {}
         for (let i in this.dimensions) {
             const name = this.dimensions[i]
@@ -87,14 +89,14 @@ export default class ParallelSetsD3 {
         this.updateAxis(data);
         console.log(this.yScales)
 
-        const firstAttribute = this.dimensions[0];
-        const uniqueValues = [...new Set(data.map(d => d[firstAttribute]))];
+        const color_attribute = "syslog_priority"
 
         const colorMap = d3.scaleOrdinal()
-            .domain(uniqueValues)
-            .range(d3.schemeCategory10)
+        .domain(syslog_priority_labels)
+        .range(syslog_priority_colors);
 
-
+        console.log(data)
+        const thickness = d3.scaleLinear().domain([0, d3.max(data, d => d["count"])]).range([5, 5])
 
         this.parallelSetsSvg
         .selectAll("myPath")
@@ -102,10 +104,9 @@ export default class ParallelSetsD3 {
         .enter().append("path")
         .attr("d",  this.path)
         .style("fill", "none")
-        .style("stroke", d => colorMap(d[firstAttribute]))
+        .style("stroke", d => colorMap(d[color_attribute]))
         .style("opacity", 1)
-        .style("stroke-width", 0.5)
-
+        .style("stroke-width", d => thickness(d["count"]))
     }
 
     clear = function(){

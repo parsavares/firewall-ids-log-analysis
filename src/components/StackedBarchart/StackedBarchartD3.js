@@ -1,16 +1,15 @@
 import * as d3 from 'd3';
 
-
 export default class StackedbarchartD3 {
 
     width;
     height;
 
     margin = {
-    	top: 10,
-    	right: 50,
+    	top: 20,
+    	right: 100,
     	bottom: 200,
-    	left: 50
+    	left: 100
     };
 
     size;
@@ -32,17 +31,15 @@ export default class StackedbarchartD3 {
         const groups = data.map(d => d.interval_center)
         const maxBar = d3.max(d3.map(data, g => g.total_occurrences)) 
 
-        console.log("groups: ", groups)
-        console.log("maxBar: ", maxBar)
         // Prepare the scales for positional and color encodings.
         this.x = d3.scaleBand()
         .domain(groups)
-        .range([this.margin.left, this.width - this.margin.right])
+        .range([0, this.width])
         .padding(0.1);
 
         this.y = d3.scaleLinear()
         .domain([0, maxBar])
-        .rangeRound([this.height - this.margin.bottom, this.margin.top]);
+        .rangeRound([this.height, 0])
 
         const bottomAxis = d3.axisBottom(this.x).tickValues(this.x.domain().filter(function(d,i){ return !(i%10)}));
 
@@ -53,12 +50,27 @@ export default class StackedbarchartD3 {
             .selectAll("text")  
             .attr("transform", "rotate(-90)")
             .attr("dy", "-0em")
-            .attr("dx", "-10em")
+            .attr("dx", "-10em");
 
-        
         this.stackedbarSvg.select(".yAxisG")
-            .call(leftAxis)
-        ;
+            .call(leftAxis);
+
+        // Add X axis label
+        this.stackedbarSvg.append("text")
+            .attr("class", "x axis-label")
+            .attr("text-anchor", "end")
+            .attr("x", this.width / 2 + this.margin.left)
+            .attr("y", this.height + this.margin.top + 40)
+            .text(this.xAttribute);
+
+        // Add Y axis label
+        this.stackedbarSvg.append("text")
+            .attr("class", "y axis-label")
+            .attr("text-anchor", "end")
+            .attr("transform", "rotate(-90)")
+            .attr("x", -this.height / 2)
+            .attr("y", -this.margin.left + 20)
+            .text(this.yAttribute);
 
     }
 
@@ -68,7 +80,22 @@ export default class StackedbarchartD3 {
         this.width = this.size.width - this.margin.left - this.margin.right;
         this.height = this.size.height - this.margin.top - this.margin.bottom;
         
-        this.stackedbarSvg=d3.select(this.el).append("svg")
+        // Ensure tooltip element exists
+        if (d3.select("#tooltip").empty()) {
+            d3.select("body").append("div")
+                .attr("id", "tooltip")
+                .style("position", "absolute")
+                .style("display", "none")
+                .style("border-radius", "5px")
+                .style("position", "absolute")
+                .style("background-color", "white")
+                .style("border", "solid")
+                .style("border-width", "1px")
+                    .style("padding", "10px");
+        }
+
+
+        this.stackedbarSvg = d3.select(this.el).append("svg")
             .attr("width", this.width + this.margin.left + this.margin.right)
             .attr("height", this.height + this.margin.top + this.margin.bottom)
             .append("g")
@@ -83,6 +110,23 @@ export default class StackedbarchartD3 {
         this.stackedbarSvg.append("g")
             .attr("class","yAxisG");
 
+        // Add X axis label
+        this.stackedbarSvg.append("text")
+            .attr("class", "x axis-label")
+            .attr("text-anchor", "end")
+            .attr("x", this.width / 2 + this.margin.left)
+            .attr("y", this.height + this.margin.top + 40)
+            .text(config.xAttribute);
+
+        // Add Y axis label
+        this.stackedbarSvg.append("text")
+            .attr("class", "y axis-label")
+            .attr("text-anchor", "end")
+            .attr("transform", "rotate(-90)")
+            .attr("x", -this.height / 2)
+            .attr("y", -this.margin.left + 20)
+            .text(config.yAttribute);
+
     }
     
     render = function(data, xAttribute, yAttribute){ 
@@ -92,16 +136,20 @@ export default class StackedbarchartD3 {
         this.xAttribute = xAttribute;
         this.yAttribute = yAttribute;
 
+        this.stackedbarSvg.select(".seriesG").remove()
         
+        this.stackedbarSvg.append("g")
         const subgroups = Object.keys(data[0].occurrences); 
 
-        console.log("sub: ", subgroups)
+        //need to change subgroups in order to reflect the change of the time domain
+
 
         this.updateAxis(data)
 
         const colorMap = d3.scaleOrdinal()
         .domain(subgroups)
         .range(d3.schemeCategory10)
+        //console.log('color_map', colorMap)
 
 
         // Prepare the data for the stack layout
@@ -121,10 +169,10 @@ export default class StackedbarchartD3 {
         .keys(subgroups)
         (data_to_stack)
 
-        console.log("stacked data: ", stackedData)
 
         // Append a group for each series, and a rect for each element in the series.
         this.stackedbarSvg.append("g")
+        .attr("class", "seriesG")
         .selectAll("g")
         // Enter in the stack data = loop key per key = group per group
         .data(stackedData)
@@ -138,9 +186,57 @@ export default class StackedbarchartD3 {
             .attr("y", d =>  this.y(d[1])) 
             .attr("height", d => this.y(d[0]) - this.y(d[1]))
             .attr("width", this.x.bandwidth())
+            .on("mouseover", (event, d) => {
+                const [x, y] = d3.pointer(event);
+                const categoryData = `Interval Center: ${d.data.interval_center}<br>` + subgroups.map(subgroup => `${subgroup}: ${d.data[subgroup]}`).join("<br>");
+                d3.select("#tooltip")
+                    .style("left", `${x + 10}px`)
+                    .style("top", `${y + 10}px`)
+                    .style("display", "inline-block")
+                    .html(categoryData);
+            })
+            .on("mouseout", function() {
+            d3.select("#tooltip")
+                .style("display", "none");
+            })
+
+            //
+            const subgroups_legend = Object.keys(data[0].occurrences); 
+
+            this.createLegend(colorMap, subgroups_legend);
+            
     }
 
+    createLegend = function (colorMap, subgroups) {
+        this.stackedbarSvg.select(".legend").remove();
+        const legend = this.stackedbarSvg.append("g")
+            .attr("class", "legend")
+            .attr("transform", `translate(${this.width + 20}, 20)`);
+
+        subgroups.forEach((subgroup, index) => {
+            const legendRow = legend.append("g")
+                .attr("transform", `translate(0, ${index * 20})`);
+
+            legendRow.append("rect")
+                .attr("width", 18)
+                .attr("height", 18)
+                .attr("fill", colorMap(subgroup));
+
+            legendRow.append("text")
+                .attr("x", 25)
+                .attr("y", 14)
+                .text(subgroup)
+                .style("font-size", "12px");
+        });
+    };
+    
+
+    /*
     clear = function(){
-        d3.select(this.el).selectAll("*").remove();
+        d3.select(this.stackedbarSvg).selectAll("*").remove();
     }
+    */
+    clear = function() {
+        this.stackedbarSvg.selectAll("*").remove();
+    };
 }

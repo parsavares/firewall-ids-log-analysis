@@ -47,6 +47,7 @@ def clean_firewall():
     FIREWALL1 = pd.read_csv('../data/MC2-CSVFirewallandIDSlogs/Firewall-04062012.csv')
     FIREWALL2 = pd.read_csv('../data/MC2-CSVFirewallandIDSlogs/Firewall-04072012.csv')
     FIREWALL = pd.concat([FIREWALL1, FIREWALL2])
+    
     #drop columns with only empty values
     FIREWALL = FIREWALL.drop(columns='Source hostname')
     FIREWALL = FIREWALL.drop(columns='Destination hostname')
