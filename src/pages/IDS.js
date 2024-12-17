@@ -1,26 +1,29 @@
+
 import HeatmapContainer from '../components/Heatmap/HeatmapContainer';
 import StackedbarchartContainer from '../components/StackedBarchart/StackedBarchartContainer';
-import SankeDiagramContainer from '../components/SankeyDiagram/SankeDiagramContainer';
-import TimeControlbar from '../components/TimeControlbar/TimeControlbar';
 import { useSelector } from 'react-redux';
 
-export default function ParsaPage() {
+export default function IDS() {
+
+    const state = useSelector((state) => state);
+    
     return (
-
+        
         <div className='h-100 row'>
-            <h1>FIREWALL histograms</h1>
-            <div className="col-4">
-                <StackedbarchartContainer data_source={"FIREWALL"} yAttribute={"cat_src"}/>
+            <h1>IDS histograms</h1>
 
-                {/* <StackedbarchartContainer data_source={"IDS"} yAttribute={"priority"}/>*/ }
+            
+            <div className="col-4">
+
+                { <StackedbarchartContainer data_source={"IDS"} yAttribute={"priority"}/> }
             </div>
             <div className="col-4">
-                {<StackedbarchartContainer data_source={"FIREWALL"} yAttribute={"syslog_priority"}/>}
+            {<StackedbarchartContainer data_source={"IDS"} yAttribute={"cat_src"}/>}
 
             </div>
             <div className="col-4 ">
 
-                <StackedbarchartContainer data_source={"FIREWALL"} yAttribute={"destination_service"}/>
+                {<StackedbarchartContainer data_source={"IDS"} yAttribute={"cat_dst"}/>} 
             </div>
             {/*
             <div className="col-md-3 h-50" style={{flex: '0 0 50.00%', maxWidth: '33.333%'}}>
@@ -40,12 +43,8 @@ export default function ParsaPage() {
 
             */}
         </div>
-
-
-            
-
-            
+    
+    )}
+                
         
-    );
-    }
     

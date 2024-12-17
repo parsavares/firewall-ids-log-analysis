@@ -1,17 +1,21 @@
 import {useState, useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {formatDate} from '../../utils';
-import ParallelSetsD3 from './ParallelSetsD3';
-import { setParallelsetsData } from '../../redux/DatasetSlice';
+import SankeDiagramD3 from './SankeDiagramD3';
+import { setSankeDiagramData } from '../../redux/DatasetSlice';
 
-export default function ParallelSetsContainer(){
+export default function SankeDiagramContainer(){
 
     const redux_state = useSelector(state => state.state);
+
     const [state, setState] = useState(null);
-    
+
+    // ContorlBar state
+    //const [uniqueFilterValues, setUniqueFilterVariables] = useState([]);
+    //const [activeValues, setActiveValues] = useState([])
 
     const divContainerRef = useRef(null);
-    const ParallelSetsD3Ref = useRef(null);
+    const SankeDiagramD3Ref = useRef(null);
 
     const getCharSize = function(){
         let width;
@@ -24,14 +28,16 @@ export default function ParallelSetsContainer(){
     }
 
     useEffect(()=>{
-        const ParallelSetsD3Instance = new ParallelSetsD3(divContainerRef.current);
-        ParallelSetsD3Instance.create({size:getCharSize()});
-        ParallelSetsD3Ref.current = ParallelSetsD3Instance;
+        const SankeDiagramD3Instance = new SankeDiagramD3(divContainerRef.current);
+
+        SankeDiagramD3Instance.create({size:getCharSize()});
+        SankeDiagramD3Ref.current = SankeDiagramD3Instance;
 
         fetchDataAndUpdate();
+
         return () => {
-            const ParallelSetsD3Instance = ParallelSetsD3Ref.current;
-            ParallelSetsD3Instance.clear();
+            const SankeDiagramD3Instance = SankeDiagramD3Ref.current;
+            SankeDiagramD3Instance.clear();
         }
     }, []);
 
@@ -42,26 +48,37 @@ export default function ParallelSetsContainer(){
     }, [redux_state.global_date_time_interval]);
 
     useEffect(()=>{
-        if(state===null)
-            return;
 
+        if(state === null){
+           return;
+        } 
+
+        /*
+        // Check if already done
+        if(uniqueFilterValues.length === 0){
+            const values = Object.keys(state);
+            setUniqueFilterVariables(values);
+            setActiveValues(values)
+        }*/
+
+        console.log('SankeDiagramContainer state:', state);
         divContainerRef.current.style.opacity = 1;
         const data = state;
-        
-        console.log(data);
-        ParallelSetsD3Ref.current.clear();
-        ParallelSetsD3Ref.current.create({size:getCharSize()});
-        ParallelSetsD3Ref.current.render(data);
+        SankeDiagramD3Ref.current.clear();
+        SankeDiagramD3Ref.current.create({size:getCharSize()});
+        SankeDiagramD3Ref.current.render(data);
+
     }, [state]);
 
     async function fetchDataAndUpdate(){
-        const api_endpoint = "getParallelSets";
+        const api_endpoint = "getSankeDiagram";
 
         const start_date_str = formatDate(redux_state.global_date_time_interval[0])
         const end_date_str = formatDate(redux_state.global_date_time_interval[1])
         const subnet_bits = 24;
+        
         const data_source = "FIREWALL"
-
+ 
         const baseUrl = `http://localhost:5000/${api_endpoint}`;
         const params = 
             {
@@ -76,15 +93,14 @@ export default function ParallelSetsContainer(){
         const response = await fetch(url);
         const data = await response.json();
 
-
-        setState(data);
+        setState((data));
 
     }
 
 
     return (
         <div ref={divContainerRef} className="Stackedbarchart-container h-100">
-            <h1>ParallelSetsContainer</h1>
+            <h1>SankeDiagramContainer</h1>
 
         </div>
     )

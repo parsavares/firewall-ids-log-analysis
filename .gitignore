@@ -2,3 +2,5 @@ data/
 .venv/
 node_modules/
 server/__pycache__/*
+server/__pycache__/
+hidden_folder/

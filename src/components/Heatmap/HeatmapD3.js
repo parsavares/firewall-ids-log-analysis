@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 
 
 export default class HeatmapD3 {
-    margin = { top: 100, right: 100, bottom: 100, left: 100 };
+    margin = { top: 100, right: 100, bottom: 100, left: 300 };
     size;
     height;
     width;
@@ -18,11 +18,11 @@ export default class HeatmapD3 {
         this.el = el;
     }
 
-    updateAxis = function(visData,xAttribute,yAttribute){
+    updateAxis = function(visData){
 
-    
-        var myGroups = Array.from(new Set(visData.map(d => d.xAttribute)));
-        var myVars = Array.from(new Set(visData.map(d => d.yAttribute)));
+        var myGroups = Array.from(new Set(visData.map(d => d.xAttribute))).sort();
+        var myVars = Array.from(new Set(visData.map(d => d.yAttribute))).sort();
+
 
 
         this.xScale = d3.scaleBand()
@@ -74,25 +74,38 @@ export default class HeatmapD3 {
 
         this.heatmapSvg.append("g")
             .attr("class","yAxisG");
-        
+
+        // Add X axis label
+        this.heatmapSvg.append("text")
+            .attr("class", "xAxisLabel")
+            .attr("text-anchor", "end")
+            .attr("x", this.width)
+            .attr("y", this.height + this.margin.top - 10)
+            .text(this.xAttribute);
+
+        // Add Y axis label
+        this.heatmapSvg.append("text")
+            .attr("class", "yAxisLabel")
+            .attr("text-anchor", "end")
+            .attr("transform", "rotate(-90)")
+            .attr("y", -this.margin.left + 20)
+            .attr("x", -this.margin.top)
+            .text(this.yAttribute);
 
     }
 
    render = function(data, xAttribute, yAttribute){ 
 
 
-        console.log(data);  
-        console.log(xAttribute);
-        console.log(yAttribute);
-
         this.visData = data;
         this.xAttribute = xAttribute;
         this.yAttribute = yAttribute;
 
+
         this.updateAxis(data, xAttribute, yAttribute);
 
         var maxFrequency = d3.max(data, d => d.frequency);
-        var myColor = d3.scaleSequential()
+        var myColor = d3.scaleSequentialLog()
         .interpolator(d3.interpolateViridis)
         .domain([1, maxFrequency])
 
@@ -110,6 +123,35 @@ export default class HeatmapD3 {
             .style("stroke-width", 4)
             .style("stroke", "none")
             .style("opacity", 0.8)  
+            .on("mouseover", function(event, d) {
+                d3.select(this)
+                    .style("stroke", "black")
+                    .style("opacity", 1);
+                d3.select(".tooltip")
+                    .style("opacity", 1)
+                    .html(`x: ${d.xAttribute}<br>y: ${d.yAttribute}<br>frequency: ${d.frequency}`)
+                    .style("left", (event.pageX + 5) + "px")
+                    .style("top", (event.pageY + 20) + "px");
+            })
+            .on("mouseout", function() {
+                d3.select(this)
+                    .style("stroke", "none")
+                    .style("opacity", 0.8);
+                d3.select(".tooltip")
+                    .style("opacity", 0);
+            });
+
+        // Create a tooltip div. This should be added to your HTML file or dynamically created in your script.
+        if (d3.select(this.el).select(".tooltip").empty()) {
+            d3.select(this.el).append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0)
+            .style("position", "absolute")
+            .style("background-color", "white")
+            .style("border", "solid")
+            .style("border-width", "1px")
+                .style("padding", "10px");
+            }
 
     }
 
